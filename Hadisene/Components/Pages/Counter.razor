@@ -1,0 +1,85 @@
+﻿@page "/counter"
+@implements IDisposable
+@rendermode InteractiveServer 
+@inject NotifierService Notifier
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<h3>Counter</h3>
+<p role="status">Current count: @User.Clicks</p>
+<button @onclick="IncrementCount">Increment</button>
+
+<p>
+    <!-- binding to value directly -->
+    <input type="number" title="Clicks" @bind-value:event="oninput" @bind-value="User.Clicks">
+</p>
+
+
+<h2>Notifications</h2>
+
+<p>
+    Status:
+    @if (lastNotification.key is not null)
+    {
+        <span>@lastNotification.key = @lastNotification.value</span>
+    }
+    else
+    {
+        <span>Awaiting notification</span>
+    }
+</p>
+
+
+@code {
+    private int currentCount = 0;
+    [CascadingParameter] public required User User { get; set; }
+    private (string key, int value) lastNotification;
+
+    public async Task IncrementCount() { 
+        User.Clicks++;
+        await Notifier.InvokeIO("key", User.Clicks);
+
+        NotifyArgs na = new();
+        na.UsrId = 31;
+        na.FFId = 101;
+        na.OOId = 17;
+        na.OrdUsrs = Array.ConvertAll("31,32,33,34".Split(','), int.Parse);
+
+        await Notifier.Invoke("IO", na);
+    }
+
+    protected override void OnInitialized()
+    {
+        //Notifier.Notify += OnNotify;
+        Notifier.NotifyIO += OnNotifyIO;
+    }
+
+    public async Task OnNotify(string key, NotifyArgs value)
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    public async Task OnNotifyIO(string key, int value)
+    {
+        await InvokeAsync(() =>
+        {
+            lastNotification = (key, value);
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        //Notifier.Notify -= OnNotify;
+        Notifier.NotifyIO -= OnNotifyIO;
+    }
+}

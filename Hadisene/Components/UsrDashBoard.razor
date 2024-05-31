@@ -1,0 +1,205 @@
+﻿@using System.Timers
+@inject IDbCon db
+@inject NotifierService Notifier
+@inject AppState AppState
+@inject NavigationManager navigationManager
+@implements IDisposable
+
+<div class="dashboard" data-pos="@pos[p]">
+
+	<table>
+		<caption onclick="@PosChanged">DashBoard @cnt @dnm</caption>
+		<thead>
+			<tr>
+				<th></th>
+				<th>Start</th>
+				<th>Finish</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr style="background-color: red;color: wheat;">
+				<td class="fld-hdr">Gecikmiş</td>
+				<td>@UDB.SR <InputCheckbox @bind-Value="cbCSR" /></td>
+				<td>@UDB.FR <InputCheckbox @bind-Value="cbCFR" /></td>
+			</tr>
+			<tr style="background-color: blue;color: wheat;">
+				<td class="fld-hdr">Süresi var</td>
+				<td>@UDB.SB <InputCheckbox @bind-Value="cbCSB" /></td>
+				<td>@UDB.FB <InputCheckbox @bind-Value="cbCFB" /></td>
+			</tr>
+			<tr style="background-color: green;color: wheat;">
+				<td class="fld-hdr">Yapılmış</td>
+				<td>@UDB.SG <InputCheckbox @bind-Value="cbCSG" /></td>
+				<td>@UDB.FG <InputCheckbox @bind-Value="cbCFG" /></td>
+			</tr>
+			<tr>
+				<td class="fld-hdr">Toplam</td>
+				<td colspan="2">@UDB.OC</td>
+			</tr>
+			<tr>
+				<td>
+					<span class="material-symbols-outlined">
+						keep keep_off
+					</span>
+				</td>
+				<td colspan="2">@UDB.OP  <InputCheckbox @bind-Value="cbPin" /></td>
+			</tr>
+			<tr>
+				<td class="fld-hdr">Değişmiş</td>
+				<td colspan="2">@UDB.OnV <input type="checkbox" @bind-value="cbOnV" /></td>
+			</tr>
+			<tr>
+				<td class="fld-hdr">Yeni Mesaj</td>
+				<td colspan="2">@UDB.MnV <InputCheckbox @bind-Value="cbMnV" /></td>
+			</tr>
+			<tr>
+				<td class="fld-hdr">Güncelleme</td>
+				<td colspan="2">@FormatDate(UDB.LastUpd)</td>
+			</tr>
+			<tr>
+				<td colspan="3" @onclick="GoOrdActive">GO</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+@code {
+	private Timer timer = new(1000 * 10);
+	private int cnt = 0;
+	private DashBoard? UDB;
+	private int p = 1;
+	private string[] pos = ["TL", "TR", "BR", "BL"];
+	private int dnm = 0;
+	private List<int> DnmList = new();
+	private bool cbCSR, cbCSB, cbCSG, cbCFR, cbCFB, cbCFG, cbPin, cbOnV, cbMnV;
+
+	private string FormatDate(DateTime? dt)
+	{
+		if (dt is null)
+			return "";
+
+		if (dt.Value.Date == DateTime.Today)
+			return dt.Value.ToString("HH:mm:ss");
+
+		if (dt.Value.Date == DateTime.Today.AddDays(-1))
+			return "Dün " + dt.Value.ToString("HH:mm");
+
+		if (dt.Value.Date == DateTime.Today.AddDays(1))
+			return "Yarın " + dt.Value.ToString("HH:mm");
+
+		return dt.Value.ToString("dd.MM.yy HH:mm");
+	}
+
+	private void PosChanged()
+	{
+		p = ++p > 3 ? 0 : p;
+	}
+
+	private void GoOrdActive()
+	{
+		List<string> sl = new();
+
+		sl.Add("Stu=A");
+
+		string CS = (cbCSR ? "R" : "") + (cbCSB ? "B" : "") + (cbCSG ? "G" : "");
+		if (CS.Length > 0)
+			sl.Add("CS="+CS);
+
+		string CF = (cbCFR ? "R" : "") + (cbCFB ? "B" : "") + (cbCFG ? "G" : "");
+		if (CF.Length > 0)
+			sl.Add("CF="+CF);
+
+		if (cbPin)
+			sl.Add("Pin=1");
+		if (cbOnV)
+			sl.Add("OnV=1");
+		if (cbMnV)
+			sl.Add("MnV=1");
+
+		string url = $"/ordactive/{String.Join('&', sl)}";
+		navigationManager.NavigateTo(url);
+		// QueryHelpers.AddQueryString("/ordactive", queryStrDict));
+
+	}
+	private void OnTimedEvent(Object? source, ElapsedEventArgs e)
+	{
+		cnt += 1;
+		Read();
+		//PosChanged();
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void Read()
+	{
+		using var conn = db.GetConnection();
+		UDB = conn.QuerySingle<DashBoard>("UU_DASHBOARD", new { UsrId = 31 }, commandType: CommandType.StoredProcedure);
+
+	}
+
+	protected override void OnInitialized()
+	{
+		Read();
+		timer.Elapsed += OnTimedEvent;
+		timer.AutoReset = true;
+		timer.Enabled = true;
+
+		Notifier.Notify += OnNotify;
+	}
+
+	public async Task OnNotify(string key, NotifyArgs value)
+	{
+		// value.UsrId == AppState.UsrId -> Kendisi
+
+		if (key == "UO")    // Updated Order
+		{
+			var li = DnmList.FindIndex(x => x == value.OOId);
+			if (li != -1)
+			{
+				// Read OoRec
+				//	Usr Servisi değiştiyse artık bunu göremiyebilir, Listeden çıkartmak gerek
+				//  Full Refresh yapmak gerekibilir
+				// DnmList[li] = OoRec
+				DnmList.Sort((x, y) => x == y ? 0 : x > y ? 1 : -1);
+			}
+		}
+
+		if (key == "IO")
+		{
+			await InvokeAsync(() =>
+			{
+				var x = Array.IndexOf(value.OrdUsrs, AppState.UsrId); // returns -1 if not found
+				if (x != -1)
+				{
+					// Read OoRec
+					// DnmList.Add(ooRec)
+					// DnmList.Sort
+					dnm = value.FFId;
+					StateHasChanged();
+				}
+			});
+		}
+	}
+
+	public void Dispose()
+	{
+		timer.Dispose();
+		Notifier.Notify -= OnNotify;
+	}
+
+	public sealed class DashBoard
+	{
+		public int OC;
+		public int OP;
+		public int SR;
+		public int SB;
+		public int SG;
+		public int FR;
+		public int FB;
+		public int FG;
+		public int OnV;
+		public int MnV;
+		public DateTime LastUpd;
+		public string Info => LastUpd.ToString("dd.MM.yy HH:mm");
+	}
+}

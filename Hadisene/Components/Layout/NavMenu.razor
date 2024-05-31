@@ -1,0 +1,176 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+@inject NotifierService Notifier
+@implements IAsyncDisposable
+@inject NavigationManager navigationManager
+
+@* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
+@* <CascadingBlazoredModal /> *@
+
+
+<div class="nav-hdr">
+	<div class="menu">
+		<button class="menu-btn" @onclick="ShowMenu">
+			<span class="material-symbols-outlined">
+				menu
+			</span>
+		</button>
+		<div class="menu-content" data-show="@cbSM">
+			<a href="/">
+				<span class="material-symbols-outlined">
+					home
+				</span>
+			</a>
+			<a href="counter">Counter</a>
+			<div>deneme</div>
+			<br>
+			<a href="#">
+				<span class="material-symbols-outlined">
+					login
+				</span>
+				Login
+			</a>
+			<hr>
+			<a href="#">
+				<span class="material-symbols-outlined">
+					logout
+				</span>
+				Logout
+			</a>
+		</div>
+	</div>
+
+	<div>Görev <InputCheckbox @bind-Value="cbUsrDashBoard" /></div>
+	<div>Şener Demiral / Aktör</div>
+
+
+	<select @bind="menu">
+		<optgroup label="">
+			<option value="">🏠 HOME</option>
+			<option disabled />
+			<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+			<option disabled />
+			<option value="counter">🚧 Counter</option>
+			<option disabled />
+			@if (true)  // Firma
+			{
+				@* <option value="orderfrmpending">📌 FirmaAktif</option> *@
+				@* <option value="orderdone">💤 FirmaArşiv</option> *@
+				<option value="ooall">💤 OrderAll</option>
+			}
+			else if (true)    // Yapan
+			{
+				<option value="ooall">💤 OrderAll</option>
+				@* <option value="orderypnpending">📌 YapanAktif</option> *@
+				@* <option value="orderypndone">💤 YapanArşiv</option> *@
+			}
+			<option disabled />
+
+			@if (appState.UsrId == 0)
+			{
+				<option value=@($"login/{appState.UEXId}")>↗️ Login</option>
+			}
+			else
+			{
+				<option value=@($"logout/{appState.UEXId}")>↙️ Logout</option>
+			}
+			<option disabled />
+		</optgroup>
+	</select>
+
+</div>
+
+@if (cbUsrDashBoard)
+{
+	<UsrDashBoard />
+}
+
+@code {
+	//[CascadingParameter] public IModalService Modal { get; set; } = default!;
+	[Parameter] public string? UsrTkn { get; set; } = default;
+	private bool cbUsrDashBoard = false;
+	private int cbSM;
+
+	private void ShowMenu()
+	{
+		cbSM = cbSM == 0 ? 1 : 0;
+	}
+
+	private string _menu;
+	public string menu
+	{
+		get => _menu;
+		set
+		{
+			_menu = value;
+			navigationManager.NavigateTo(value);
+		}
+	}
+
+
+	private void HandleButton() //Ornek
+	{
+		var queryStrDict = new Dictionary<string, string>
+			{
+				["Id"] = "555",
+				["Department"] = "4",
+				["Department"] = "5",
+				["LName"] = "Hart",
+				["FName"] = "Kevin"
+			};
+		//@using Microsoft.AspNetCore.WebUtilities
+		//navigationManager.NavigateTo(QueryHelpers.AddQueryString("/ordactive", queryStrDict));
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var conn = db.GetConnection();
+		try
+		{
+			UsrTkn = "A";   //Deneme
+
+			//var x = conn.QuerySingle("select * from USR_ENTER(@Tkn)", new { Tkn = UsrTkn });
+			//var x = conn.QuerySingle($"select * from USR_ENTER('{UsrTkn}')");
+
+			// SP parametreleri DB deki sırasıyla gönderilmeli
+			appState = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = UsrTkn }, commandType: CommandType.StoredProcedure);
+
+			// AppState.UsrId = x.UsrID;
+			// AppState.UEXId = x.UEXID;
+			await Notifier.Invoke("UsrEnter", new NotifyArgs());
+
+			Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<Confirm>(hata);
+		}
+	}
+
+	public async Task OnNotify(string key, NotifyArgs value)
+	{
+		await InvokeAsync(() =>
+		{
+			StateHasChanged();
+		});
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		// Firefox 3dak sonra gönderiyor
+		// In this scenario dispose gets called after around 3 minutes (by default) when we detect the connection has been lost and the client doesn't re-connect as part of disposing the entire circuit.
+
+		Notifier.Notify -= OnNotify;
+
+		using var conn = db.GetConnection();
+		conn.Execute("USR_EXIT", new { Tkn = appState.UsrTkn, UEXId = appState.UEXId }, commandType: CommandType.StoredProcedure);
+
+		await Notifier.Invoke("UsrExit", new NotifyArgs());
+
+		// Suppress finalization.
+		GC.SuppressFinalize(this);
+	}
+}

@@ -1,0 +1,41 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+@inject NotifierService Notifier
+@inject AppState AppState
+@inject IDbCon db
+@inject IModalService Modal
+
+<h3>OrdEdit</h3>
+
+@code {
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var conn = db.GetConnection();
+		try
+		{
+			//UsrTkn = "A";   //Deneme
+			// var x = conn.QuerySingle("select * from USR_ENTER(@Tkn)", new { Tkn = UsrTkn });
+
+			Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			// Modal.Show<Confirm>(hata);
+		}
+	}
+
+	public async Task OnNotify(string key, NotifyArgs value)
+	{
+		await InvokeAsync(() =>
+		{
+			StateHasChanged();
+		});
+	}
+
+	public void Dispose()
+	{
+		Notifier.Notify -= OnNotify;
+	}
+}

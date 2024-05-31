@@ -1,0 +1,31 @@
+﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@inject IModalService Modal
+
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world! @uyari</h1>
+
+Welcome to your new app.
+<button @onclick="ShowModal" class="btn btn-primary">Show Modal</button>
+
+
+@code {
+	[Parameter] public string? UsrTkn { get; set; } = default;
+	//[CascadingParameter] IModalService Modal2 { get; set; } = default!; 
+	private string uyari = "xxxxx";
+
+	// sadece Interactive olursa çalışır
+	void ShowModal()
+	{
+		uyari = "abidik";
+		Modal.Show<Confirm>("Welcome to Blazored Modal");
+	}
+	protected override async Task OnInitializedAsync()
+	{
+		uyari = "zzzzzz";
+		// sadece Interactive olursa çalışır
+		Modal.Show<Confirm>("Welcome to Blazored Modal");
+	}
+}

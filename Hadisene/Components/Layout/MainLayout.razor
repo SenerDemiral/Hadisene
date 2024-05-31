@@ -1,0 +1,49 @@
+﻿@inherits LayoutComponentBase
+
+<div class="x-page">
+    <div class="">
+		<CascadingBlazoredModal @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+		@* </CascadingBlazoredModal> *@
+			<NavMenu UsrTkn="@usrTkn" />
+
+		@* <NavMenu UsrTkn="@usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" /> *@
+    </div>
+
+    <main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code
+{
+	[CascadingParameter] public HttpContext? context { get; set; }
+	private string? usrTkn { get; set; }
+
+	protected override void OnInitialized()
+	{
+		if (context is not null)
+		{
+			usrTkn = context.Request.Cookies["hadisene"];
+
+			if (usrTkn is null)
+			{
+				usrTkn = Guid.NewGuid().ToString("N"); // Guest
+			}
+			CookieOptions co = new CookieOptions();
+			co.Secure = false;
+			co.HttpOnly = true;
+			co.SameSite = SameSiteMode.Strict;
+			//co.MaxAge = TimeSpan.FromMinutes(1); // Bitis suresi belirtilmediginde sessionCookie oluyor
+			co.MaxAge = TimeSpan.FromDays(30); // Bitis suresi belirtilmediginde sessionCookie oluyor
+			context.Response.Cookies.Append("hadisene", usrTkn, co);
+		}
+	}
+}

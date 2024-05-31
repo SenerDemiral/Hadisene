@@ -1,0 +1,193 @@
+﻿@page "/ordactive/{qryStr}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+@inject NotifierService Notifier
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+<div class="ooSrch">
+	<button onClick="document.getElementById('ooSrchDlg').showModal();">
+		<span class="material-symbols-outlined">
+			search
+		</span>
+	</button>
+</div>
+
+<dialog id="ooSrchDlg">
+	<p>Greetings, one and all!</p>
+	<form method="dialog">
+		<button>OK</button>
+		<button onClick="document.getElementById('ooSrchDlg').close();">Cancel</button>
+	</form>
+</dialog>
+
+
+@if (ooList != null)
+{
+	<div class="ooCards">
+		@foreach (OO rec in ooList)
+		{
+			<div class="ooCard" data-Usr="A" data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
+				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
+				<div class="ooHdr">
+					<button class="ooBtnEdt">
+						<span class="material-symbols-outlined">edit</span>@rec.OOId
+					</button>
+					<div class="ooHdrTxt">@rec.SbjAd</div>
+					<button class="ooBtnMsj">
+						@rec.MnVc<span class="material-symbols-outlined">chat</span>
+					</button>
+				</div>
+				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+				<div class="box ooReq">@rec.ReqAd</div>
+				<div class="box ooSbj">@rec.SbjAd</div>
+				<div class="box ooTsk">@rec.TskAd</div>
+				<div class="box ooInf">@rec.Inf</div>
+
+
+				<div class="box ooAct">@rec.ActAd</div>
+
+				<div class="box ooS ooRSD">@rec.RSDf</div>
+				<div class="box ooS ooASD">@rec.ASDf</div>
+				<div class="box ooS ooDSH">@rec.DSH</div>
+
+				<div class="box ooF ooRFD">@rec.RFDf</div>
+				<div class="box ooF ooAFD">@rec.AFDf</div>
+				<div class="box ooF ooDFH">@rec.DFH</div>
+
+				<div class="ooFtr">
+					<div class="ooStuZ">KAPANDI</div>
+					<div class="ooStuX">İ P T A L</div>
+
+					<button class="ooStuA ooI ooBtnS" @onclick="@(() => Baslat(rec))">Başlat</button>
+					<button class="ooStuA ooI ooBtnF" @onclick="@(() => Bitir(rec))">Bitir</button>
+
+					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
+					<div class="ooStuA ooC ooTxtS">Başlat ?</div>
+					<div class="ooStuA ooC ooTxtF">Bitir ?</div>
+					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Cancel</button>
+				</div>
+			</div>
+		}
+	</div>
+}
+
+
+@code {
+	[Parameter]
+	public string? qryStr { get; set; }
+	private List<OO>? ooList;
+
+	// /ordopen?filter=scifi%20stars&page=3&star=LeVar%20Burton&star=Gary%20Oldman
+	// The Filter property resolves to scifi stars.
+	// The Page property resolves to 3.
+	// The Stars array is filled from query parameters named star(Name = "star") and resolves to LeVar Burton and Gary Oldman.
+	// https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-8.0
+	// [SupplyParameterFromQuery]
+	// public string? Filter { get; set; }
+	// [SupplyParameterFromQuery]
+	// public int? Page { get; set; }
+	// [SupplyParameterFromQuery(Name = "star")]
+	// public string[]? Stars { get; set; }
+
+	private bool hasWaitConfirm()
+	{
+		return ooList!.Exists((z) => z.IoC == "C");
+	}
+
+	private void PinTgl(OO oo)
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = 31, b = oo.OOId});
+			oo.Pin = (int)x;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<Confirm>(hata);
+		}
+	}
+	private void Baslat(OO oo)
+	{
+		oo.IoC = "C";
+		oo.ConfirmTyp = "S";
+	}
+	private void Bitir(OO oo)
+	{
+		oo.IoC = "C";
+		oo.ConfirmTyp = "F";
+	}
+	private void Ok(OO oo)
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = 31, b = oo.OOId, c = oo.ConfirmTyp });
+
+			oo.ASD = res.ASD;
+			oo.AFD = res.AFD;
+			oo.CS = res.CS;
+			oo.CF = res.CF;
+			oo.DSH = res.DSH;
+			oo.DFH = res.DFH;
+
+			oo.IoC = "I";
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<Confirm>(hata);
+		}
+	}
+	private void Cancel(OO oo)
+	{
+		oo.IoC = "I";
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+	private async Task Read()
+	{
+		using var conn = db.GetConnection();
+		try
+		{
+			// var z = await conn.QueryAsync<OO>("OO_QRY",
+			//     new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			//     commandType: CommandType.StoredProcedure);
+
+			ooList = (await conn.QueryAsync<OO>("OO_QRY",
+				new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
+
+			Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<Confirm>(hata);
+		}
+	}
+
+	public async Task OnNotify(string key, NotifyArgs value)
+	{
+		await InvokeAsync(() =>
+		{
+			StateHasChanged();
+		});
+	}
+
+	public void Dispose()
+	{
+		Notifier.Notify -= OnNotify;
+	}
+
+}
