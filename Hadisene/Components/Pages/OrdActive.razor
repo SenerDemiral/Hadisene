@@ -28,15 +28,17 @@
 	<div class="ooCards">
 		@foreach (OO rec in ooList)
 		{
-			<div class="ooCard" data-Usr="A" data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
+			<div class="ooCard" data-Usr="@appState.UsrYtk" data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
 				<div class="ooHdr">
 					<button class="ooBtnEdt">
-						<span class="material-symbols-outlined">edit</span>@rec.OOId
+						<span class="material-symbols-outlined">settings</span>
+						<span class="ooBtnEdtId">#@rec.OOId</span>
 					</button>
 					<div class="ooHdrTxt">@rec.SbjAd</div>
 					<button class="ooBtnMsj">
-						@rec.MnVc<span class="material-symbols-outlined">chat</span>
+						<span class="material-symbols-outlined">chat</span>
+						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
 					</button>
 				</div>
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
@@ -113,19 +115,19 @@
 	private void Baslat(OO oo)
 	{
 		oo.IoC = "C";
-		oo.ConfirmTyp = "S";
+		oo.SoF = "S";
 	}
 	private void Bitir(OO oo)
 	{
 		oo.IoC = "C";
-		oo.ConfirmTyp = "F";
+		oo.SoF = "F";
 	}
 	private void Ok(OO oo)
 	{
 		try
 		{
 			using var conn = db.GetConnection();
-			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = 31, b = oo.OOId, c = oo.ConfirmTyp });
+			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = 31, b = oo.OOId, c = oo.SoF });
 
 			oo.ASD = res.ASD;
 			oo.AFD = res.AFD;

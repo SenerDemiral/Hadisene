@@ -3,10 +3,10 @@
 public sealed class OO
 {
 	public int Idx;
-    public DateTime? UpdTS;
+	public DateTime? UpdTS;
 
-    public int UsrId;	// Last updated by 
-    
+	public int UsrId;   // Last updated by 
+
 	public int OOId;
 	public int ReqId;
 	public int SbjId;
@@ -25,14 +25,16 @@ public sealed class OO
 	public string? TskAd;
 	public string? ActAd;
 
-	public string CS = "";
-	public string CF = "";
+	// Color/Condition
+	public string CS = "";	// Start R/B/G
+	public string CF = "";  // Finish R/B/G
+	
+	// Delay Star/Finish Hour (+:Gecikme, -:Erken)
 	public int DSH;
 	public int DFH;
 
-
 	public string Stu = "";
-	public int Pin { 
+	public int Pin {
 		get => Pinned ? 1 : 0;
 		set {
 			Pinned = value == 1;
@@ -40,14 +42,16 @@ public sealed class OO
 	}
 	public bool Pinned = false;
 
-	public int MnVc;
-	public string IoC = "I";
-	public string SoF = "S";
+	public int MnVc;	// Msg Not Viewed Count (New) for this Usr
 
-	public string ConfirmTyp = "S";
+	public string IoC = "I";	// Footer Input or Confirm
+	public string SoF = "S";	// Footer Start or Finish
+
 
 	public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
 	public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
 	public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
 	public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
+
+	public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
 }

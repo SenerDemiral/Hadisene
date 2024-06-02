@@ -1,14 +1,154 @@
 ﻿@page "/ordmsg"
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats
+@using SixLabors.ImageSharp.PixelFormats
+@using SixLabors.ImageSharp.Processing
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @implements IDisposable
 @inject NotifierService Notifier
 @inject AppState AppState
 @inject IDbCon db
 @inject IModalService Modal
+@inject NavigationManager Navigation
+@inject IWebHostEnvironment env
 
 <h3>OrdMsg</h3>
+<div style="container: sener / inline-size;">
+	<div class="msg-cnt">
+		<div class="msg-inp">
+			<button onclick="document.getElementById('myDIV').scrollTop = 0">
+				<span class="material-symbols-outlined">
+					north
+				</span>
+			</button>
+			<button onclick="document.getElementById('myDIV').scrollTop = 99999">
+				<span class="material-symbols-outlined">
+					south
+				</span>
+			</button>
+			@* <button onclick="(function(){document.getElementById('myDIV').scrollIntoView(false)})()">
+			aaaaaa
+			</button> *@
+			<textarea placeholder="Mesaj yazın." rows="2"></textarea>
+			<label for="photo" style="cursor:pointer; margin: auto 12px;">
+				<span class="material-symbols-outlined">
+					add_a_photo
+				</span>
+				<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
+			</label>
+
+			<button>
+				<span class="material-symbols-outlined">
+					keyboard_return
+				</span>OK
+			</button>
+		</div>
+
+		<div class="msg-bdy" id="myDIV">
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">999</div>
+				<div class="msj">Saat 6da evden çıkalım.</div>
+				<div class="zmn">Bugün 17:17</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 99</div>
+				<div class="msj">Belki</div>
+				<div class="zmn">Bugün 16:16</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Dilara Erverdi Demiral 88</div>
+				<div class="msj">😁 Heyooo</div>
+				<div class="zmn">Bugün 16:05</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 77</div>
+				<div class="msj">OK</div>
+				<div class="zmn">Bugün 14:23</div>
+			</div>
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">66</div>
+				<div class="msj">Oğuz yazmış</div>
+				<div class="zmn">Bugün 13:45</div>
+			</div>
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">55</div>
+				<div class="msj">Patron selam bu cumartesi günü saat 19:00’da Turgutreis Cafe’de Mioos sezon Gala yemeğine, ailenle beraber davetlimizsin.</div>
+				<div class="zmn">Bugün 13:44</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 44</div>
+				<div class="msj">Bana don alır mısın? Marka olanından</div>
+				<div class="zmn">Dün 11:00</div>
+			</div>
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">999</div>
+				<div class="msj">Saat 6da evden çıkalım.</div>
+				<div class="zmn">Bugün 17:17</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 99</div>
+				<div class="msj">Belki</div>
+				<div class="zmn">Bugün 16:16</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Dilara Erverdi Demiral 88</div>
+				<div class="msj">😁 Heyooo</div>
+				<div class="zmn">Bugün 16:05</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 77</div>
+				<div class="msj">OK</div>
+				<div class="zmn">Bugün 14:23</div>
+			</div>
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">66</div>
+				<div class="msj">Oğuz yazmış</div>
+				<div class="zmn">Bugün 13:45</div>
+			</div>
+
+			<div class="msg-itm" data-loc="R">
+				<div class="usr">55</div>
+				<div class="msj">Patron selam bu cumartesi günü saat 19:00’da Turgutreis Cafe’de Mioos sezon Gala yemeğine, ailenle beraber davetlimizsin.</div>
+				<div class="zmn">Bugün 13:44</div>
+			</div>
+
+			<div class="msg-itm" data-loc="L">
+				<div class="usr">Can Demiral 44</div>
+				<div class="msj">Bana don alır mısın? Marka olanından</div>
+				<div class="zmn">Dün 11:00</div>
+			</div>
+		</div>
+
+	</div>
+</div>
 
 @code {
+	public async Task Changed(InputFileChangeEventArgs e)
+	{
+		var fileName = $"{env.WebRootPath}\\uploads\\{e.File.Name}";
+		//await using FileStream fs = new(fileName, FileMode.Create);
+		//await e.File.OpenReadStream().CopyToAsync(fs);
+
+		// OpenReadStream maxFileSize limitini geçerse yapmıyor
+		using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
+		{
+			image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
+			image.Save(fileName);
+		}
+	}
 
 	protected override async Task OnInitializedAsync()
 	{

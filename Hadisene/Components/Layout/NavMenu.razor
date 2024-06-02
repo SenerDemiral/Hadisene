@@ -43,7 +43,7 @@
 	</div>
 
 	<div>Görev <InputCheckbox @bind-Value="cbUsrDashBoard" /></div>
-	<div>Şener Demiral / Aktör</div>
+	<div>@appState.UsrAd / @appState.UsrYtk</div>
 
 
 	<select @bind="menu">
@@ -51,6 +51,10 @@
 			<option value="">🏠 HOME</option>
 			<option disabled />
 			<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+			<option disabled />
+			<option value="ordEdit">Edit</option>
+			<option disabled />
+			<option value="ordMsg">OrdMsg</option>
 			<option disabled />
 			<option value="counter">🚧 Counter</option>
 			<option disabled />
@@ -135,10 +139,17 @@
 			//var x = conn.QuerySingle($"select * from USR_ENTER('{UsrTkn}')");
 
 			// SP parametreleri DB deki sırasıyla gönderilmeli
-			appState = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = UsrTkn }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = UsrTkn }, commandType: CommandType.StoredProcedure);
 
-			// AppState.UsrId = x.UsrID;
-			// AppState.UEXId = x.UEXID;
+			appState.UsrTkn = x.UsrTkn;
+			appState.UsrId = x.UsrId;
+			appState.UsrAd = x.UsrAd;
+			appState.UsrYtk = x.UsrYtk;
+			appState.UEXId = x.UEXId;
+			appState.UsrFrmId = x.UsrFrmId;
+			appState.UsrFrmAd = x.UsrFrmAd;
+			appState.UsrSrvStr = x.UsrSrvStr;
+
 			await Notifier.Invoke("UsrEnter", new NotifyArgs());
 
 			Notifier.Notify += OnNotify;
