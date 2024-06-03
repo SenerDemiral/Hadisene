@@ -1,6 +1,7 @@
 using Blazored.Modal;
 using Hadisene.Components;
 using Hadisene.Lib;
+using SixLabors.ImageSharp.Web.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddRazorComponents()
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
                        optional: false,
                        reloadOnChange: true);
-
+builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
 
 builder.Services.AddSingleton<IDbCon, DbCon>();
@@ -35,6 +36,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseImageSharp();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

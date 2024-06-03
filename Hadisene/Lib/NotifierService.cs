@@ -27,5 +27,7 @@ public sealed class NotifyArgs
 	public int UsrId;
 	public int FFId;
 	public int OOId;
+	public int OMId;
+
 	public int[] OrdUsrs = [];
 }

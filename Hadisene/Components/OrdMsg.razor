@@ -13,162 +13,175 @@
 @inject NavigationManager Navigation
 @inject IWebHostEnvironment env
 
-<h3>OrdMsg</h3>
-<div style="container: sener / inline-size;">
-	<div class="msg-cnt">
-		<div class="msg-inp">
-			<button onclick="document.getElementById('myDIV').scrollTop = 0">
-				<span class="material-symbols-outlined">
-					north
-				</span>
-			</button>
-			<button onclick="document.getElementById('myDIV').scrollTop = 99999">
-				<span class="material-symbols-outlined">
-					south
-				</span>
-			</button>
-			@* <button onclick="(function(){document.getElementById('myDIV').scrollIntoView(false)})()">
-			aaaaaa
-			</button> *@
-			<textarea placeholder="Mesaj yazın." rows="2"></textarea>
-			<label for="photo" style="cursor:pointer; margin: auto 12px;">
-				<span class="material-symbols-outlined">
-					add_a_photo
-				</span>
-				<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
-			</label>
 
-			<button>
-				<span class="material-symbols-outlined">
-					keyboard_return
-				</span>OK
-			</button>
-		</div>
+@if (omList != null)
+{
+	<div style="container: sener / inline-size;">
 
-		<div class="msg-bdy" id="myDIV">
-
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">999</div>
-				<div class="msj">Saat 6da evden çıkalım.</div>
-				<div class="zmn">Bugün 17:17</div>
+		<div class="msg-cnt">
+			<div class="msg-bdy" id="myDIV">
+				@foreach (var rec in omList)
+				{
+					@if (rec.PB == 1)
+					{
+						<div class="page-break">
+							@rec.InsTS.ToString("dd.MM.yy dddd")
+						</div>
+					}
+					<div class="msg-itm" data-loc="@rec.Loc" @key="rec.OMId">
+						<div class="usr">
+							<div>@rec.UUAd</div>
+							<div>@rec.InsTS.ToShortTimeString()</div>
+						</div>
+						@if (rec.Typ == "I") {
+							<button @onclick="@(() => ShowImage(rec.OMId))">
+							<img src=@($"uploads/F101/M{rec.OMId}.jpg?width=150") />
+							</button>
+						@* < img src = "@($"{ env.WebRootPath}/ uploads / F101 / wallpaper.jpg ? width = 200")" /> *@
+						}
+						else {
+							<div class="msg">@rec.Msg</div>
+						}
+					</div>
+				}
 			</div>
+			<div class="msg-inp">
+				<button onclick="document.getElementById('myDIV').scrollTop = 0">
+					<span class="material-symbols-outlined">
+						north
+					</span>
+				</button>
 
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 99</div>
-				<div class="msj">Belki</div>
-				<div class="zmn">Bugün 16:16</div>
-			</div>
+				<button onclick="document.getElementById('myDIV').scrollTop = 99999">
+					<span class="material-symbols-outlined">
+						south
+					</span>
+				</button>
 
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Dilara Erverdi Demiral 88</div>
-				<div class="msj">😁 Heyooo</div>
-				<div class="zmn">Bugün 16:05</div>
-			</div>
+				<textarea placeholder="Mesaj yazın." rows="2"></textarea>
 
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 77</div>
-				<div class="msj">OK</div>
-				<div class="zmn">Bugün 14:23</div>
-			</div>
+				<label for="photo" style="cursor:pointer; margin: auto 12px;">
+					<span class="material-symbols-outlined">
+						add_a_photo
+					</span>
+					<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
+				</label>
 
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">66</div>
-				<div class="msj">Oğuz yazmış</div>
-				<div class="zmn">Bugün 13:45</div>
-			</div>
-
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">55</div>
-				<div class="msj">Patron selam bu cumartesi günü saat 19:00’da Turgutreis Cafe’de Mioos sezon Gala yemeğine, ailenle beraber davetlimizsin.</div>
-				<div class="zmn">Bugün 13:44</div>
-			</div>
-
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 44</div>
-				<div class="msj">Bana don alır mısın? Marka olanından</div>
-				<div class="zmn">Dün 11:00</div>
-			</div>
-
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">999</div>
-				<div class="msj">Saat 6da evden çıkalım.</div>
-				<div class="zmn">Bugün 17:17</div>
-			</div>
-
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 99</div>
-				<div class="msj">Belki</div>
-				<div class="zmn">Bugün 16:16</div>
-			</div>
-
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Dilara Erverdi Demiral 88</div>
-				<div class="msj">😁 Heyooo</div>
-				<div class="zmn">Bugün 16:05</div>
-			</div>
-
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 77</div>
-				<div class="msj">OK</div>
-				<div class="zmn">Bugün 14:23</div>
-			</div>
-
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">66</div>
-				<div class="msj">Oğuz yazmış</div>
-				<div class="zmn">Bugün 13:45</div>
-			</div>
-
-			<div class="msg-itm" data-loc="R">
-				<div class="usr">55</div>
-				<div class="msj">Patron selam bu cumartesi günü saat 19:00’da Turgutreis Cafe’de Mioos sezon Gala yemeğine, ailenle beraber davetlimizsin.</div>
-				<div class="zmn">Bugün 13:44</div>
-			</div>
-
-			<div class="msg-itm" data-loc="L">
-				<div class="usr">Can Demiral 44</div>
-				<div class="msj">Bana don alır mısın? Marka olanından</div>
-				<div class="zmn">Dün 11:00</div>
+				<button>
+					<span class="material-symbols-outlined">
+						keyboard_return
+					</span>OK
+				</button>
 			</div>
 		</div>
-
 	</div>
-</div>
+}
+
 
 @code {
+	private List<OM>? omList;
+	public int OOId = 17;
+
+	public void ShowImage(int omId)
+	{
+		var options = new ModalOptions()
+			{
+				Size = ModalSize.Automatic,
+				Position = ModalPosition.Middle
+			};
+		ModalParameters mp = new();
+		mp.Add("imgSrc", $"uploads/F101/M{omId}.jpg");
+		Modal.Show<Confirm>("image", mp, options);
+	}
 	public async Task Changed(InputFileChangeEventArgs e)
 	{
-		var fileName = $"{env.WebRootPath}\\uploads\\{e.File.Name}";
+
+		var fileName = $"{env.WebRootPath}\\uploads\\F101\\{e.File.Name}";
 		//await using FileStream fs = new(fileName, FileMode.Create);
 		//await e.File.OpenReadStream().CopyToAsync(fs);
-
-		// OpenReadStream maxFileSize limitini geçerse yapmıyor
-		using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
+		try
 		{
-			image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
-			image.Save(fileName);
+			if (e.File.ContentType.StartsWith("image/"))
+			{
+				// OpenReadStream maxFileSize limitini geçerse yapmıyor
+				using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
+				{
+					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
+					fileName = await InsertImageRec(e);
+					image.Save(fileName);
+				}
+			}
+			else
+			{
+				// Şimdilik
+				throw new InvalidOperationException("Sadece Image");
+				// await using FileStream fs = new(fileName, FileMode.Create);
+				// await e.File.OpenReadStream().CopyToAsync(fs);
+			}
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message;
+			Modal.Show<Confirm>(hata);
 		}
 	}
 
-	protected override async Task OnInitializedAsync()
+	private async Task<string> InsertImageRec(InputFileChangeEventArgs e)
+	{
+		using var conn = db.GetConnection();
+		var x = conn.QuerySingle("OM_INS_IMG", 
+			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, d = "I", f = e.File.ContentType }, 
+			commandType: CommandType.StoredProcedure);
+
+		int OMId = x.OMID;
+		NotifyArgs notifyArgs = new()
+			{
+				OMId = OMId,
+			};
+		await Notifier.Invoke("IM", notifyArgs);
+		return $"{env.WebRootPath}\\uploads\\F101\\M{x.OMID}{Path.GetExtension(e.File.Name)}";
+	}
+
+	private async Task Read()
 	{
 		using var conn = db.GetConnection();
 		try
 		{
-			//UsrTkn = "A";   //Deneme
-			// var x = conn.QuerySingle("select * from USR_ENTER(@Tkn)", new { Tkn = UsrTkn });
+			// var z = await conn.QueryAsync<OO>("OO_QRY",
+			//     new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			//     commandType: CommandType.StoredProcedure);
+
+			omList = (await conn.QueryAsync<OM>("OM_QRY",
+				new { a = 31, b = 17 }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			omList = omList.OrderBy(x => x.InsTS).ToList();
 
 			Notifier.Notify += OnNotify;
 		}
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
-			// Modal.Show<Confirm>(hata);
+			Modal.Show<Confirm>(hata);
 		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
 	}
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
+		if (key == "IM")
+		{
+			using var conn = db.GetConnection();
+			var x = conn.QuerySingle<OM>($"select * from OM where OMId = {value.OMId}");
+			x.Loc = "R";	// Kendisi
+			omList!.Add(x);
+		}
 		await InvokeAsync(() =>
 		{
 			StateHasChanged();
@@ -178,5 +191,17 @@
 	public void Dispose()
 	{
 		Notifier.Notify -= OnNotify;
+	}
+
+	private sealed class OM
+	{
+		public int PB;  // PageBreak
+		public int OMId;
+		public int UUId;
+		public string UUAd;
+		public DateTime InsTS;
+		public string Typ;
+		public string Msg;
+		public string Loc;  // Left/Right
 	}
 }
