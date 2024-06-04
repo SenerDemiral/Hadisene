@@ -20,12 +20,12 @@ Welcome to your new app.
 	void ShowModal()
 	{
 		uyari = "abidik";
-		Modal.Show<Confirm>("Welcome to Blazored Modal");
+		Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
 	}
 	protected override async Task OnInitializedAsync()
 	{
 		uyari = "zzzzzz";
 		// sadece Interactive olursa çalışır
-		Modal.Show<Confirm>("Welcome to Blazored Modal");
+		Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
 	}
 }

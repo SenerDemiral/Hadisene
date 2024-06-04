@@ -109,7 +109,7 @@
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<Confirm>(hata);
+			Modal.Show<ModalConfirm>(hata);
 		}
 	}
 	private void Baslat(OO oo)
@@ -141,7 +141,7 @@
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<Confirm>(hata);
+			Modal.Show<ModalConfirm>(hata);
 		}
 	}
 	private void Cancel(OO oo)
@@ -175,7 +175,7 @@
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<Confirm>(hata);
+			Modal.Show<ModalConfirm>(hata);
 		}
 	}
 

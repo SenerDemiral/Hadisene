@@ -3,9 +3,10 @@
 public sealed class AppState
 {
 	public string? UsrTkn = null;
-	public int UEXId = 0;
-	public int UsrFrmId = 0;
-	public int UsrId = 0;
+	public int UEXId;
+	public int UsrFrmId;
+	public int UsrId;
+	public int OOId;
 	public string? UsrAd = null;
 	public string? UsrFrmAd = null;
 	public int UsrYtk = 0;  // 1:Admn, 2:ServisYetkilisi, 3:Actor, 4:Requester

@@ -1,0 +1,11 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@* @inject BlazoredModalInstance Modal *@
+
+<div style="max-width:90vw;max-height:90vh;overflow:auto">
+    <img src="@imgSrc" />
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
+    [Parameter] public string? imgSrc { get; set; }
+}

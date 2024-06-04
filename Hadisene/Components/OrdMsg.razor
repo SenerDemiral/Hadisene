@@ -12,7 +12,7 @@
 @inject IModalService Modal
 @inject NavigationManager Navigation
 @inject IWebHostEnvironment env
-
+@inject IJSRuntime js
 
 @if (omList != null)
 {
@@ -31,15 +31,16 @@
 					<div class="msg-itm" data-loc="@rec.Loc" @key="rec.OMId">
 						<div class="usr">
 							<div>@rec.UUAd</div>
-							<div>@rec.InsTS.ToShortTimeString()</div>
+							<div>@rec.InsTS.ToLongTimeString()</div>
 						</div>
-						@if (rec.Typ == "I") {
-							<button @onclick="@(() => ShowImage(rec.OMId))">
-							<img src=@($"uploads/F101/M{rec.OMId}.jpg?width=150") />
+						@if (rec.Typ == "I")
+						{
+							<button @onclick="@(() => ShowImage(rec))">
+								<img src=@rec.Msg />
 							</button>
-						@* < img src = "@($"{ env.WebRootPath}/ uploads / F101 / wallpaper.jpg ? width = 200")" /> *@
 						}
-						else {
+						else
+						{
 							<div class="msg">@rec.Msg</div>
 						}
 					</div>
@@ -58,7 +59,7 @@
 					</span>
 				</button>
 
-				<textarea placeholder="Mesaj yazın." rows="2"></textarea>
+				<InputTextArea @bind-Value="msg" rows="2" placeholder="Mesaj yazın." />
 
 				<label for="photo" style="cursor:pointer; margin: auto 12px;">
 					<span class="material-symbols-outlined">
@@ -67,7 +68,7 @@
 					<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
 				</label>
 
-				<button>
+				<button @onclick="InsertTextRec">
 					<span class="material-symbols-outlined">
 						keyboard_return
 					</span>OK
@@ -79,24 +80,29 @@
 
 
 @code {
+	//[Parameter]
+	public int OOId { get; set; } = 17;
 	private List<OM>? omList;
-	public int OOId = 17;
+	public string? msg;
 
-	public void ShowImage(int omId)
+	public void ShowImage(OM rec)
 	{
 		var options = new ModalOptions()
 			{
-				Size = ModalSize.Automatic,
+				HideHeader = true,
+				Size = ModalSize.Custom,
+				SizeCustomClass = "custom-size-modal",
 				Position = ModalPosition.Middle
 			};
 		ModalParameters mp = new();
-		mp.Add("imgSrc", $"uploads/F101/M{omId}.jpg");
-		Modal.Show<Confirm>("image", mp, options);
+		mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
+
+		Modal.Show<ModalImage>("", mp, options);
 	}
+
 	public async Task Changed(InputFileChangeEventArgs e)
 	{
-
-		var fileName = $"{env.WebRootPath}\\uploads\\F101\\{e.File.Name}";
+		//var fileName = $"{env.WebRootPath}\\uploads\\F101\\{e.File.Name}";
 		//await using FileStream fs = new(fileName, FileMode.Create);
 		//await e.File.OpenReadStream().CopyToAsync(fs);
 		try
@@ -107,8 +113,20 @@
 				using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
 				{
 					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
-					fileName = await InsertImageRec(e);
+					var OMId = InsertImageRec(e);
+					var fileName = $"{env.WebRootPath}\\uploads\\F101\\M{OMId}{Path.GetExtension(e.File.Name)}";
+
 					image.Save(fileName);
+
+					//await Task.Delay(1000);
+
+					NotifyArgs notifyArgs = new()
+						{
+							OMId = OMId,
+							OOId = OOId,
+						};
+					await Notifier.Invoke("IM", notifyArgs);
+
 				}
 			}
 			else
@@ -123,24 +141,42 @@
 		catch (Exception ex)
 		{
 			var hata = ex.Message;
-			Modal.Show<Confirm>(hata);
+			Modal.Show<ModalConfirm>(hata);
 		}
 	}
 
-	private async Task<string> InsertImageRec(InputFileChangeEventArgs e)
+	private async Task InsertTextRec()
 	{
+		if (string.IsNullOrEmpty(msg))
+			return;
+
 		using var conn = db.GetConnection();
-		var x = conn.QuerySingle("OM_INS_IMG", 
-			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, d = "I", f = e.File.ContentType }, 
+		var x = conn.QuerySingle("OM_INS_TXT",
+			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, f = msg },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
+
 		NotifyArgs notifyArgs = new()
 			{
+				OOId = OOId,
 				OMId = OMId,
 			};
 		await Notifier.Invoke("IM", notifyArgs);
-		return $"{env.WebRootPath}\\uploads\\F101\\M{x.OMID}{Path.GetExtension(e.File.Name)}";
+
+		msg = null;
+	}
+
+	private int InsertImageRec(InputFileChangeEventArgs e)
+	{
+		var fileExt = Path.GetExtension(e.File.Name);
+		using var conn = db.GetConnection();
+		var x = conn.QuerySingle("OM_INS_IMG",
+			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, d = "I", f = fileExt },
+			commandType: CommandType.StoredProcedure);
+
+		int OMId = x.OMID;
+		return OMId;
 	}
 
 	private async Task Read()
@@ -148,10 +184,6 @@
 		using var conn = db.GetConnection();
 		try
 		{
-			// var z = await conn.QueryAsync<OO>("OO_QRY",
-			//     new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
-			//     commandType: CommandType.StoredProcedure);
-
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
 				new { a = 31, b = 17 }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
@@ -164,7 +196,7 @@
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<Confirm>(hata);
+			Modal.Show<ModalConfirm>(hata);
 		}
 	}
 
@@ -175,17 +207,28 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		if (key == "IM")
+		var xx = key == "IM" && value.OOId == 17;
+		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
-			var x = conn.QuerySingle<OM>($"select * from OM where OMId = {value.OMId}");
-			x.Loc = "R";	// Kendisi
+			var x = conn.QuerySingle<OM>("OM_SEL", new { a = AppState.UsrId, b = value.OMId }, commandType: CommandType.StoredProcedure);
 			omList!.Add(x);
 		}
 		await InvokeAsync(() =>
 		{
-			StateHasChanged();
+			//if (key == "IM" && value.OOId == 17)
+			{
+
+				StateHasChanged();
+				//Task.Delay(1000);  // Belki daha fazla
+				//js.InvokeVoidAsync("scrollBottom", "myDIV");
+			}
 		});
+
+
+		await Task.Delay(1000);  // Belki daha fazla
+		await js.InvokeVoidAsync("scrollBottom", "myDIV");
+		//await js.InvokeAsync<string>("showPrompt", "What's your name?");
 	}
 
 	public void Dispose()
@@ -193,12 +236,12 @@
 		Notifier.Notify -= OnNotify;
 	}
 
-	private sealed class OM
+	public sealed class OM
 	{
 		public int PB;  // PageBreak
 		public int OMId;
 		public int UUId;
-		public string UUAd;
+		public string? UUAd;
 		public DateTime InsTS;
 		public string Typ;
 		public string Msg;

@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\is-cache\**" />
+    <Compile Remove="wwwroot\uploads\**" />
+    <Content Remove="wwwroot\is-cache\**" />
+    <Content Remove="wwwroot\uploads\**" />
+    <EmbeddedResource Remove="wwwroot\is-cache\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\**" />
+    <None Remove="wwwroot\is-cache\**" />
+    <None Remove="wwwroot\uploads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="10.2.0" />
@@ -16,8 +27,5 @@
 
 	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\uploads\F101\" />
-  </ItemGroup>
-
+	
 </Project>
