@@ -22,7 +22,7 @@
     <None Remove="wwwroot\uploads\**" />
   </ItemGroup>
 
-
+  
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="Dapper" Version="2.1.35" />
@@ -31,6 +31,12 @@
 		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.2" />
 
 	</ItemGroup>
+
+  
+  <ItemGroup>
+    <Folder Include="wwwroot\bootstrap\" />
+  </ItemGroup>
+
 
 
 	

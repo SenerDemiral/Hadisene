@@ -1,10 +1,11 @@
 ﻿@page "/ordactive/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@implements IDisposable
-@inject NotifierService Notifier
+
 @inject AppState appState
 @inject IDbCon db
 @inject IModalService Modal
+@inject NotifierService Notifier
+@implements IDisposable
 
 <div class="ooSrch">
 	<button onClick="document.getElementById('ooSrchDlg').showModal();">
@@ -36,7 +37,7 @@
 						<span class="ooBtnEdtId">#@rec.OOId</span>
 					</button>
 					<div class="ooHdrTxt">@rec.SbjAd</div>
-					<button class="ooBtnMsj">
+					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
 						<span class="material-symbols-outlined">chat</span>
 						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
 					</button>
@@ -96,6 +97,19 @@
 	private bool hasWaitConfirm()
 	{
 		return ooList!.Exists((z) => z.IoC == "C");
+	}
+
+	private void ShowMsg(OO oo)
+	{
+		var options = new ModalOptions()
+			{
+				HideHeader = true,
+				Size = ModalSize.Custom,
+				SizeCustomClass = "custom-size-modal",
+				Position = ModalPosition.Middle
+			};
+		ModalParameters mp = new();
+		Modal.Show<OrdMsg>("deneme", mp, options);
 	}
 
 	private void PinTgl(OO oo)

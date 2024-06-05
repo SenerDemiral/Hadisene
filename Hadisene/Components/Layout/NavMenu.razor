@@ -46,8 +46,8 @@
 	<div>@appState.UsrAd / @appState.UsrYtk</div>
 
 
-	<select @bind="menu">
-		<optgroup label="">
+	<select @bind="menu" >
+		<optgroup label="-">
 			<option value="">🏠 HOME</option>
 			@if (appState.UsrId != 0)
 			{
@@ -64,33 +64,51 @@
 			<option disabled />
 			<option value="counter">🚧 Counter</option>
 			<option disabled />
-			@if (true)  // Firma
-			{
-				@* <option value="orderfrmpending">📌 FirmaAktif</option> *@
-				@* <option value="orderdone">💤 FirmaArşiv</option> *@
-				<option value="ooall">💤 OrderAll</option>
-			}
-			else if (true)    // Yapan
-			{
-				<option value="ooall">💤 OrderAll</option>
-				@* <option value="orderypnpending">📌 YapanAktif</option> *@
-				@* <option value="orderypndone">💤 YapanArşiv</option> *@
-			}
-			<option disabled />
 
 			@if (appState.UsrId == 0)
 			{
-				<option value="usrlogin">↗️ Login</option>
+				<option value="Login">↗️ Login</option>
 			}
 			else
 			{
-				<option value="usrlogout">↙️ Logout</option>
+				<option value="Logout">↙️ Logout</option>
 			}
 			<option disabled />
 		</optgroup>
 	</select>
 
+	<select @onchange="ProcessSelection">
+		<optgroup label="-">
+			<option value="">🏠 HOME</option>
+			@if (appState.UsrId != 0)
+			{
+				<option disabled />
+				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+			}
+			<option disabled />
+			<option value="ordEdit">Edit</option>
+			@if (appState.UsrId != 0)
+			{
+				<option disabled />
+				<option value="ordMsg">OrdMsg</option>
+			}
+			<option disabled />
+			<option value="counter">🚧 Counter</option>
+			<option disabled />
+
+			@if (appState.UsrId == 0)
+			{
+				<option value="Login">↗️ Login</option>
+			}
+			else
+			{
+				<option value="Logout">↙️ Logout</option>
+			}
+			<option disabled />
+		</optgroup>
+	</select>
 </div>
+
 
 @if (cbUsrDashBoard)
 {
@@ -108,6 +126,24 @@
 		cbSM = cbSM == 0 ? 1 : 0;
 	}
 
+	async Task ProcessSelection(ChangeEventArgs args)
+	{
+		string value = args.Value.ToString();
+
+		if (value == "Login")
+		{
+			MyLogin();
+		}
+		else if (value == "Logout")
+		{
+			MyLogout();
+		}
+		else
+		{
+			navigationManager.NavigateTo(value);
+		}
+	}
+
 	private string _menu;
 	public string menu
 	{
@@ -115,15 +151,13 @@
 		set
 		{
 			_menu = value;
-			if (value == "usrlogout")
+			if (value == "Login")
 			{
-				using var conn = db.GetConnection();
-				conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
-				NotifyArgs notifyArgs = new()
-					{
-						UsrTkn = usrTkn,
-					};
-				Notifier.Invoke("UsrLogOut", notifyArgs);
+				MyLogin();
+			}
+			else if (value == "Logout")
+			{
+				MyLogout();
 			}
 			else
 			{
@@ -133,18 +167,56 @@
 	}
 
 
-	private void HandleButton() //Ornek
+	public async Task MyLogin()
 	{
-		var queryStrDict = new Dictionary<string, string>
+		var options = new ModalOptions()
 			{
-				["Id"] = "555",
-				["Department"] = "4",
-				["Department"] = "5",
-				["LName"] = "Hart",
-				["FName"] = "Kevin"
+				HideHeader = true,
+				Size = ModalSize.Custom,
+				SizeCustomClass = "custom-size-modal",
+				Position = ModalPosition.Middle
 			};
-		//@using Microsoft.AspNetCore.WebUtilities
-		//navigationManager.NavigateTo(QueryHelpers.AddQueryString("/ordactive", queryStrDict));
+		ModalParameters mp = new();
+
+		//mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
+		//Modal.Show<ModalImage>("", mp, options);
+
+		var messageForm = Modal.Show<LoginForm>("Login");
+		var result = await messageForm.Result;
+		if (result.Confirmed)
+		{
+			var prms = (LgnPrms)result.Data;
+
+			using var conn = db.GetConnection();
+			int uuId = conn.ExecuteScalar<int>("USR_LOGIN",
+				new { a = prms!.Id, b = prms.Pwd, c = usrTkn },
+				commandType: CommandType.StoredProcedure);
+
+			if (uuId > 0)
+			{
+				//await UsrEnter();
+
+				NotifyArgs notifyArgs = new()
+					{
+						UsrTkn = usrTkn,
+					};
+				await Notifier.Invoke("UsrLogIn", notifyArgs);
+				navigationManager.NavigateTo("");
+			}
+		}
+	}
+
+	public async Task MyLogout()
+	{
+		using var conn = db.GetConnection();
+		conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
+
+		NotifyArgs notifyArgs = new()
+			{
+				UsrTkn = usrTkn,
+			};
+		await Notifier.Invoke("UsrLogOut", notifyArgs);
+		navigationManager.NavigateTo("");
 	}
 
 	protected override async Task OnInitializedAsync()
@@ -164,7 +236,7 @@
 			//var x = conn.QuerySingle($"select * from USR_ENTER('{UsrTkn}')");
 
 			// SP parametreleri DB deki sırasıyla gönderilmeli
-			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = usrTkn, XID = appState.UEXId }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
 
 			appState.UsrTkn = usrTkn;
 			appState.UsrId = x.UsrId;

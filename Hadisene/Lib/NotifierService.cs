@@ -30,6 +30,7 @@ public sealed class NotifyArgs
 	public int FFId;
 	public int OOId;
 	public int OMId;
+	public string? MsgTyp;
 
 	public int[] OrdUsrs = [];
 }

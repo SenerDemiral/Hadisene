@@ -16,7 +16,7 @@
 
 @if (omList != null)
 {
-	<div style="container: sener / inline-size;">
+	@* <div style="container: sener / inline-size;max-width:80vw;max-height:80vh"> *@
 
 		<div class="msg-cnt">
 			<div class="msg-bdy" id="myDIV">
@@ -75,7 +75,6 @@
 				</button>
 			</div>
 		</div>
-	</div>
 }
 
 
@@ -124,6 +123,7 @@
 						{
 							OMId = OMId,
 							OOId = OOId,
+							MsgTyp = "I",
 						};
 					await Notifier.Invoke("IM", notifyArgs);
 
@@ -170,6 +170,7 @@
 	private int InsertImageRec(InputFileChangeEventArgs e)
 	{
 		var fileExt = Path.GetExtension(e.File.Name);
+
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_IMG",
 			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, d = "I", f = fileExt },
@@ -207,7 +208,6 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		var xx = key == "IM" && value.OOId == 17;
 		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
@@ -225,8 +225,10 @@
 			}
 		});
 
-
-		await Task.Delay(1000);  // Belki daha fazla
+		int dly = 100;
+		if (value.MsgTyp == "I")
+			dly = 1000;
+		await Task.Delay(dly);  // Belki daha fazla
 		await js.InvokeVoidAsync("scrollBottom", "myDIV");
 		//await js.InvokeAsync<string>("showPrompt", "What's your name?");
 	}

@@ -455,11 +455,11 @@ button.ooPin {
     display: block;
 }
 
-button:active {
+/*button:active {
 display: block;
     background-color: red;
     color: white;
-}
+}*/
     /*
 .menu:hover .menu-content {
     display: block;
@@ -504,5 +504,14 @@ option {
     .msg-cnt {
         width: 50vw;
     }
+}
+
+.blazored-modal {
+    padding: .5rem !important;
+    align-items: center;
+}
+
+.position-middle {
+    justify-content: inherit !important;
 }
 

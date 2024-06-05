@@ -1,0 +1,27 @@
+﻿
+<div>
+    <input @bind-value="_form.Id" />
+    <input @bind-value="_form.Pwd" />
+
+    <button @onclick="Cancel">Cancel</button>
+    <button @onclick="LoginMe">Login</button>
+
+    <div>@aa</div>
+</div>
+
+@code {
+    private readonly LgnPrms _form = new();
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+    public string aa = "xxxxx";
+
+    public async Task LoginMe()
+    {
+        await BlazoredModal.CloseAsync(ModalResult.Ok(_form));
+    }
+    public async Task Cancel() 
+    {
+        await BlazoredModal.CancelAsync();
+        //await BlazoredModal.CloseAsync(ModalResult.Ok(_form.Id));
+    }
+
+}
