@@ -24,6 +24,8 @@ public class NotifierService
 
 public sealed class NotifyArgs
 {
+	public string? UsrTkn;
+	public int UEXId;
 	public int UsrId;
 	public int FFId;
 	public int OOId;

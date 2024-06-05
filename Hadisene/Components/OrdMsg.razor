@@ -185,7 +185,7 @@
 		try
 		{
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
-				new { a = 31, b = 17 }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = AppState.UsrId, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

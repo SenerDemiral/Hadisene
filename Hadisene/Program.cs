@@ -12,10 +12,12 @@ builder.Services.AddRazorComponents()
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
                        optional: false,
                        reloadOnChange: true);
+
 builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
 
 builder.Services.AddSingleton<IDbCon, DbCon>();
+
 builder.Services.AddSingleton<NotifierService>();
 builder.Services.AddScoped<AppState>();
 
@@ -43,8 +45,9 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-	.AddInteractiveServerRenderMode(o => o.ContentSecurityFrameAncestorsPolicy = "'none'");
+	.AddInteractiveServerRenderMode();
 
+//	.AddInteractiveServerRenderMode(o => o.ContentSecurityFrameAncestorsPolicy = "'none'");
 //.AddInteractiveServerRenderMode(o => o.DisableWebSocketCompression = true);
 //	.AddInteractiveServerRenderMode(o => o.ConfigureWebSocketOptions = null);
 

@@ -26,14 +26,14 @@
 			<a href="counter">Counter</a>
 			<div>deneme</div>
 			<br>
-			<a href="#">
+			<a href="usrlogin">
 				<span class="material-symbols-outlined">
 					login
 				</span>
 				Login
 			</a>
 			<hr>
-			<a href="#">
+			<a href="login">
 				<span class="material-symbols-outlined">
 					logout
 				</span>
@@ -49,12 +49,18 @@
 	<select @bind="menu">
 		<optgroup label="">
 			<option value="">🏠 HOME</option>
-			<option disabled />
-			<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+			@if (appState.UsrId != 0)
+			{
+				<option disabled />
+				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+			}
 			<option disabled />
 			<option value="ordEdit">Edit</option>
-			<option disabled />
-			<option value="ordMsg">OrdMsg</option>
+			@if (appState.UsrId != 0)
+			{
+				<option disabled />
+				<option value="ordMsg">OrdMsg</option>
+			}
 			<option disabled />
 			<option value="counter">🚧 Counter</option>
 			<option disabled />
@@ -74,11 +80,11 @@
 
 			@if (appState.UsrId == 0)
 			{
-				<option value=@($"login/{appState.UEXId}")>↗️ Login</option>
+				<option value="usrlogin">↗️ Login</option>
 			}
 			else
 			{
-				<option value=@($"logout/{appState.UEXId}")>↙️ Logout</option>
+				<option value="usrlogout">↙️ Logout</option>
 			}
 			<option disabled />
 		</optgroup>
@@ -93,7 +99,7 @@
 
 @code {
 	//[CascadingParameter] public IModalService Modal { get; set; } = default!;
-	[Parameter] public string? UsrTkn { get; set; } = default;
+	[Parameter] public string? usrTkn { get; set; } = default;
 	private bool cbUsrDashBoard = false;
 	private int cbSM;
 
@@ -109,7 +115,20 @@
 		set
 		{
 			_menu = value;
-			navigationManager.NavigateTo(value);
+			if (value == "usrlogout")
+			{
+				using var conn = db.GetConnection();
+				conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
+				NotifyArgs notifyArgs = new()
+					{
+						UsrTkn = usrTkn,
+					};
+				Notifier.Invoke("UsrLogOut", notifyArgs);
+			}
+			else
+			{
+				navigationManager.NavigateTo(value);
+			}
 		}
 	}
 
@@ -130,18 +149,24 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		await UsrEnter();
+
+	}
+
+	protected async Task UsrEnter()
+	{
 		using var conn = db.GetConnection();
 		try
 		{
-			UsrTkn = "A";   //Deneme
+			//UsrTkn = "A";   //Deneme
 
 			//var x = conn.QuerySingle("select * from USR_ENTER(@Tkn)", new { Tkn = UsrTkn });
 			//var x = conn.QuerySingle($"select * from USR_ENTER('{UsrTkn}')");
 
 			// SP parametreleri DB deki sırasıyla gönderilmeli
-			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = UsrTkn }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = usrTkn, XID = appState.UEXId }, commandType: CommandType.StoredProcedure);
 
-			appState.UsrTkn = x.UsrTkn;
+			appState.UsrTkn = usrTkn;
 			appState.UsrId = x.UsrId;
 			appState.UsrAd = x.UsrAd;
 			appState.UsrYtk = x.UsrYtk;
@@ -150,7 +175,12 @@
 			appState.UsrFrmAd = x.UsrFrmAd;
 			appState.UsrSrvStr = x.UsrSrvStr;
 
-			await Notifier.Invoke("UsrEnter", new NotifyArgs());
+			NotifyArgs notifyArgs = new()
+				{
+					UsrId = appState.UsrId,
+					FFId = appState.UsrFrmId
+				};
+			await Notifier.Invoke("UsrEnter", notifyArgs);
 
 			Notifier.Notify += OnNotify;
 		}
@@ -163,10 +193,24 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		await InvokeAsync(() =>
+		if (key == "UsrLogIn" && value.UsrTkn == usrTkn)
 		{
-			StateHasChanged();
-		});
+			await UsrEnter();
+			await InvokeAsync(() =>
+			{
+				StateHasChanged();
+			});
+		}
+		if (key == "UsrLogOut" && value.UsrTkn == usrTkn)
+		{
+			appState.UsrId = 0;
+			appState.UsrAd = null;
+
+			await InvokeAsync(() =>
+			{
+				StateHasChanged();
+			});
+		}
 	}
 
 	public async ValueTask DisposeAsync()
@@ -177,7 +221,7 @@
 		Notifier.Notify -= OnNotify;
 
 		using var conn = db.GetConnection();
-		conn.Execute("USR_EXIT", new { Tkn = appState.UsrTkn, UEXId = appState.UEXId }, commandType: CommandType.StoredProcedure);
+		conn.Execute("USR_EXIT", new { UEXId = appState.UEXId }, commandType: CommandType.StoredProcedure);
 
 		await Notifier.Invoke("UsrExit", new NotifyArgs());
 

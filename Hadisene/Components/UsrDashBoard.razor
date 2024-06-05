@@ -133,7 +133,7 @@
 	private void Read()
 	{
 		using var conn = db.GetConnection();
-		UDB = conn.QuerySingle<DashBoard>("UU_DASHBOARD", new { UsrId = 31 }, commandType: CommandType.StoredProcedure);
+		UDB = conn.QuerySingle<DashBoard>("UU_DASHBOARD", new { UsrId = AppState.UsrId }, commandType: CommandType.StoredProcedure);
 
 	}
 

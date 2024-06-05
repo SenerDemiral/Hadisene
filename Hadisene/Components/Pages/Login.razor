@@ -1,0 +1,65 @@
+﻿@page "/login"
+@* @attribute [ExcludeFromInteractiveRouting] *@
+
+@inject NavigationManager navigationManager
+@inject IDbCon db
+@inject NotifierService Notifier
+
+<h1>LOGIN</h1>
+<EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
+	<table width="200px" class="m-auto">
+		<tbody>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">ID</td>
+				<td class="border border-slate-300 text-right px-2"><InputNumber @bind-Value="Model.Id" /></td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">PWD</td>
+				<td class="border border-slate-300 text-right px-2"><InputText @bind-Value="Model.Pwd" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="border border-slate-300 text-center"><button type="submit" class="bg-indigo-500 text-white rounded px-2 py-1">Submit</button></td>
+			</tr>
+		</tbody>
+	</table>
+</EditForm>
+
+@code {
+	[CascadingParameter]
+	public HttpContext? context { get; set; }
+	// [Parameter]
+	// public int UEXId { get; set; } = default;
+
+	[SupplyParameterFromForm]
+	public LgnMdl? Model { get; set; }
+
+	//[Inject] IUsrDic usrDic { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Model ??= new();
+	}
+
+	private void Submit()
+	{
+		var usrTkn = context?.Request.Cookies["hadisene"];
+		using var conn = db.GetConnection();
+		var usr = conn.QuerySingle("USR_LOGIN",
+			new { c = usrTkn, a = Model.Id, b = Model.Pwd },
+			commandType: CommandType.StoredProcedure);
+
+		NotifyArgs notifyArgs = new()
+		{
+			UsrTkn = usrTkn,
+			UEXId = (int)usr.UEXId,
+		};
+		//Notifier.Invoke("UsrLoggedIn", notifyArgs);
+	}
+
+	public class LgnMdl
+	{
+		public int Id { get; set; }
+		public string? Pwd { get; set; }
+		public string? Tkn { get; set; }
+	}
+}

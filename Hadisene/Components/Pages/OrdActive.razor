@@ -103,7 +103,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = 31, b = oo.OOId});
+			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = appState.UsrId, b = oo.OOId});
 			oo.Pin = (int)x;
 		}
 		catch (Exception ex)
@@ -127,7 +127,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = 31, b = oo.OOId, c = oo.SoF });
+			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = appState.UsrId, b = oo.OOId, c = oo.SoF });
 
 			oo.ASD = res.ASD;
 			oo.AFD = res.AFD;
@@ -164,7 +164,7 @@
 			//     commandType: CommandType.StoredProcedure);
 
 			ooList = (await conn.QueryAsync<OO>("OO_QRY",
-				new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { A = appState.UsrId, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

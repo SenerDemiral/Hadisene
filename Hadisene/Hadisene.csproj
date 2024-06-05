@@ -8,15 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DBmeta\**" />
     <Compile Remove="wwwroot\is-cache\**" />
     <Compile Remove="wwwroot\uploads\**" />
+    <Content Remove="DBmeta\**" />
     <Content Remove="wwwroot\is-cache\**" />
     <Content Remove="wwwroot\uploads\**" />
+    <EmbeddedResource Remove="DBmeta\**" />
     <EmbeddedResource Remove="wwwroot\is-cache\**" />
     <EmbeddedResource Remove="wwwroot\uploads\**" />
+    <None Remove="DBmeta\**" />
     <None Remove="wwwroot\is-cache\**" />
     <None Remove="wwwroot\uploads\**" />
   </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
@@ -26,6 +31,7 @@
 		<PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.2" />
 
 	</ItemGroup>
+
 
 	
 </Project>
