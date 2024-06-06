@@ -148,6 +148,8 @@ dialog[open]#ooSrchDlg::backdrop {
     top: 2lh;
     left: 0;
     z-index: 99;
+    display: flex;
+    gap: 4rem;
     button {background-color: yellow;}
 }
 
@@ -508,10 +510,15 @@ option {
 
 .blazored-modal {
     padding: .5rem !important;
-    align-items: center;
+    /*align-items: center;*/
 }
 
 .position-middle {
-    justify-content: inherit !important;
+    /*justify-content: inherit !important;*/
 }
 
+.blazored-modal-custom-size {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+}

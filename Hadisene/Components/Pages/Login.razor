@@ -45,7 +45,7 @@
 		var usrTkn = context?.Request.Cookies["hadisene"];
 		using var conn = db.GetConnection();
 		var usr = conn.QuerySingle("USR_LOGIN",
-			new { c = usrTkn, a = Model.Id, b = Model.Pwd },
+			new { c = usrTkn, a = Model!.Id, b = Model.Pwd },
 			commandType: CommandType.StoredProcedure);
 
 		NotifyArgs notifyArgs = new()

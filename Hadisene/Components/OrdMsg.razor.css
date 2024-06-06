@@ -6,7 +6,8 @@
 	flex-direction: column;
 	/*padding: 8px 0;*/
 	/*width: 90vw;*/
-	height: 60vh;
+	/*height: 60vh;*/
+	max-height: 88vh;
 	/*margin: 1rem auto;*/
 	background: repeating-linear-gradient(0deg, #eee 0 1px, #fff 0px 8px);
 	border: 1px solid rgb(0, 0, 0, 0.2);

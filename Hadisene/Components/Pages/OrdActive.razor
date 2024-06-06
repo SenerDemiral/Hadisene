@@ -8,11 +8,21 @@
 @implements IDisposable
 
 <div class="ooSrch">
+<div >
+	<button @onclick="Read">
+		<span class="material-symbols-outlined">
+			refresh
+		</span>
+	</button>
+</div>
+
+<div >
 	<button onClick="document.getElementById('ooSrchDlg').showModal();">
 		<span class="material-symbols-outlined">
 			search
 		</span>
 	</button>
+</div>
 </div>
 
 <dialog id="ooSrchDlg">
@@ -101,15 +111,17 @@
 
 	private void ShowMsg(OO oo)
 	{
-		var options = new ModalOptions()
-			{
-				HideHeader = true,
-				Size = ModalSize.Custom,
-				SizeCustomClass = "custom-size-modal",
-				Position = ModalPosition.Middle
-			};
 		ModalParameters mp = new();
-		Modal.Show<OrdMsg>("deneme", mp, options);
+		mp.Add("OOId", oo.OOId);
+
+		Modal.Show<OrdMsg>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
 	}
 
 	private void PinTgl(OO oo)
@@ -117,7 +129,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = appState.UsrId, b = oo.OOId});
+			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = appState.UsrId, b = oo.OOId });
 			oo.Pin = (int)x;
 		}
 		catch (Exception ex)
@@ -195,10 +207,20 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		await InvokeAsync(() =>
+		if (key == "IM" && value.UsrId != appState.UsrId)
 		{
-			StateHasChanged();
-		});
+			int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+			if (iof != -1)
+			{
+				ooList[iof].MnVc++;
+
+				await InvokeAsync(() =>
+				{
+					StateHasChanged();
+				});
+			}
+
+		}
 	}
 
 	public void Dispose()
