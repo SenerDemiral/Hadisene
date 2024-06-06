@@ -8,28 +8,28 @@
 @implements IDisposable
 
 <div class="ooSrch">
-<div >
-	<button @onclick="Read">
-		<span class="material-symbols-outlined">
-			refresh
-		</span>
-	</button>
-</div>
+	<div>
+		<button @onclick="Read">
+			<span class="material-symbols-outlined">
+				refresh
+			</span>
+		</button>
+	</div>
 
-<div >
-	<button onClick="document.getElementById('ooSrchDlg').showModal();">
-		<span class="material-symbols-outlined">
-			search
-		</span>
-	</button>
-</div>
+	<div>
+		<button onclick="document.getElementById('ooSrchDlg').showModal();">
+			<span class="material-symbols-outlined">
+				search
+			</span>
+		</button>
+	</div>
 </div>
 
 <dialog id="ooSrchDlg">
 	<p>Greetings, one and all!</p>
 	<form method="dialog">
 		<button>OK</button>
-		<button onClick="document.getElementById('ooSrchDlg').close();">Cancel</button>
+		<button onclick="document.getElementById('ooSrchDlg').close();">Cancel</button>
 	</form>
 </dialog>
 
@@ -39,10 +39,11 @@
 	<div class="ooCards">
 		@foreach (OO rec in ooList)
 		{
-			<div class="ooCard" data-Usr="@appState.UsrYtk" data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
+			<div class="ooCard" data-Usr="@appState.UsrYtk"
+				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
 				<div class="ooHdr">
-					<button class="ooBtnEdt">
+					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
 						<span class="material-symbols-outlined">settings</span>
 						<span class="ooBtnEdtId">#@rec.OOId</span>
 					</button>
@@ -109,12 +110,27 @@
 		return ooList!.Exists((z) => z.IoC == "C");
 	}
 
+	private void ShowEdit(OO oo)
+	{
+		ModalParameters mp = new();
+		mp.Add("OOId", oo.OOId);
+
+		Modal.Show<ModalOrdEdit>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+	}
+
 	private void ShowMsg(OO oo)
 	{
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		Modal.Show<OrdMsg>("deneme", mp,
+		Modal.Show<ModalOrdMsg>("deneme", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -182,13 +198,13 @@
 
 	private async Task Read()
 	{
-		using var conn = db.GetConnection();
 		try
 		{
 			// var z = await conn.QueryAsync<OO>("OO_QRY",
 			//     new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
 			//     commandType: CommandType.StoredProcedure);
 
+			using var conn = db.GetConnection();
 			ooList = (await conn.QueryAsync<OO>("OO_QRY",
 				new { A = appState.UsrId, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)

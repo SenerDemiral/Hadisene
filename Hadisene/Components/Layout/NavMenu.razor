@@ -46,64 +46,27 @@
 	<div>@appState.UsrAd / @appState.UsrYtk</div>
 
 
-	<select @bind="menu" >
-		<optgroup label="-">
-			<option value="">🏠 HOME</option>
-			@if (appState.UsrId != 0)
-			{
-				<option disabled />
-				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
-			}
-			<option disabled />
-			<option value="ordEdit">Edit</option>
-			@if (appState.UsrId != 0)
-			{
-				<option disabled />
-				<option value="ordMsg">OrdMsg</option>
-			}
-			<option disabled />
-			<option value="counter">🚧 Counter</option>
-			<option disabled />
-
-			@if (appState.UsrId == 0)
-			{
-				<option value="Login">↗️ Login</option>
-			}
-			else
-			{
-				<option value="Logout">↙️ Logout</option>
-			}
-			<option disabled />
-		</optgroup>
-	</select>
-
 	<select @onchange="ProcessSelection">
-		<optgroup label="-">
+		<optgroup label="">
 			<option value="">🏠 HOME</option>
 			@if (appState.UsrId != 0)
 			{
 				<option disabled />
 				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
-			}
-			<option disabled />
-			<option value="ordEdit">Edit</option>
-			@if (appState.UsrId != 0)
-			{
 				<option disabled />
-				<option value="ordMsg">OrdMsg</option>
-			}
-			<option disabled />
-			<option value="counter">🚧 Counter</option>
-			<option disabled />
-
-			@if (appState.UsrId == 0)
-			{
-				<option value="Login">↗️ Login</option>
+				<option value="Logout">↙️ Logout</option>
 			}
 			else
 			{
-				<option value="Logout">↙️ Logout</option>
+				<option disabled />
+				<option value="Login">↗️ Login</option>
 			}
+			<option disabled />
+			<option value="ordEdit">Edit</option>
+			
+			<option disabled />
+			<option value="counter">🚧 Counter</option>
+
 			<option disabled />
 		</optgroup>
 	</select>
@@ -144,29 +107,6 @@
 		}
 	}
 
-	private string _menu;
-	public string menu
-	{
-		get => _menu;
-		set
-		{
-			_menu = value;
-			if (value == "Login")
-			{
-				MyLogin();
-			}
-			else if (value == "Logout")
-			{
-				MyLogout();
-			}
-			else
-			{
-				navigationManager.NavigateTo(value);
-			}
-		}
-	}
-
-
 	public async Task MyLogin()
 	{
 		var options = new ModalOptions()
@@ -181,7 +121,7 @@
 		//mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
 		//Modal.Show<ModalImage>("", mp, options);
 
-		var messageForm = Modal.Show<LoginForm>("Login");
+		var messageForm = Modal.Show<ModalLogin>("Login");
 		var result = await messageForm.Result;
 		if (result.Confirmed)
 		{
@@ -189,7 +129,7 @@
 
 			using var conn = db.GetConnection();
 			int uuId = conn.ExecuteScalar<int>("USR_LOGIN",
-				new { a = prms!.Id, b = prms.Pwd, c = usrTkn },	commandType: CommandType.StoredProcedure);
+				new { a = prms!.Id, b = prms.Pwd, c = usrTkn }, commandType: CommandType.StoredProcedure);
 
 			if (uuId > 0)
 			{
