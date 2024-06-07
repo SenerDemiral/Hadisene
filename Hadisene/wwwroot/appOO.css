@@ -1,0 +1,329 @@
+﻿.ooSrch {
+	margin-inline: auto;
+	width: fit-content;
+	position: sticky;
+	top: 2lh;
+	left: 0;
+	z-index: 99;
+	display: flex;
+	gap: 4rem;
+}
+
+	.ooSrch button {
+		background-color: yellow;
+	}
+
+
+.ooCards {
+	--sColor: yellow;
+	--fColor: gray;
+	/*container: cards inline-size;*/
+	/*max-height: 90vh;
+	overflow-y: auto;*/
+
+	font-family: arial;
+	margin: 1rem 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, 340px);
+	justify-content: center;
+	gap: 1.5rem;
+}
+
+	.ooCards .box {
+		margin: 0 4px;
+	}
+
+/* ColorStart */
+.ooCard[data-CS="G"] {
+	--sColor: green;
+}
+
+	.ooCard[data-CS="G"] .ooS {
+		color: var(--sColor)
+	}
+
+	.ooCard[data-CS="G"] .ooBtnS {
+		display: none;
+	}
+
+.ooCard[data-CS="R"] {
+	--sColor: brown;
+}
+
+	.ooCard[data-CS="R"] .ooS {
+		color: var(--sColor)
+	}
+
+.ooCard[data-CS="B"] {
+	--sColor: blue;
+}
+
+	.ooCard[data-CS="B"] .ooS {
+		color: var(--sColor)
+	}
+
+/* ColorFinsih */
+.ooCard[data-CF="G"] {
+	--fColor: green;
+}
+
+	.ooCard[data-CF="G"] .ooF {
+		color: var(--fColor)
+	}
+
+	.ooCard[data-CF="G"] .ooBtnF {
+		display: none;
+	}
+
+.ooCard[data-CF="R"] {
+	--fColor: brown;
+}
+
+	.ooCard[data-CF="R"] .ooF {
+		color: var(--fColor)
+	}
+
+.ooCard[data-CF="B"] {
+	--fColor: blue;
+}
+
+	.ooCard[data-CF="B"] .ooF {
+		color: var(--fColor)
+	}
+
+/*.ooTxtS,*/
+.ooBtnS,
+.ooBtnOK,
+.ooBtnCancel {
+	color: var(--sColor);
+}
+
+/*.ooTxtF,*/
+.ooBtnF,
+.ooBtnOK,
+.ooBtnCancel {
+	color: var(--fColor);
+}
+
+.ooCard .ooHdr {
+	grid-area: ooHdr;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(90deg, var(--sColor) 10%, 50%, var(--fColor) 90%);
+	color: white;
+	padding: 0 4px;
+}
+
+.ooCard .ooFtr {
+	grid-area: ooFtr;
+	background-color: gray;
+	color: white;
+	font-size: 1rem;
+	padding: 0 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 2rem;
+}
+
+	.ooCard .ooFtr > * {
+		flex: 1;
+		text-align: center;
+	}
+
+/*Footer section Hide*/
+.ooCard[data-Stu="A"] .ooStuZ,
+.ooCard[data-Stu="A"] .ooStuX {
+	display: none;
+}
+
+.ooCard:[data-Stu="Z"] .ooStuX,
+.ooCard:[data-Stu="Z"] .ooStuA {
+	display: none;
+}
+
+.ooCard[data-Stu="X"] .ooStuZ,
+.ooCard[data-Stu="X"] .ooStuA {
+	display: none;
+}
+
+.ooCard[data-Stu="X"] {
+	opacity: 0.5;
+}
+
+/*Input or Confirm*/
+.ooCard[data-IoC="I"] .ooC {
+	display: none;
+}
+
+.ooCard[data-IoC="C"] .ooI {
+	display: none;
+}
+
+/*Start or Finish*/
+.ooCard[data-SoF="S"] .ooTxtF {
+	display: none;
+}
+
+.ooCard[data-SoF="F"] .ooTxtS {
+	display: none;
+}
+
+.ooCard {
+	display: grid;
+	gap: 2px;
+	grid-template-rows: 36px 32px 32px 1fr repeat(4, 32px) 36px;
+	grid-template-columns: 2fr 2fr 1fr;
+	grid-template-areas:
+		"ooHdr ooHdr ooHdr"
+		"ooReq ooReq ooPin"
+		"ooSbj ooSbj ooSbj"
+		"ooInf ooInf ooInf"
+		"ooTsk ooTsk ooTsk"
+		"ooAct ooAct ooAct"
+		"ooRSD ooASD ooDSH"
+		"ooRFD ooAFD ooDFH"
+		"ooFtr ooFtr ooFtr";
+	background-color: #fff;
+	color: #444;
+	outline: 1px solid gray;
+	border-radius: 2px;
+	box-shadow: 8px 4px 16px gray;
+}
+
+	.ooCard > ::before {
+		display: block;
+		color: #b4b1b1;
+		font-family: monospace;
+		font-size: 0.6rem;
+		border-bottom: thin solid;
+		line-height: 1;
+		background-color: white;
+	}
+
+.ooPin {
+	grid-area: ooPin;
+	justify-self: center;
+}
+
+button.ooPin {
+	font-size: 1rem;
+	height: 2rem;
+	margin-top: auto;
+	width: fit-content;
+	text-align: center;
+}
+
+button[data-Pin="0"]::after {
+	content: "keep_off";
+	font-family: 'Material Symbols Outlined';
+	font-size: x-large;
+}
+
+button[data-Pin="1"]::after {
+	content: "keep";
+	font-family: 'Material Symbols Outlined';
+	font-size: x-large;
+}
+
+.ooReq {
+	grid-area: ooReq;
+}
+
+	.ooReq::before {
+		content: "isteyen";
+	}
+
+.ooSbj {
+	grid-area: ooSbj;
+}
+
+	.ooSbj::before {
+		content: "birim";
+	}
+
+.ooTsk {
+	grid-area: ooTsk;
+}
+
+	.ooTsk::before {
+		content: "görev";
+	}
+
+.ooAct {
+	grid-area: ooAct;
+}
+
+	.ooAct::before {
+		content: "yapan";
+	}
+
+.ooInf {
+	grid-area: ooInf;
+	/*background-color: snow;*/
+	overflow: auto;
+	min-height: 32px;
+	max-height: 100px;
+}
+
+	.ooInf::before {
+		content: "açıklama";
+	}
+
+.ooRSD {
+	grid-area: ooRSD;
+}
+
+	.ooRSD::before {
+		content: "başlangıç istek";
+	}
+
+.ooASD {
+	grid-area: ooASD;
+}
+
+	.ooASD::before {
+		content: "başlangıç gerçek";
+	}
+
+.ooDSH {
+	grid-area: ooDSH;
+	text-align: center;
+}
+
+	.ooDSH::before {
+		content: "gecikme";
+	}
+
+.ooRFD {
+	grid-area: ooRFD;
+}
+
+	.ooRFD::before {
+		content: "bitiş istek";
+	}
+
+.ooAFD {
+	grid-area: ooAFD;
+}
+
+	.ooAFD::before {
+		content: "bitiş gerçek";
+	}
+
+.ooDFH {
+	grid-area: ooDFH;
+	text-align: center;
+}
+
+	.ooDFH::before {
+		content: "gecikme";
+	}
+
+.ooCard[data-Ytk="3"] .ooAct,
+.ooCard[data-Ytk="4"] .ooReq,
+.ooCard[data-Ytk="1"] .ooSbj,
+.ooCard[data-Ytk="2"] .ooSbj {
+	font-weight: 600;
+}

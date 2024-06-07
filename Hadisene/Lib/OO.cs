@@ -49,13 +49,13 @@ public sealed class OO
 
 	public bool InfRO = true;
 	public bool ReqRO = true;
-	public bool SbjRO = true;
-	public bool TskRO = true;
-	public bool ActRO = true;
-	public bool RSDro = true;
-	public bool RFDro = true;
-	public bool ASDro = true;
-	public bool AFDro = true;
+	public bool SbjRO = false;
+	public bool TskRO = false;
+	public bool ActRO = false;
+	public bool RSDro = false;
+	public bool RFDro = false;
+	public bool ASDro = false;
+	public bool AFDro = false;
 
 	public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
 	public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");

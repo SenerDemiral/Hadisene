@@ -2,8 +2,18 @@
 	return prompt(message, 'Type your name here');
 }
 
-function scrollBottom(elmnt) {
+function scrollTop(elmnt) {
+	document.getElementById(elmnt).scrollTop = 0;
+}
 
+function scrollBottom(elmnt) {
 	document.getElementById(elmnt).scrollTop = 99999;
 }
 
+function showDialogModal(elmntId) {
+	document.getElementById(elmntId).showModal();
+}
+
+function closeDialog(elmntId) {
+	document.getElementById(elmntId).close();
+}

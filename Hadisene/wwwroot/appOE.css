@@ -1,0 +1,247 @@
+﻿.oeCard {
+	display: flex;
+	flex-direction: column;
+	/*gap: 4px;*/
+	outline: 1px solid gray;
+	border-radius: 2px;
+	box-shadow: 8px 4px 16px gray;
+	margin-inline: auto;
+	min-width: 360px;
+	/*max-width: 50%;*/
+}
+
+	.oeCard .oeBox {
+		margin: 0 4px;
+	}
+
+	.oeCard .oeHdr {
+		height: 36px;
+	}
+
+	.oeCard .oeFtr {
+		height: 36px;
+	}
+
+.oeHdr {
+	display: flex;
+	/*justify-content: space-between;*/
+	align-items: center;
+	/*gap: 8px;*/
+	padding: 0 4px;
+	background-color: gainsboro;
+	color: black;
+}
+
+	.oeHdr > * {
+		flex: 1;
+		text-align: center;
+	}
+
+.oeFtr {
+	background-color: gainsboro;
+	color: teal;
+	font-size: 1rem;
+	padding: 0 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 2rem;
+}
+
+	.oeFtr > * {
+		flex: 1;
+		text-align: center;
+	}
+
+.oeBdy {
+	display: grid;
+	gap: 2px;
+	padding: 8px 0;
+	/*grid-template-rows: repeat(3, 32px) 1fr repeat(3, 32px);*/
+	grid-auto-rows: minmax(36px,auto);
+	grid-template-columns: 2fr 2fr;
+	grid-template-areas:
+		"oeReq oeReq"
+		"oeSbj oeSbj"
+		"oeTsk oeTsk"
+		"oeInf oeInf"
+		"oeAct oeAct"
+		"oeRSD .."
+		"oeASD .."
+		"oeRFD .."
+		"oeAFD ..";
+	background-color: #fff;
+	color: #444;
+}
+
+
+	.oeBdy > ::before {
+		display: block;
+		color: #b4b1b1;
+		font-family: monospace;
+		font-size: 0.6rem;
+		/*border-bottom: thin solid;*/
+		/*line-height: 1;*/
+		background-color: white;
+		/*margin-bottom: 4px;*/
+	}
+
+	.oeBdy input,
+	.oeBdy textarea {
+		background-color: azure;
+		font-size: 1rem;
+		font-family: inherit;
+		border-style: inset;
+		border-width: thin;
+		width: 100%;
+	}
+
+	.oeBdy textarea {
+		max-height: 50vh;
+		height: 96px;
+		resize: vertical;
+	}
+
+		.oeBdy textarea:focus,
+		.oeBdy input:focus {
+			background-color: aqua;
+			/*border-style: inset;*/
+			/*border-width: thin;*/
+			outline: none;
+		}
+
+		.oeBdy textarea:focus {
+			background-color: aqua;
+			/*border-style: inset;*/
+			/*border-width: thin;*/
+			outline: none;
+		}
+
+.oePin {
+	grid-area: oePin;
+	justify-self: center;
+}
+
+.oeReq {
+	grid-area: oeReq;
+}
+
+	.oeReq::before {
+		content: "isteyen";
+	}
+
+.oeSbj {
+	grid-area: oeSbj;
+}
+
+	.oeSbj::before {
+		content: "birim";
+	}
+
+.oeTsk {
+	grid-area: oeTsk;
+}
+
+	.oeTsk::before {
+		content: "görev";
+	}
+
+.oeInf {
+	grid-area: oeInf;
+	background-color: snow;
+	overflow: auto;
+	/*min-height: 32px;*/
+	/*max-height: 100px;*/
+}
+
+	.oeInf::before {
+		content: "açıklama";
+	}
+
+.oeAct {
+	grid-area: oeAct;
+}
+
+	.oeAct::before {
+		content: "yapan";
+	}
+
+.oeRSD {
+	grid-area: oeRSD;
+}
+
+	.oeRSD::before {
+		content: "istek başlangıç";
+	}
+
+.oeASD {
+	grid-area: oeASD;
+}
+
+	.oeASD::before {
+		content: "gerçek başlangıç";
+	}
+
+
+.oeDSH {
+	grid-area: oeDSH;
+	text-align: center;
+}
+
+	.oeDSH::before {
+		content: "gecikme";
+	}
+
+
+.oeRFD {
+	grid-area: oeRFD;
+}
+
+	.oeRFD::before {
+		content: "istek bitiş";
+	}
+
+
+.oeAFD {
+	grid-area: oeAFD;
+}
+
+	.oeAFD::before {
+		content: "gerçek bitiş";
+	}
+
+
+.oeDFH {
+	grid-area: oeDFH;
+	text-align: center;
+}
+
+	.oeDFH::before {
+		content: "gecikme";
+	}
+
+
+.oeTsk[data-RO="1"] {
+	pointer-events: none;
+}
+
+
+.oeBtnClone::before {
+	content: "content_copy";
+	font-family: 'Material Symbols Outlined';
+}
+
+.oeBtnNew::before {
+	content: "add";
+	font-family: 'Material Symbols Outlined';
+}
+
+.oeBtnCancel::before {
+	content: "close";
+	font-family: 'Material Symbols Outlined';
+}
+
+.oeBtnSave::before {
+	content: "check";
+	font-family: 'Material Symbols Outlined';
+}

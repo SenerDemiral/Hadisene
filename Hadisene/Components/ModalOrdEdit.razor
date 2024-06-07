@@ -16,6 +16,7 @@
 
 		<div class="oeHdr">
 			<button class="oeBtnCancel">Vazgeç</button>
+			<div>@OOId</div>
 			<button class="oeBtnSave">Kaydet</button>
 		</div>
 
@@ -59,7 +60,6 @@
 					   @bind="oo.TskAd"
 					   @bind:event="onchange"
 					   @bind:after="CheckTsk" />
-				<span><button>aa</button></span>
 			</div>
 
 			<div class="oeBox oeInf">
@@ -67,7 +67,14 @@
 			</div>
 
 			<div class="oeBox oeAct">
-				<input type="text" disabled="@oo.ActRO" @bind-value="@oo.ActAd" />
+				<input type="text"
+					   maxlength="30"
+					   size="30"
+					   list="UUL"
+					   disabled="@oo.ActRO"
+					   @bind="oo.ActAd"
+					   @bind:event="onchange"
+					   @bind:after="CheckAct" />
 			</div>
 
 			<div class="oeBox oeS oeRSD">
@@ -97,6 +104,12 @@
 	</datalist>
 	<datalist id="TTL">
 		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="UUL">
+		@foreach (var r in uud!)
 		{
 			<option value="@r.Key" />
 		}
@@ -162,7 +175,7 @@
 			// Yetkisine göre hangi alanları değiştirebilir (DB de tanımlı aslında)
 			oo.SbjRO = false;
 		}
-		oo.ASD = DateTime.Today;
+		//oo.ASD = DateTime.Today;
 
 	}
 
@@ -171,6 +184,17 @@
 		if (ssd!.TryGetValue(oo.SbjAd, out var nid))
 		{
 			oo.SbjId = nid;
+			SbjUsrLU(nid);
+
+			if (uud!.TryGetValue(oo.ActAd, out var nid2))
+			{
+				oo.ACTID = nid2;
+			}
+			else {
+				oo.ACTID = 0;
+				oo.ActAd = "";
+			}
+				//CheckAct();
 		}
 		else
 			oo.SbjAd = ooo.SbjAd;
@@ -184,6 +208,16 @@
 		else
 			oo.TskAd = ooo.TskAd;
 	}
+	private void CheckAct()
+	{
+		if (uud!.TryGetValue(oo.ActAd, out var nid))
+		{
+			oo.ACTID = nid;
+		}
+		else
+			oo.ActAd = ooo.ActAd;
+	}
+
 	private void FieldCheck()
 	{
 		// Stu=A ise Ytk(1/2) tüm alanları değiştirebilir
@@ -202,7 +236,6 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-
 		try
 		{
 			Read();
@@ -218,9 +251,10 @@
 	private void Read()
 	{
 		using var conn = db.GetConnection();
+		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
 		oo = conn.QuerySingle<OO>("OO_SEL",
-			new { B = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-			commandType: CommandType.StoredProcedure);
+		  	 new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			 commandType: CommandType.StoredProcedure);
 
 		ooo = oo.ShallowCopy();
 
@@ -233,7 +267,7 @@
 	private void SbjUsrLU(int SSId)
 	{
 		using var conn = db.GetConnection();
-		uud = conn.Query<UU>("SU_LU", new { SSId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		uud = conn.Query<UU>("SU_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 	public async Task OnNotify(string key, NotifyArgs value)
@@ -265,37 +299,76 @@
 		public string Ad;
 	}
 
-	public sealed class OOrec
+	public sealed class OO
 	{
+		public int Idx;
+		public DateTime? UpdTS;
+
+		public int UsrId;   // Last updated by
+
+		public int OOId;
 		public int ReqId;
-		public string? ReqAd;
-
 		public int SbjId;
-		public string? SbjAd;
-
 		public int TskId;
-		public string? TskAd;
-
-		public int ActId;
-		public string? ActAd;
+		public int ACTID;
 
 		public string? Inf;
 
-		public bool ReqRO;
-		public bool SbjRO;
-		public bool TskRO;
-		public bool ActRO;
-		public bool RSDro;
-		public bool RFDro;
-		public bool ASDro;
-		public bool AFDro;
-
 		public DateTime? RSD;
-		public DateTime? RFD;
 		public DateTime? ASD;
+		public DateTime? RFD;
 		public DateTime? AFD;
 
+		public string? ReqAd;
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+		public string? DENEME;
+
+		// Color/Condition
+		public string CS = "";  // Start R/B/G
+		public string CF = "";  // Finish R/B/G
+
+		// Delay Star/Finish Hour (+:Gecikme, -:Erken)
 		public int DSH;
 		public int DFH;
+
+		public string Stu = "";
+		public int Pin
+		{
+			get => Pinned ? 1 : 0;
+			set
+			{
+				Pinned = value == 1;
+			}
+		}
+		public bool Pinned = false;
+
+		public int MnVc;    // Msg Not Viewed Count (New) for this Usr
+
+		public string IoC = "I";    // Footer Input or Confirm
+		public string SoF = "S";    // Footer Start or Finish
+
+		public bool InfRO = true;
+		public bool ReqRO = true;
+		public bool SbjRO = false;
+		public bool TskRO = false;
+		public bool ActRO = false;
+		public bool RSDro = false;
+		public bool RFDro = false;
+		public bool ASDro = false;
+		public bool AFDro = false;
+
+		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
+		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
+		public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
+		public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
+
+		public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
+
+		public OO ShallowCopy()
+		{
+			return (OO)this.MemberwiseClone();
+		}
 	}
 }
