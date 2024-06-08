@@ -8,7 +8,6 @@
 
 @if (oo != null)
 {
-
 	<div class="oeCard"
 		 data-Usr="A" data-Stu="Z" d
 		 ata-CS="G" data-CF="G"
@@ -16,8 +15,8 @@
 
 		<div class="oeHdr">
 			<button class="oeBtnCancel">Vazgeç</button>
-			<div>@OOId</div>
-			<button class="oeBtnSave">Kaydet</button>
+			<div>#@OOId</div>
+			<button class="oeBtnSave" @onclick="Kaydet">Kaydet</button>
 		</div>
 
 		<div class="oeHdr">
@@ -188,13 +187,14 @@
 
 			if (uud!.TryGetValue(oo.ActAd, out var nid2))
 			{
-				oo.ACTID = nid2;
+				oo.ActId = nid2;
 			}
-			else {
-				oo.ACTID = 0;
+			else
+			{
+				oo.ActId = 0;
 				oo.ActAd = "";
 			}
-				//CheckAct();
+			//CheckAct();
 		}
 		else
 			oo.SbjAd = ooo.SbjAd;
@@ -212,7 +212,7 @@
 	{
 		if (uud!.TryGetValue(oo.ActAd, out var nid))
 		{
-			oo.ACTID = nid;
+			oo.ActId = nid;
 		}
 		else
 			oo.ActAd = ooo.ActAd;
@@ -227,6 +227,34 @@
 	}
 	private void Kaydet()
 	{
+		try
+		{
+			using var conn = db.GetConnection();
+			// SP parametreleri DB deki sırasıyla gönderilmeli
+			_ = conn.Execute("OO_MDF",
+					new
+					{
+						p1 = appState.UsrId,
+						p2 = OOId,
+						p3 = appState.UsrFrmId,
+						p4 = oo.ReqId,
+						p5 = oo.SbjId,
+						p6 = oo.TskId,
+						p7 = oo.ActId,
+						p8 = oo.RSD,
+						p9 = oo.ASD,
+						pA = oo.RFD,
+						pB = oo.AFD,
+						pC = oo.Inf
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
 
 	}
 	private void Vazgec()
@@ -253,8 +281,8 @@
 		using var conn = db.GetConnection();
 		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
 		oo = conn.QuerySingle<OO>("OO_SEL",
-		  	 new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-			 commandType: CommandType.StoredProcedure);
+						new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure);
 
 		ooo = oo.ShallowCopy();
 
@@ -299,7 +327,7 @@
 		public string Ad;
 	}
 
-	public sealed class OO
+	public sealed class OOold
 	{
 		public int Idx;
 		public DateTime? UpdTS;

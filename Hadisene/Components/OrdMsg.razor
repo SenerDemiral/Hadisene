@@ -98,7 +98,7 @@
 		ModalParameters mp = new();
 		mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
 
-		Modal.Show<ModalImage>("", mp, options);
+		Modal.Show<ImageView>("", mp, options);
 	}
 
 	public async Task Changed(InputFileChangeEventArgs e)

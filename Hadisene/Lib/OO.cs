@@ -30,8 +30,8 @@ public sealed class OO
 	public string CF = "";  // Finish R/B/G
 	
 	// Delay Star/Finish Hour (+:Gecikme, -:Erken)
-	public int DSH;
-	public int DFH;
+	public string? DSX;
+	public string? DFX;
 
 	public string Stu = "";
 	public int Pin {
@@ -47,7 +47,7 @@ public sealed class OO
 	public string IoC = "I";	// Footer Input or Confirm
 	public string SoF = "S";    // Footer Start or Finish
 
-	public bool InfRO = true;
+	public bool InfRO = false;
 	public bool ReqRO = true;
 	public bool SbjRO = false;
 	public bool TskRO = false;

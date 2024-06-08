@@ -1,10 +1,10 @@
 ﻿@page "/ordactive/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-
 @inject AppState appState
 @inject IDbCon db
 @inject IModalService Modal
 @inject NotifierService Notifier
+@inject IJSRuntime js
 @implements IDisposable
 
 <div class="ooSrch">
@@ -64,11 +64,11 @@
 
 				<div class="box ooS ooRSD">@rec.RSDf</div>
 				<div class="box ooS ooASD">@rec.ASDf</div>
-				<div class="box ooS ooDSH">@rec.DSH</div>
+				<div class="box ooS ooDSH">@rec.DSX</div>
 
 				<div class="box ooF ooRFD">@rec.RFDf</div>
 				<div class="box ooF ooAFD">@rec.AFDf</div>
-				<div class="box ooF ooDFH">@rec.DFH</div>
+				<div class="box ooF ooDFH">@rec.DFX</div>
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
@@ -114,7 +114,7 @@
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		Modal.Show<ModalOrdEdit>("deneme", mp,
+		Modal.Show<OrdEdit>("deneme", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -129,7 +129,7 @@
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		Modal.Show<ModalOrdMsg>("deneme", mp,
+		Modal.Show<OrdMsg>("deneme", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -174,8 +174,8 @@
 			oo.AFD = res.AFD;
 			oo.CS = res.CS;
 			oo.CF = res.CF;
-			oo.DSH = res.DSH;
-			oo.DFH = res.DFH;
+			oo.DSX = res.DSH;
+			oo.DFX = res.DFH;
 
 			oo.IoC = "I";
 		}

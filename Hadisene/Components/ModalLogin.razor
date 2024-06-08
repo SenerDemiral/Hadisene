@@ -1,27 +1,28 @@
 ﻿
-<div>
-    <input @bind-value="_form.Id" />
-    <input @bind-value="_form.Pwd" />
-
-    <button @onclick="Cancel">Cancel</button>
-    <button @onclick="LoginMe">Login</button>
-
-    <div>@aa</div>
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 8px;">
+	<div>Id</div>
+	<input id="id" @bind-value="_form.Id" />
+	<div>Pwd</div>
+	<input id="pwd" @bind-value="_form.Pwd" />
+	<div style="grid-column: 1 / 3; display: flex; justify-content: space-around;">
+		<button @onclick="Cancel">Cancel</button>
+		<button @onclick="LoginMe">Login</button>
+	</div>
 </div>
 
 @code {
-    private readonly LgnPrms _form = new();
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
-    public string aa = "xxxxx";
+	private readonly LgnPrms _form = new();
+	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+	public string aa = "xxxxx";
 
-    public async Task LoginMe()
-    {
-        await BlazoredModal.CloseAsync(ModalResult.Ok(_form));
-    }
-    public async Task Cancel() 
-    {
-        await BlazoredModal.CancelAsync();
-        //await BlazoredModal.CloseAsync(ModalResult.Ok(_form.Id));
-    }
+	public async Task LoginMe()
+	{
+		await BlazoredModal.CloseAsync(ModalResult.Ok(_form));
+	}
+	public async Task Cancel()
+	{
+		await BlazoredModal.CancelAsync();
+		//await BlazoredModal.CloseAsync(ModalResult.Ok(_form.Id));
+	}
 
 }

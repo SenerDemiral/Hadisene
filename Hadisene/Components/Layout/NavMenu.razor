@@ -11,43 +11,15 @@
 
 
 <div class="nav-hdr">
-	<div class="menu">
-		<button class="menu-btn" @onclick="ShowMenu">
-			<span class="material-symbols-outlined">
-				menu
-			</span>
-		</button>
-		<div class="menu-content" data-show="@cbSM">
-			<a href="/">
-				<span class="material-symbols-outlined">
-					home
-				</span>
-			</a>
-			<a href="counter">Counter</a>
-			<div>deneme</div>
-			<br>
-			<a href="usrlogin">
-				<span class="material-symbols-outlined">
-					login
-				</span>
-				Login
-			</a>
-			<hr>
-			<a href="login">
-				<span class="material-symbols-outlined">
-					logout
-				</span>
-				Logout
-			</a>
-		</div>
-	</div>
-
 	<div>Görev <InputCheckbox @bind-Value="cbUsrDashBoard" /></div>
 	<div>@appState.UsrAd / @appState.UsrYtk</div>
 
 
-	<select @onchange="ProcessSelection">
-		<optgroup label="">
+	<InputSelect TValue="string"
+				 Value="selVal"
+				 ValueChanged="MenuChange"
+				 ValueExpression="@(() => selVal)">
+		<optgroup label="-">
 			<option value="">🏠 HOME</option>
 			@if (appState.UsrId != 0)
 			{
@@ -69,7 +41,7 @@
 
 			<option disabled />
 		</optgroup>
-	</select>
+	</InputSelect>
 </div>
 
 
@@ -82,28 +54,22 @@
 	//[CascadingParameter] public IModalService Modal { get; set; } = default!;
 	[Parameter] public string? usrTkn { get; set; } = default;
 	private bool cbUsrDashBoard = false;
-	private int cbSM;
 
-	private void ShowMenu()
+	private string selVal = "";
+	private async Task MenuChange(string selectedValue)
 	{
-		cbSM = cbSM == 0 ? 1 : 0;
-	}
-
-	async Task ProcessSelection(ChangeEventArgs args)
-	{
-		string value = args.Value.ToString();
-
-		if (value == "Login")
+		if (selectedValue == "Login")
 		{
 			await MyLogin();
 		}
-		else if (value == "Logout")
+		else if (selectedValue == "Logout")
 		{
 			await MyLogout();
 		}
 		else
 		{
-			navigationManager.NavigateTo(value);
+			selVal = selectedValue;
+			navigationManager.NavigateTo(selectedValue);
 		}
 	}
 
@@ -111,31 +77,37 @@
 	{
 		var options = new ModalOptions()
 			{
-				HideHeader = true,
-				Size = ModalSize.Custom,
-				SizeCustomClass = "custom-size-modal",
+				// HideHeader = true,
+				Size = ModalSize.Medium,
+				// SizeCustomClass = "custom-size-modal",
 				Position = ModalPosition.Middle
 			};
 		ModalParameters mp = new();
 
-		//mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
-		//Modal.Show<ModalImage>("", mp, options);
-
-		var messageForm = Modal.Show<ModalLogin>("Login");
+		var messageForm = Modal.Show<ModalLogin>("Login", mp, options);
 		var result = await messageForm.Result;
 		if (result.Confirmed)
 		{
 			var prms = (LgnPrms)result.Data;
 
-			using var conn = db.GetConnection();
-			int uuId = conn.ExecuteScalar<int>("USR_LOGIN",
-				new { a = prms!.Id, b = prms.Pwd, c = usrTkn }, commandType: CommandType.StoredProcedure);
-
-			if (uuId > 0)
+			try
 			{
-				//await UsrEnter();
+				using var conn = db.GetConnection();
+				int uuId = conn.ExecuteScalar<int>("USR_LOGIN",
+					new { a = prms!.Id, b = prms.Pwd, c = usrTkn }, commandType: CommandType.StoredProcedure);
 
-				await Notifier.Invoke("UsrLogIn", new NotifyArgs { UsrTkn = usrTkn });
+				if (uuId > 0)
+				{
+					//await UsrEnter();
+
+					await Notifier.Invoke("UsrLogIn", new NotifyArgs { UsrTkn = usrTkn });
+					navigationManager.NavigateTo("");
+				}
+			}
+			catch (Exception ex)
+			{
+				var hata = ex.Message.Split("\r\n")[1];
+				Modal.Show<ModalWarning>(hata);
 				navigationManager.NavigateTo("");
 			}
 		}
