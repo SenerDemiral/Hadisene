@@ -54,6 +54,13 @@ h1:focus {
 
 * {
 	box-sizing: border-box;
+	--r-color: brown;
+	--b-color: blue;
+	--g-color: green;
+	--req-bgc: antiquewhite;
+	--sbj-bgc: aquamarine;
+	--tsk-bgc: darkorange;
+	--act-bgc: yellowgreen;
 }
 
 .nav-hdr {
@@ -80,7 +87,7 @@ h1:focus {
 	}
 
 	.nav-hdr > * {
-		flex: 1;
+		/*flex: 1;*/
 	}
 
 dialog[open]#ooSrchDlg {

@@ -72,7 +72,7 @@
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
-					@{bool dsb = rec.ActId != appState.UsrId;}
+					@{bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
 
@@ -174,8 +174,10 @@
 			oo.AFD = res.AFD;
 			oo.CS = res.CS;
 			oo.CF = res.CF;
-			oo.DSX = res.DSH;
-			oo.DFX = res.DFH;
+			oo.DSX = res.DSX;
+			oo.DFX = res.DFX;
+			oo.ActId = res.ACTID;
+			oo.ActAd = res.ACTAD;
 
 			oo.IoC = "I";
 		}

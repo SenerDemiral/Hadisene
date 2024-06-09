@@ -35,7 +35,7 @@
 
 /* ColorStart */
 .ooCard[data-CS="G"] {
-	--sColor: green;
+	--sColor: var(--g-color);
 }
 
 	.ooCard[data-CS="G"] .ooS {
@@ -47,7 +47,7 @@
 	}
 
 .ooCard[data-CS="R"] {
-	--sColor: brown;
+	--sColor: var(--r-color);
 }
 
 	.ooCard[data-CS="R"] .ooS {
@@ -55,7 +55,7 @@
 	}
 
 .ooCard[data-CS="B"] {
-	--sColor: blue;
+	--sColor: var(--b-color);
 }
 
 	.ooCard[data-CS="B"] .ooS {
@@ -64,7 +64,7 @@
 
 /* ColorFinsih */
 .ooCard[data-CF="G"] {
-	--fColor: green;
+	--fColor: var(--g-color);
 }
 
 	.ooCard[data-CF="G"] .ooF {
@@ -76,7 +76,7 @@
 	}
 
 .ooCard[data-CF="R"] {
-	--fColor: brown;
+	--fColor: var(--r-color);
 }
 
 	.ooCard[data-CF="R"] .ooF {
@@ -84,7 +84,7 @@
 	}
 
 .ooCard[data-CF="B"] {
-	--fColor: blue;
+	--fColor: var(--b-color);
 }
 
 	.ooCard[data-CF="B"] .ooF {
@@ -108,7 +108,7 @@
 .ooBtnS[disabled],
 .ooBtnF[disabled] {
 	pointer-events: none;
-	opacity: .7;
+	color: black;
 }
 
 .ooCard .ooHdr {

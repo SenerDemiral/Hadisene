@@ -5,67 +5,145 @@
 @inject NavigationManager navigationManager
 @implements IDisposable
 
-<div class="dashboard" data-pos="@pos[p]">
+@if (UDB != null)
+{
 
-	<table>
-		<caption onclick="@PosChanged">DashBoard @cnt @dnm</caption>
-		<thead>
-			<tr>
-				<th></th>
-				<th>Start</th>
-				<th>Finish</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr style="background-color: red;color: wheat;">
-				<td class="fld-hdr">Gecikmiş</td>
-				<td>@UDB.SR <InputCheckbox @bind-Value="cbCSR" /></td>
-				<td>@UDB.FR <InputCheckbox @bind-Value="cbCFR" /></td>
-			</tr>
-			<tr style="background-color: blue;color: wheat;">
-				<td class="fld-hdr">Süresi var</td>
-				<td>@UDB.SB <InputCheckbox @bind-Value="cbCSB" /></td>
-				<td>@UDB.FB <InputCheckbox @bind-Value="cbCFB" /></td>
-			</tr>
-			<tr style="background-color: green;color: wheat;">
-				<td class="fld-hdr">Yapılmış</td>
-				<td>@UDB.SG <InputCheckbox @bind-Value="cbCSG" /></td>
-				<td>@UDB.FG <InputCheckbox @bind-Value="cbCFG" /></td>
-			</tr>
-			<tr>
-				<td class="fld-hdr">Toplam</td>
-				<td colspan="2">@UDB.OC</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="material-symbols-outlined">
-						keep keep_off
-					</span>
-				</td>
-				<td colspan="2">@UDB.OP  <InputCheckbox @bind-Value="cbPin" /></td>
-			</tr>
-			<tr>
-				<td class="fld-hdr">Değişmiş</td>
-				<td colspan="2">@UDB.OnV <input type="checkbox" @bind-value="cbOnV" /></td>
-			</tr>
-			<tr>
-				<td class="fld-hdr">Yeni Mesaj</td>
-				<td colspan="2">@UDB.MnV <InputCheckbox @bind-Value="cbMnV" /></td>
-			</tr>
-			<tr>
-				<td class="fld-hdr">Güncelleme</td>
-				<td colspan="2">@FormatDate(UDB.LastUpd)</td>
-			</tr>
-			<tr>
-				<td colspan="3" @onclick="GoOrdActive">GO</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+	<div class="dashboard" data-pos="@pos[p]">
+
+		<table>
+			<caption onclick="@PosChanged">
+				<span class="material-symbols-outlined">
+					zoom_out_map
+				</span>@* DashBoard @cnt @dnm *@
+			</caption>
+			<thead>
+				<tr>
+					<th></th>
+					<th>Start</th>
+					<th>Finish</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="background-color: var(--r-color);color: wheat;">
+					<td class="fld-hdr">Gecikmiş</td>
+					<td>@UDB.SR <InputCheckbox @bind-Value="cbCSR" /></td>
+					<td>@UDB.FR <InputCheckbox @bind-Value="cbCFR" /></td>
+				</tr>
+				<tr style="background-color: var(--b-color);color: wheat;">
+					<td class="fld-hdr">Süresi var</td>
+					<td>@UDB.SB <InputCheckbox @bind-Value="cbCSB" /></td>
+					<td>@UDB.FB <InputCheckbox @bind-Value="cbCFB" /></td>
+				</tr>
+				<tr style="background-color: var(--g-color);color: wheat;">
+					<td class="fld-hdr">Yapılmış</td>
+					<td>@UDB.SG <InputCheckbox @bind-Value="cbCSG" /></td>
+					<td>@UDB.FG <InputCheckbox @bind-Value="cbCFG" /></td>
+				</tr>
+				<tr>
+					<td class="fld-hdr">Toplam</td>
+					<td colspan="2">@UDB.OC</td>
+				</tr>
+				<tr>
+					<td class="fld-hdr">Değişmiş</td>
+					<td colspan="2">@UDB.OnV <input type="checkbox" @bind-value="cbOnV" /></td>
+				</tr>
+				<tr>
+					<td>
+						<span class="material-symbols-outlined">
+							keep
+						</span>
+					</td>
+					<td colspan="2">@UDB.OP  <InputCheckbox @bind-Value="cbPin" /></td>
+				</tr>
+				<tr>
+					<td class="fld-hdr">Yeni Mesaj</td>
+					<td colspan="2">@UDB.MnV <InputCheckbox @bind-Value="cbMnV" /></td>
+				</tr>
+				<tr class="req hdr">
+					<td colspan="3">İsteyenler</td>
+				</tr>
+				<tr class="req">
+					<td colspan="3" class="bdy">
+						<div class="lst">
+							@foreach (var itm in UDB.reqList)
+							{
+								<div>
+									<input type="checkbox" @bind-value="itm.Selected" />
+									@itm.Ad
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+				<tr class="sbj hdr">
+					<td colspan="3">Birimler</td>
+				</tr>
+				<tr class="sbj">
+					<td colspan="3" class="bdy">
+						<div class="lst">
+							@foreach (var itm in UDB.sbjList)
+							{
+								<div>
+									<input type="checkbox" @bind-value="itm.Selected" />
+									@itm.Ad
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+				<tr class="tsk hdr">
+					<td colspan="3">Görevler</td>
+				</tr>
+				<tr class="tsk">
+					<td colspan="3" class="bdy">
+						<div class="lst">
+							@foreach (var itm in UDB.tskList)
+							{
+								<div>
+									<input type="checkbox" @bind-value="itm.Selected" />
+									@itm.Ad
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+				<tr class="act hdr">
+					<td colspan="3">Yapanlar</td>
+				</tr>
+				<tr class="act">
+					<td colspan="3" class="bdy">
+						<div class="lst">
+							@foreach (var itm in UDB.actList)
+							{
+								<div>
+									<input type="checkbox" @bind-value="itm.Selected" />
+									@itm.Ad
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="fld-hdr">Güncelleme</td>
+					<td colspan="2">@FormatDate(UDB.LastUpd)</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="padding:0;">
+						<button @onclick="GoOrdActive" style="width: 100%;background-color: yellow;padding: 0;">
+							<span class="material-symbols-outlined">
+								search
+							</span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+}
 
 
 @code {
-	private Timer timer = new(1000 * 10);
+	private Timer timer = new(1000 * 60 * 60);
 	private int cnt = 0;
 	private DashBoard? UDB;
 	private int p = 1;
@@ -99,16 +177,17 @@
 	private void GoOrdActive()
 	{
 		List<string> sl = new();
+		List<string> acts = new();
 
 		sl.Add("Stu=A");
 
 		string CS = (cbCSR ? "R" : "") + (cbCSB ? "B" : "") + (cbCSG ? "G" : "");
 		if (CS.Length > 0)
-			sl.Add("CS="+CS);
+			sl.Add("CS=" + CS);
 
 		string CF = (cbCFR ? "R" : "") + (cbCFB ? "B" : "") + (cbCFG ? "G" : "");
 		if (CF.Length > 0)
-			sl.Add("CF="+CF);
+			sl.Add("CF=" + CF);
 
 		if (cbPin)
 			sl.Add("Pin=1");
@@ -117,11 +196,30 @@
 		if (cbMnV)
 			sl.Add("MnV=1");
 
+		sl.Add("ReqId=" + GetIds(UDB.reqList));
+		sl.Add("SbjId=" + GetIds(UDB.sbjList));
+		sl.Add("ActId=" + GetIds(UDB.actList));
+		sl.Add("TskId=" + GetIds(UDB.tskList));
+
 		string url = $"/ordactive/{String.Join('&', sl)}";
 		navigationManager.NavigateTo(url);
 		// QueryHelpers.AddQueryString("/ordactive", queryStrDict));
 
 	}
+
+	private string GetIds(List<SelList> lst)
+	{
+		List<string> sl = new();
+		foreach (var itm in lst)
+		{
+			if (itm.Selected)
+			{
+				sl.Add("[" + itm.Ad.Substring(itm.Ad.IndexOf('#') + 1) + "]");
+			}
+		}
+		return String.Join('&', sl);
+	}
+
 	private void OnTimedEvent(Object? source, ElapsedEventArgs e)
 	{
 		cnt += 1;
@@ -199,7 +297,67 @@
 		public int FG;
 		public int OnV;
 		public int MnV;
+
+		public string? Reqs
+		{
+			set
+			{
+				string[] stra = value.Split("|", StringSplitOptions.RemoveEmptyEntries);
+				foreach (var itm in stra)
+				{
+					reqList.Add(new SelList { Ad = itm, Selected = false });
+				}
+
+			}
+		}
+		public string? Sbjs
+		{
+			set
+			{
+				string[] stra = value.Split("|", StringSplitOptions.RemoveEmptyEntries);
+				foreach (var itm in stra)
+				{
+					sbjList.Add(new SelList { Ad = itm, Selected = false });
+				}
+
+			}
+		}
+		public string? Acts
+		{
+			set
+			{
+				string[] stra = value.Split("|", StringSplitOptions.RemoveEmptyEntries);
+				foreach (var itm in stra)
+				{
+					actList.Add(new SelList { Ad = itm, Selected = false });
+				}
+
+			}
+		}
+		public string? Tsks
+		{
+			set
+			{
+				string[] stra = value.Split("|", StringSplitOptions.RemoveEmptyEntries);
+				foreach (var itm in stra)
+				{
+					tskList.Add(new SelList { Ad = itm, Selected = false });
+				}
+
+			}
+		}
+		public List<SelList> reqList = new();
+		public List<SelList> sbjList = new();
+		public List<SelList> actList = new();
+		public List<SelList> tskList = new();
+
 		public DateTime LastUpd;
 		public string Info => LastUpd.ToString("dd.MM.yy HH:mm");
+	}
+
+	public sealed class SelList
+	{
+		public string Ad;
+		public bool Selected;
 	}
 }

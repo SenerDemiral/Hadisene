@@ -9,8 +9,7 @@
 @if (oo != null)
 {
 	<div class="oeCard"
-		 data-Usr="A" data-Stu="Z" d
-		 ata-CS="G" data-CF="G"
+		 data-Usr="A" data-Stu="Z" data-CS="G" data-CF="G"
 		 data-IoC="I" data-SoF="F">
 
 		<div class="oeHdr">
@@ -69,7 +68,7 @@
 				<input type="text"
 					   maxlength="30"
 					   size="30"
-					   list="UUL"
+					   list="SAL"
 					   disabled="@oo.ActRO"
 					   @bind="oo.ActAd"
 					   @bind:event="onchange"
@@ -107,8 +106,8 @@
 			<option value="@r.Key" />
 		}
 	</datalist>
-	<datalist id="UUL">
-		@foreach (var r in uud!)
+	<datalist id="SAL">
+		@foreach (var r in sad!)
 		{
 			<option value="@r.Key" />
 		}
@@ -137,7 +136,7 @@
 	private OO? oo, ooo;
 	public enum Mode { Show, Edit, Clone, New };
 	public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
-	private Dictionary<string, int>? ssd, ttd, uud;
+	private Dictionary<string, int>? ssd, ttd, sad;
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
 	private bool modeRO;
@@ -158,6 +157,14 @@
 		// Ilk girişte rec kopyasını al
 		if (newMode == Mode.New)
 		{
+			oo = new();
+			oo.ReqId = appState.UsrId;
+			oo.ReqAd = appState.UsrAd;
+			oo.ReqRO = true;
+			oo.RSD = DateTime.Today;
+			oo.ASDro = true;
+			oo.AFDro = true;
+			ooo = new();
 			// Yeni rec
 		}
 		if (newMode == Mode.Clone)
@@ -183,9 +190,9 @@
 		if (ssd!.TryGetValue(oo.SbjAd, out var nid))
 		{
 			oo.SbjId = nid;
-			SbjUsrLU(nid);
+			SbjActLU(nid);
 
-			if (uud!.TryGetValue(oo.ActAd, out var nid2))
+			if (!String.IsNullOrEmpty(oo.ActAd) && sad!.TryGetValue(oo.ActAd, out var nid2))
 			{
 				oo.ActId = nid2;
 			}
@@ -210,7 +217,7 @@
 	}
 	private void CheckAct()
 	{
-		if (uud!.TryGetValue(oo.ActAd, out var nid))
+		if (sad!.TryGetValue(oo.ActAd, out var nid))
 		{
 			oo.ActId = nid;
 		}
@@ -235,7 +242,7 @@
 					new
 					{
 						p1 = appState.UsrId,
-						p2 = OOId,
+						p2 = oo.OOId,
 						p3 = appState.UsrFrmId,
 						p4 = oo.ReqId,
 						p5 = oo.SbjId,
@@ -289,13 +296,14 @@
 		ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-		uud = conn.Query<UU>("SU_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Sbj Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
-	private void SbjUsrLU(int SSId)
+	private void SbjActLU(int SSId)
 	{
 		using var conn = db.GetConnection();
-		uud = conn.Query<UU>("SU_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 	public async Task OnNotify(string key, NotifyArgs value)
