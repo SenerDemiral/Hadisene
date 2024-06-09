@@ -39,7 +39,7 @@
 	<div class="ooCards">
 		@foreach (OO rec in ooList)
 		{
-			<div class="ooCard" data-Ytk="@appState.UsrYtk"
+			<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
 				<div class="ooHdr">
@@ -72,9 +72,9 @@
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
-
-					<button class="ooStuA ooI ooBtnS" @onclick="@(() => Baslat(rec))">Başlat</button>
-					<button class="ooStuA ooI ooBtnF" @onclick="@(() => Bitir(rec))">Bitir</button>
+					@{bool dsb = rec.ActId != appState.UsrId;}
+					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
+					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
 
 					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
 					<div class="ooStuA ooC ooTxtS">Başlat ?</div>

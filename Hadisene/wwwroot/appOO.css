@@ -105,6 +105,12 @@
 	color: var(--fColor);
 }
 
+.ooBtnS[disabled],
+.ooBtnF[disabled] {
+	pointer-events: none;
+	opacity: .7;
+}
+
 .ooCard .ooHdr {
 	grid-area: ooHdr;
 	display: flex;
