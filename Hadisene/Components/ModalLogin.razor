@@ -1,19 +1,20 @@
 ﻿
-<div style="display: grid; grid-template-columns: auto 1fr; gap: 8px;">
-	<div>Id</div>
-	<input id="id" @bind-value="_form.Id" />
-	<div>Pwd</div>
-	<input id="pwd" @bind-value="_form.Pwd" />
-	<div style="grid-column: 1 / 3; display: flex; justify-content: space-around;">
-		<button @onclick="Cancel">Cancel</button>
-		<button @onclick="LoginMe">Login</button>
-	</div>
-</div>
+	<login-form>
+		<div class="mb-3">
+			<label for="inpid" class="form-label">Id#</label>
+			<input id="inpid" type="number" class="form-control" @bind-value="_form.Id">
+		</div>
+		<div class="mb-3">
+			<label for="inppwd" class="form-label">Password</label>
+			<input id="inppwd" type="password" minlength="4" class="form-control" @bind-value="_form.Pwd">
+		</div>
+		<button class="btn btn-primary" @onclick="LoginMe">Login</button>
+	</login-form>
+
 
 @code {
 	private readonly LgnPrms _form = new();
 	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
-	public string aa = "xxxxx";
 
 	public async Task LoginMe()
 	{

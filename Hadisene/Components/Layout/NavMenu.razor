@@ -24,6 +24,12 @@
 			{
 				<option disabled />
 				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
+				@if (appState.UsrYtk == 1)
+				{
+					<option disabled />
+					<option value="SbjQry">⚓ Birimler</option>
+				}
+
 				<option disabled />
 				<option value="Logout">↙️ Logout</option>
 			}
@@ -34,7 +40,7 @@
 			}
 			<option disabled />
 			<option value="ordEdit">Edit</option>
-			
+
 			<option disabled />
 			<option value="counter">🚧 Counter</option>
 
@@ -65,6 +71,10 @@
 		{
 			await MyLogout();
 		}
+		else if (selectedValue == "SbjQry")
+		{
+			await ShowSbjQry();
+		}
 		else
 		{
 			selVal = selectedValue;
@@ -72,12 +82,28 @@
 		}
 	}
 
+	private async Task ShowSbjQry()
+	{
+		ModalParameters mp = new();
+		// mp.Add("OOId", oo.OOId);
+
+		Modal.Show<SbjQry>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+					// SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+	}
+
+
 	public async Task MyLogin()
 	{
 		var options = new ModalOptions()
 			{
-				// HideHeader = true,
-				Size = ModalSize.Medium,
+				HideHeader = true,
+				Size = ModalSize.Small,
 				// SizeCustomClass = "custom-size-modal",
 				Position = ModalPosition.Middle
 			};
