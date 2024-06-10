@@ -1,0 +1,186 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (rec != null && us != null)
+{
+	<table style="width:200px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">
+					check
+				</span>
+				Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>Id#</th>
+				<th>@Idf()</th>
+			</tr>
+			<tr>
+				<td>Ad</td>
+				<td><input type="text" @bind="rec!.Ad" /></td>
+			</tr>
+			<tr>
+				<td>Yetki</td>
+				<td>
+					<select @bind="rec!.Ytk">
+						<option value="1" disabled="@isUpd">Admin</option>
+						<option value="2" disabled="@isUpd">BirimYetkili</option>
+						<option value="3" disabled="@isUpd">Yapan</option>
+						<option value="4" disabled="@isUpd">İsteyen</option>
+						<option value="9" disabled="@(!isUpd)">Ayrıldı</option>
+					</select>
+				</td>
+
+			</tr>
+			<tr>
+				<td>Tel</td>
+				<td><input type="text" @bind="rec!.Tel" /></td>
+			</tr>
+			<tr>
+				<td>Mail</td>
+				<td><input type="text" @bind="rec!.Mail" /></td>
+			</tr>
+			<tr>
+				<td>Pwd</td>
+				<td><input type="text" @bind="rec!.Pwd" /></td>
+			</tr>
+			@if (rec.Ytk > 1 && rec.Ytk < 4)
+			{
+				<tr>
+					<td>Birimler</td>
+					<td>
+						<div style="max-height:8lh;overflow:auto">
+							@foreach (var r in us)
+							{
+								<div>
+									<input type="checkbox" @bind="r.isMbr" />
+									@r.SSAd;
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int UUId { get; set; }
+	private UU? rec;
+	private List<US>? us;
+	private bool isUpd;
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var newId = conn.ExecuteScalar<int>("UU_MDF",
+					new
+					{
+						p1 = appState.UsrId,
+						p2 = appState.UsrFrmId,
+						p3 = UUId,
+						p4 = rec.Ytk,
+						p5 = rec.Ad,
+						p6 = rec.Tel,
+						p7 = rec.Mail,
+						p8 = rec.Pwd,
+					},
+					commandType: CommandType.StoredProcedure);
+			if (rec.Ytk > 1 && rec.Ytk < 4)	// Yetkili ve Aktör Servis seçebilir
+			{
+				foreach (var r in us)
+				{
+					_ = conn.Execute("US_MDF",
+						new
+						{
+							p1 = newId,
+							p2 = appState.UsrFrmId,
+							p3 = r.SSId,
+							p4 = r.SUId,
+							p5 = r.Mbr
+						},
+						commandType: CommandType.StoredProcedure);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		//Modal.Show<ModalConfirm>("deneme");
+		try
+		{
+			using var conn = db.GetConnection();
+			if (UUId == 0)
+			{
+				rec = new();
+			}
+			else
+			{
+				isUpd = true;
+				rec = conn.QuerySingle<UU>("select * from UU where UUId = @Id",
+						new { Id = UUId },
+						commandType: CommandType.StoredProcedure);
+			}
+			us = conn.Query<US>("US_QRY",
+					new
+					{
+						p1 = UUId,
+						p2 = appState.UsrFrmId
+					},
+					commandType: CommandType.StoredProcedure).ToList();
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+
+	private string Idf()
+	{
+		return UUId == 0 ? "yeni" : UUId.ToString();
+	}
+
+	public sealed class UU
+	{
+		public int UUId;
+		public int Ytk = 3;
+		public string? Ad;
+		public string? Tel;
+		public string? Mail;
+		public string? Pwd;
+	}
+	public sealed class US
+	{
+		public int SUId;
+		public int SSId;
+		public string? SSAd;
+		public int Mbr;
+		public bool isMbr
+		{
+			get => Mbr == 1;
+			set
+			{
+				Mbr = value ? 1 : 0;
+			}
+		}
+	}
+}

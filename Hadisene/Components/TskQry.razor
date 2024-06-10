@@ -1,0 +1,94 @@
+﻿@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>
+			<button @onclick="@(() => ShowMdf(0))">
+				<span class="material-symbols-outlined">
+					add
+				</span>
+				Görevler
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<th>Ad</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>
+						<button @onclick="@(() => ShowMdf(rec.Id))">
+							<span class="material-symbols-outlined">
+								edit
+							</span>
+							@rec.Id
+						</button>
+					</td>
+					<td>@rec.Ad</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<TT> tbl;
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Small,
+			Position = ModalPosition.Middle
+		};
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("Id", id);
+
+		var x = Modal.Show<TskMdf>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<TT>("TT_QRY",
+				new { a = appState.UsrId, b = appState.UsrFrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+
+	public sealed class TT
+	{
+		public int Id;
+		public string? Ad;
+	}
+}
+
+<style>
+</style>

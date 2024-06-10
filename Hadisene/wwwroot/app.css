@@ -173,7 +173,7 @@ button {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	font-size: 1.2rem;
+	font-size: 1rem;
 	padding: 2px 12px;
 	transition: all .14s ease-out;
 	background-color: white;
@@ -349,7 +349,7 @@ table {
 td, th {
 	border: 1px solid #dddddd;
 	text-align: left;
-	padding: 8px;
+	padding: 4px 8px;
 }
 
 tr:nth-child(even) {

@@ -28,6 +28,10 @@
 				{
 					<option disabled />
 					<option value="SbjQry">⚓ Birimler</option>
+					<option disabled />
+					<option value="TskQry">📝 Görevler</option>
+					<option disabled />
+					<option value="UsrQry">👫 Kullanıcılar</option>
 				}
 
 				<option disabled />
@@ -75,6 +79,14 @@
 		{
 			await ShowSbjQry();
 		}
+		else if (selectedValue == "TskQry")
+		{
+			await ShowTskQry();
+		}
+		else if (selectedValue == "UsrQry")
+		{
+			await ShowUsrQry();
+		}
 		else
 		{
 			selVal = selectedValue;
@@ -82,12 +94,41 @@
 		}
 	}
 
+	private async Task ShowUsrQry()
+	{
+		ModalParameters mp = new();
+		// mp.Add("OOId", oo.OOId);
+
+		Modal.Show<UsrQry>("Kullanıcılar", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+	}
+
+	private async Task ShowTskQry()
+	{
+		ModalParameters mp = new();
+		// mp.Add("OOId", oo.OOId);
+
+		Modal.Show<TskQry>("Görevler", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+					// SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+	}
 	private async Task ShowSbjQry()
 	{
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
 
-		Modal.Show<SbjQry>("deneme", mp,
+		Modal.Show<SbjQry>("Birimler", mp,
 			new ModalOptions
 				{
 					HideHeader = true,

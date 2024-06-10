@@ -1,0 +1,101 @@
+﻿@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>
+			<button @onclick="@(() => ShowMdf(0))">
+				<span class="material-symbols-outlined">
+					add
+				</span>
+				Kullanıcı ekle
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<th>Ad</th>
+				<th>Ytk</th>
+				<th>Tel</th>
+				<th>Mail</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>
+						<button @onclick="@(() => ShowMdf(rec.UUId))">
+							<span class="material-symbols-outlined">
+								edit
+							</span>
+							@rec.UUId
+						</button>
+					</td>
+					<td>@rec.Ad</td>
+					<td>@rec.Ytk</td>
+					<td>@rec.Tel</td>
+					<td>@rec.Mail</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<UU> tbl;
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Small,
+			Position = ModalPosition.Middle
+		};
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("UUId", id);
+
+		var x = Modal.Show<UsrMdf>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<UU>("UU_QRY",
+				new { a = appState.UsrId, b = appState.UsrFrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+
+	public sealed class UU
+	{
+		public int UUId;
+		public int Ytk;
+		public string? Ad;
+		public string? Tel;
+		public string? Mail;
+		public string? Pwd;
+	}
+}

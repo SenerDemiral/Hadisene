@@ -3,7 +3,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (ss != null)
+@if (tt != null)
 {
 	<table style="width:200px;">
 		<caption>
@@ -21,7 +21,7 @@
 			</tr>
 			<tr>
 				<td>@Idf()</td>
-				<td><input type="text" @bind="ss!.Ad" /></td>
+				<td><input type="text" @bind="tt!.Ad" /></td>
 			</tr>
 		</tbody>
 	</table>
@@ -30,20 +30,20 @@
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public int Id { get; set; }
-	private SS? ss;
+	private TT? tt;
 
 	public async Task Kaydet()
 	{
 		try
 		{
 			using var conn = db.GetConnection();
-			_ = conn.Execute("SS_MDF",
+			_ = conn.Execute("TT_MDF",
 					new
 					{
 						p1 = appState.UsrId,
 						p2 = appState.UsrFrmId,
 						p3 = Id,
-						p4 = ss!.Ad,
+						p4 = tt!.Ad,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -62,13 +62,13 @@
 		//Modal.Show<ModalConfirm>("deneme");
 		if (Id == 0)
 		{
-			ss = new();
+			tt = new();
 			return;
 		}
 		try
 		{
 			using var conn = db.GetConnection();
-			ss = conn.QuerySingle<SS>("select * from SS where SSId = @Id",
+			tt = conn.QuerySingle<TT>("select * from TT where TTId = @Id",
 					new { Id = Id },
 					commandType: CommandType.StoredProcedure);
 		}
@@ -85,9 +85,9 @@
 		return Id == 0 ? "yeni" : Id.ToString();
 	}
 
-	public sealed class SS
+	public sealed class TT
 	{
-		public int SSId;
+		public int TTId;
 		public string? Ad;
 	}
 }
