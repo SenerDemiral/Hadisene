@@ -41,14 +41,14 @@
 	ModalOptions options = new ModalOptions()
 		{
 			HideHeader = true,
-			Size = ModalSize.Small,
+			Size = ModalSize.Medium,
 			Position = ModalPosition.Middle
 		};
 
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
-		mp.Add("Id", id);
+		mp.Add("SSId", id);
 
 		var x = Modal.Show<SbjMdf>("", mp, options);
 		var r = await x.Result;

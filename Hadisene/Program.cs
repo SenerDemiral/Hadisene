@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
-builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
+builder.Configuration.AddJsonFile("C:\\AspNetConfig\\Hadisene.json",
                        optional: false,
                        reloadOnChange: true);
 

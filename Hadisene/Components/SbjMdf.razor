@@ -3,9 +3,9 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (ss != null)
+@if (ss != null && su != null)
 {
-	<table style="width:200px;">
+	<table style="width:360px;">
 		<caption>
 			<button @onclick="Kaydet">
 				<span class="material-symbols-outlined">
@@ -23,30 +23,59 @@
 				<td>@Idf()</td>
 				<td><input type="text" @bind="ss!.Ad" /></td>
 			</tr>
+			<tr>
+				<td>Kullanıcılar</td>
+				<td>
+					<div style="max-height:8lh;overflow:auto">
+						@foreach (var r in su)
+						{
+							<div>
+								<input type="checkbox" @bind="r.isMbr" />
+								@r.UUAd
+							</div>
+						}
+					</div>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 }
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
-	[Parameter] public int Id { get; set; }
+	[Parameter] public int SSId { get; set; }
 	private SS? ss;
+	private List<SU>? su;
 
 	public async Task Kaydet()
 	{
 		try
 		{
 			using var conn = db.GetConnection();
-			_ = conn.Execute("SS_MDF",
+
+			int newId = conn.ExecuteScalar<int>("SS_MDF",
 					new
 					{
 						p1 = appState.UsrId,
 						p2 = appState.UsrFrmId,
-						p3 = Id,
+						p3 = SSId,
 						p4 = ss!.Ad,
 					},
 					commandType: CommandType.StoredProcedure);
 
+			foreach (var r in su)
+			{
+				_ = conn.Execute("US_MDF",
+					new
+					{
+						p1 = r.UUId,
+						p2 = appState.UsrFrmId,
+						p3 = newId,
+						p4 = r.SUId,
+						p5 = r.Mbr
+					},
+					commandType: CommandType.StoredProcedure);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -59,18 +88,26 @@
 
 	protected override void OnInitialized()
 	{
-		//Modal.Show<ModalConfirm>("deneme");
-		if (Id == 0)
-		{
-			ss = new();
-			return;
-		}
 		try
 		{
 			using var conn = db.GetConnection();
-			ss = conn.QuerySingle<SS>("select * from SS where SSId = @Id",
-					new { Id = Id },
+			if (SSId == 0)
+			{
+				ss = new();
+			}
+			else
+			{
+				ss = conn.QuerySingle<SS>("select * from SS where SSId = @Id",
+					new { Id = SSId },
 					commandType: CommandType.StoredProcedure);
+			}
+			su = conn.Query<SU>("SU_QRY",
+				new
+				{
+					p1 = SSId,
+					p2 = appState.UsrFrmId
+				},
+				commandType: CommandType.StoredProcedure).ToList();
 		}
 		catch (Exception ex)
 		{
@@ -79,15 +116,30 @@
 		}
 	}
 
-
 	private string Idf()
 	{
-		return Id == 0 ? "yeni" : Id.ToString();
+		return SSId == 0 ? "yeni" : SSId.ToString();
 	}
 
 	public sealed class SS
 	{
 		public int SSId;
 		public string? Ad;
+	}
+
+	public sealed class SU
+	{
+		public int SUId;
+		public int UUId;
+		public string? UUAd;
+		public int Mbr;
+		public bool isMbr
+		{
+			get => Mbr == 1;
+			set
+			{
+				Mbr = value ? 1 : 0;
+			}
+		}
 	}
 }
