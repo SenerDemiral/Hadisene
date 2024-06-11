@@ -24,14 +24,22 @@
 				<td><input type="text" @bind="rec!.Ad" /></td>
 			</tr>
 			<tr>
-				<td>Yetki</td>
+				<td>YetkiSvy</td>
 				<td>
 					<select @bind="rec!.Ytk">
-						<option value="1" disabled="@isUpd">Admin</option>
-						<option value="2" disabled="@isUpd">BirimYetkili</option>
-						<option value="3" disabled="@isUpd">Yapan</option>
-						<option value="4" disabled="@isUpd">İsteyen</option>
-						<option value="9" disabled="@(!isUpd)">Ayrıldı</option>
+						@if(rec.Ytk < 9)
+						{
+							<option value="1">Admin</option>
+							<option value="2">BirimYetkili</option>
+							<option value="3">Yapan</option>
+							<option value="4">İsteyen</option>
+							<option value="8">Pasif</option>
+							<option value="9">Ayrıldı</option>
+						}
+						else
+						{
+							<option value="9">Ayrıldı</option>
+						}
 					</select>
 				</td>
 
@@ -132,7 +140,7 @@
 			}
 			else
 			{
-				isUpd = true;
+				//isUpd = true;
 				rec = conn.QuerySingle<UU>("select * from UU where UUId = @Id",
 						new { Id = UUId },
 						commandType: CommandType.StoredProcedure);
