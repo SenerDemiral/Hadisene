@@ -6,7 +6,7 @@
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NotifierService Notifier
-@inject AppState AppState
+@inject AppState appState
 @inject IDbCon db
 @inject IModalService Modal
 @inject NavigationManager Navigation
@@ -123,6 +123,7 @@
 
 					await Notifier.Invoke("IM", new NotifyArgs
 						{
+							UsrId = appState.UsrId,
 							OMId = OMId,
 							OOId = OOId,
 							MsgTyp = "I",
@@ -153,14 +154,14 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_TXT",
-			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, f = msg },
+			new { a = appState.UsrId, b = OOId, c = appState.UsrFrmId, f = msg },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
 
 		await Notifier.Invoke("IM", new NotifyArgs
 			{
-				UsrId = AppState.UsrId,
+				UsrId = appState.UsrId,
 				OOId = OOId,
 				OMId = OMId,
 			});
@@ -174,7 +175,7 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_IMG",
-			new { a = AppState.UsrId, b = OOId, c = AppState.UsrFrmId, d = "I", f = fileExt },
+			new { a = appState.UsrId, b = OOId, c = appState.UsrFrmId, d = "I", f = fileExt },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
@@ -187,7 +188,7 @@
 		try
 		{
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
-				new { a = AppState.UsrId, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = appState.UsrId, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 
@@ -212,7 +213,7 @@
 		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
-			var x = conn.QuerySingle<OM>("OM_SEL", new { a = AppState.UsrId, b = value.OMId }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<OM>("OM_SEL", new { a = appState.UsrId, b = value.OMId }, commandType: CommandType.StoredProcedure);
 			omList!.Add(x);
 
 			await InvokeAsync(() =>

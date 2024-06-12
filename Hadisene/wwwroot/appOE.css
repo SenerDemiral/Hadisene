@@ -61,6 +61,7 @@
 	grid-auto-rows: minmax(36px,auto);
 	grid-template-columns: 2fr 2fr;
 	grid-template-areas:
+		"oeStu oeStu"
 		"oeReq oeReq"
 		"oeSbj oeSbj"
 		"oeTsk oeTsk"
@@ -116,6 +117,14 @@
 			/*border-width: thin;*/
 			outline: none;
 		}
+
+.oeStu {
+	grid-area: oeStu;
+}
+
+	.oeStu::before {
+		content: "Durum";
+	}
 
 .oePin {
 	grid-area: oePin;
@@ -244,4 +253,21 @@
 .oeBtnSave::before {
 	content: "check";
 	font-family: 'Material Symbols Outlined';
+}
+
+@media (width > 600px) {
+	.oeCard {
+		min-width: 500px;*/
+	}
+	.oeBdy {
+		grid-template-areas:
+			"oeStu oeStu"
+			"oeReq oeReq"
+			"oeSbj oeSbj"
+			"oeTsk oeTsk"
+			"oeInf oeInf"
+			"oeAct oeAct"
+			"oeRSD oeASD"
+			"oeRFD oeAFD";
+	}
 }

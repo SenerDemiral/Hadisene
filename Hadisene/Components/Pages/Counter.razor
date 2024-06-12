@@ -2,6 +2,11 @@
 @implements IDisposable
 @rendermode InteractiveServer 
 @inject NotifierService Notifier
+@inject IToastService toastService
+@using Blazored.Toast.Configuration
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10" />
 
 <PageTitle>Counter</PageTitle>
 
@@ -44,6 +49,8 @@
     private (string key, int value) lastNotification;
 
     public async Task IncrementCount() { 
+        toastService.ShowInfo("Yeni Görev eklendi");
+        
         User.Clicks++;
         await Notifier.InvokeIO("key", User.Clicks);
 

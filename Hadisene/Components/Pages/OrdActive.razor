@@ -3,6 +3,7 @@
 @inject AppState appState
 @inject IDbCon db
 @inject IModalService Modal
+@inject IToastService toastService
 @inject NotifierService Notifier
 @inject IJSRuntime js
 @implements IDisposable
@@ -39,6 +40,8 @@
 	<div class="ooCards">
 		@foreach (OO rec in ooList)
 		{
+			<div id="mypopover-@rec.OOId" popover>@rec.Inf</div>
+
 			<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
@@ -58,7 +61,9 @@
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
 				<div class="box ooSbj">@rec.SbjAd</div>
 				<div class="box ooTsk">@rec.TskAd</div>
-				<div class="box ooInf">@rec.Inf</div>
+				<div class="box ooInf">
+					<button class="pop-btn" popovertarget="mypopover-@rec.OOId">@rec.Inf</button>
+				</div>
 
 				<div class="box ooAct">@rec.ActAd</div>
 
@@ -141,6 +146,8 @@
 
 	private void PinTgl(OO oo)
 	{
+		toastService.ShowInfo("Yeni Görev eklendi");
+
 		try
 		{
 			using var conn = db.GetConnection();
@@ -163,7 +170,7 @@
 		oo.IoC = "C";
 		oo.SoF = "F";
 	}
-	private void Ok(OO oo)
+	private async Task Ok(OO oo)
 	{
 		try
 		{
@@ -180,6 +187,12 @@
 			oo.ActAd = res.ACTAD;
 
 			oo.IoC = "I";
+
+			await Notifier.Invoke("UO", new NotifyArgs
+				{
+					UsrId = appState.UsrId,
+					OOId = oo.OOId,
+				});
 		}
 		catch (Exception ex)
 		{
@@ -224,19 +237,45 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		if (key == "IM" && value.UsrId != appState.UsrId)
+		if (value.UsrId != appState.UsrId)  // işlemi yapan kendisi değil
 		{
-			int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
-			if (iof != -1)
+			if (key == "IM")
 			{
-				ooList[iof].MnVc++;
-
-				await InvokeAsync(() =>
+				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+				if (iof != -1)
 				{
-					StateHasChanged();
-				});
-			}
+					ooList[iof].MnVc++;
 
+					await InvokeAsync(() =>
+					{
+						StateHasChanged();
+					});
+				}
+			}
+			else if (key == "IO")
+			{
+				toastService.ShowInfo("Yeni Görev eklendi");
+			}
+			else if (key == "UO")
+			{
+				// Insert bu halde çalışmaz. Bu kullanıcıyı ilgilendiriyor mu? 
+				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+				if (iof != -1)
+				{
+					using var conn = db.GetConnection();
+					var x = conn.QuerySingle<OO>("OO_QRY",
+						new { A = appState.UsrId, B = qryStr, p3 = value.OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+						commandType: CommandType.StoredProcedure);
+
+						ooList[iof] = x;
+
+					await InvokeAsync(() =>
+					{
+						StateHasChanged();
+					});
+				}
+
+			}
 		}
 	}
 

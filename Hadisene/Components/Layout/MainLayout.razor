@@ -1,41 +1,46 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
 
 <div class="x-page">
-    <div class="">
+	<div class="">
 		<CascadingBlazoredModal Position="ModalPosition.Middle" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+		<BlazoredToasts Position="ToastPosition.BottomRight"
+						Timeout="100"
+						@rendermode="new InteractiveServerRenderMode(prerender: false)" />
 		@* </CascadingBlazoredModal> *@
-			<NavMenu usrTkn="@usrTkn" />
+		
+		<NavMenu UsrTkn="@_usrTkn" />
 
 		@* <NavMenu UsrTkn="@usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" /> *@
-    </div>
+	</div>
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+	<main>
+		<article class="content px-4">
+			@Body
+		</article>
+	</main>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+	An unhandled error has occurred.
+	<a href="." class="reload">Reload</a>
+	<span class="dismiss">🗙</span>
 </div>
 
 @code
 {
 	[CascadingParameter] public HttpContext? context { get; set; }
-	private string? usrTkn { get; set; }
+	public string? _usrTkn { get; set; }
 
 	protected override void OnInitialized()
 	{
 		if (context is not null)
 		{
-			usrTkn = context.Request.Cookies["hadisene"];
+			_usrTkn = context.Request.Cookies["hadisene"];
 
-			if (usrTkn is null)
+			if (_usrTkn is null)
 			{
-				usrTkn = Guid.NewGuid().ToString("N"); // Guest
+				_usrTkn = Guid.NewGuid().ToString("N"); // Guest
 			}
 			CookieOptions co = new CookieOptions();
 			co.Secure = false;
@@ -43,7 +48,7 @@
 			co.SameSite = SameSiteMode.Strict;
 			//co.MaxAge = TimeSpan.FromMinutes(1); // Bitis suresi belirtilmediginde sessionCookie oluyor
 			co.MaxAge = TimeSpan.FromDays(30); // Bitis suresi belirtilmediginde sessionCookie oluyor
-			context.Response.Cookies.Append("hadisene", usrTkn, co);
+			context.Response.Cookies.Append("hadisene", _usrTkn, co);
 		}
 	}
 }

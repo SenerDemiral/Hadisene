@@ -33,12 +33,36 @@
 		</div>
 
 		<div class="oeBdy">
-
+			<div class="oeBox oeStu">
+				<select @bind="oo.Stu" disabled="@oo.StuRO">
+					@if (appState.UsrYtk < 3)
+					{
+						<option value="A">Açık</option>
+						<option value="X">İptal</option>
+						<option value="Z">Arşiv</option>
+					}
+					else if (appState.UsrId == oo.ReqId)
+					{
+						<option value="A">Açık</option>
+						<option value="X">İptal</option>
+					}
+					else
+					{
+						<option value="A">Açık</option>
+					}
+				</select>
+			</div>
 			<div class="oeBox oeReq">
-				<input type="text" disabled="@oo.ReqRO" @bind-value="@oo.ReqAd" />
+				<input type="text"
+					   maxlength="30"
+					   size="30"
+					   list="UUL"
+					   disabled="@oo.ReqRO"
+					   @bind="oo.ReqAd"
+					   @bind:event="onchange"
+					   @bind:after="CheckReq" />
 			</div>
 			<div class="oeBox oeSbj">
-
 				<input type="text"
 					   maxlength="30"
 					   size="30"
@@ -61,7 +85,9 @@
 			</div>
 
 			<div class="oeBox oeInf">
-				<InputTextArea @bind-Value="oo.Inf" rows="2" disabled="@oo.InfRO" />
+				<InputTextArea @bind-Value="oo.Inf"
+							   rows="2"
+							   disabled="@oo.InfRO" />
 			</div>
 
 			<div class="oeBox oeAct">
@@ -76,17 +102,25 @@
 			</div>
 
 			<div class="oeBox oeS oeRSD">
-				<input type="datetime-local" disabled="@oo.RSDro" @bind-value="@oo.RSD" />
+				<input type="datetime-local"
+					   disabled="@oo.RSDro"
+					   @bind-value="@oo.RSD" />
 			</div>
 			<div class="oeBox oeS oeASD">
-				<input type="datetime-local" disabled="@oo.ASDro" @bind-value="@oo.ASD" />
+				<input type="datetime-local"
+					   disabled="@oo.ASDro"
+					   @bind-value="@oo.ASD" />
 			</div>
 
 			<div class="oeBox oeF oeRFD">
-				<input type="datetime-local" disabled="@oo.RFDro" @bind-value="@oo.RFD" />
+				<input type="datetime-local"
+					   disabled="@oo.RFDro"
+					   @bind-value="@oo.RFD" />
 			</div>
 			<div class="oeBox oeF oeAFD">
-				<input type="datetime-local" disabled="@oo.AFDro" @bind-value="@oo.AFD" />
+				<input type="datetime-local"
+					   disabled="@oo.AFDro"
+					   @bind-value="@oo.AFD" />
 			</div>
 		</div>
 
@@ -112,23 +146,30 @@
 			<option value="@r.Key" />
 		}
 	</datalist>
+	<datalist id="UUL">
+		@foreach (var r in uud!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
 }
 
 
-@*
+
 <details>
 	<summary>Details</summary>
 	Something small enough to escape casual notice.
 </details>
- *@
+
 
 @code {
-	[Parameter]
-	public int OOId { get; set; } = 0;
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int OOId { get; set; } = 0;
 	private OO? oo, ooo;
 	public enum Mode { Show, Edit, Clone, New };
 	public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
-	private Dictionary<string, int>? ssd, ttd, sad;
+	private Dictionary<string, int>? ssd, ttd, sad, uud;
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
 	private bool modeRO;
@@ -139,44 +180,97 @@
 		set
 		{
 			// mode bir kere değişebilir, yanlış yaptıysa çık/gir yapsın
+			modeRO = true;
 			ModeChanging(_mode, value);
 			_mode = value;
-			//modeRO = !modeRO; // Deneme
 		}
 	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
 	{
+
 		// Ilk girişte rec kopyasını al
 		if (newMode == Mode.New)
 		{
 			oo = new();
+			InitROfalse();
+			oo.StuRO = true;
 			oo.ReqId = appState.UsrId;
 			oo.ReqAd = appState.UsrAd;
 			oo.ReqRO = true;
 			oo.RSD = DateTime.Today;
 			oo.ASDro = true;
 			oo.AFDro = true;
-			ooo = new();
-			// Yeni rec
+
+			ooo = oo.ShallowCopy();
 		}
 		if (newMode == Mode.Clone)
 		{
-			// Yeni rec = initialRec then insert
+			InitROfalse();
+			oo.StuRO = true;
+
+			oo.OOId = 0;    // Insert
+
+			if (appState.UsrYtk > 2)
+			{
+				oo.ReqId = appState.UsrId;
+				oo.ReqAd = appState.UsrAd;
+				oo.ReqRO = true;
+			}
 			oo.RSD = null;
 			oo.RFD = null;
 			oo.ASD = null;
 			oo.AFD = null;
+			oo.ASDro = true;
+			oo.AFDro = true;
 		}
 		if (newMode == Mode.Edit)
 		{
 			// Yeni rec = initialRec then update
 			// Yetkisine göre hangi alanları değiştirebilir (DB de tanımlı aslında)
-			oo.SbjRO = false;
-		}
-		//oo.ASD = DateTime.Today;
+			// Yetkililer
+			// Ytk = 1/2 ise
+			// Usr = Req ve ASD = null ise
 
+			if (appState.UsrYtk == 1 || // Admn
+				appState.UsrYtk == 2)   // Ytkl
+			{
+				InitROfalse();
+			}
+			else if (appState.UsrId == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+			{
+				InitROfalse();
+
+				oo.StuRO = true;    // Iptal edebilmeli
+				oo.ReqRO = true;
+				oo.ASDro = true;
+				oo.AFDro = true;
+			}
+		}
 	}
 
+	private void InitROfalse()
+	{
+		oo.StuRO = false;
+		oo.InfRO = false;
+		oo.ReqRO = false;
+		oo.SbjRO = false;
+		oo.TskRO = false;
+		oo.ActRO = false;
+		oo.RSDro = false;
+		oo.RFDro = false;
+		oo.ASDro = false;
+		oo.AFDro = false;
+	}
+
+	private void CheckReq()
+	{
+		if (uud!.TryGetValue(oo.ReqAd, out var nid))
+		{
+			oo.ReqId = nid;
+		}
+		else
+			oo.ReqAd = ooo.ReqAd;
+	}
 	private void CheckSbj()
 	{
 		if (ssd!.TryGetValue(oo.SbjAd, out var nid))
@@ -217,20 +311,13 @@
 			oo.ActAd = ooo.ActAd;
 	}
 
-	private void FieldCheck()
-	{
-		// Stu=A ise Ytk(1/2) tüm alanları değiştirebilir
-		// Stu=X/Z ise hiçbirşey değiştirilemez
-		oo.RSDro = oo.ASD != null;
-		oo.RFDro = oo.AFD != null;
-	}
-	private void Kaydet()
+	private async Task Kaydet()
 	{
 		try
 		{
 			using var conn = db.GetConnection();
 			// SP parametreleri DB deki sırasıyla gönderilmeli
-			_ = conn.Execute("OO_MDF",
+			int refId = conn.ExecuteScalar<int>("OO_MDF",
 					new
 					{
 						p1 = appState.UsrId,
@@ -248,6 +335,13 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
+			var key = oo.OOId == 0 ? "IO" : "UO";
+			await Notifier.Invoke(key, new NotifyArgs
+				{
+					UsrId = appState.UsrId,
+					OOId = refId,
+				});
+			await ModalIns.CloseAsync(ModalResult.Ok());
 		}
 		catch (Exception ex)
 		{
@@ -256,10 +350,7 @@
 		}
 
 	}
-	private void Vazgec()
-	{
-
-	}
+	private async Task Vazgec() => await ModalIns.CancelAsync();
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -287,6 +378,7 @@
 
 		ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		uud = conn.Query<UU>("UU_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		//Sbj Actors
 		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);

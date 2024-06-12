@@ -355,3 +355,55 @@ td, th {
 tr:nth-child(even) {
 	background-color: #dddddd;
 }
+
+/*********************/
+
+.pop-btn {
+	display: contents;
+	white-space: initial;
+}
+
+[popover]:popover-open {
+	/*min-width: 360px;*/
+	/*max-width: 50vw;*/
+	max-width: max(360px, 50vw);
+	max-height: 50vh;
+	padding: 8px;
+	white-space: break-spaces;
+	background-color: beige; 
+}
+
+[popover]::backdrop {
+	background-color: lightslategray;
+	opacity: 0.5;
+}
+/* user agent stylesheet
+[popover] {
+    position: fixed;
+    width: fit-content;
+    height: fit-content;
+    color: canvastext;
+    background-color: canvas;
+    inset: 0px;
+    margin: auto;
+    border-style: solid;
+    border-width: initial;
+    border-color: initial;
+    border-image: initial;
+    padding: 0.25em;
+    overflow: auto;
+}
+
+[popover] {
+  position: fixed;
+  width: fit-content;
+  height: fit-content;
+  color: CanvasText;
+  background-color: Canvas;
+  inset: 0;
+  margin: auto;
+  border: solid;
+  padding: 0.25em;
+  overflow: auto;
+}
+*/

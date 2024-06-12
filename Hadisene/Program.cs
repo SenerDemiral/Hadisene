@@ -1,4 +1,5 @@
 using Blazored.Modal;
+using Blazored.Toast;
 using Hadisene.Components;
 using Hadisene.Lib;
 using SixLabors.ImageSharp.Web.DependencyInjection;
@@ -15,6 +16,7 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\Hadisene.json",
 
 builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredToast();
 
 builder.Services.AddSingleton<IDbCon, DbCon>();
 
