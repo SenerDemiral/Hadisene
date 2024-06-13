@@ -257,7 +257,7 @@
 
 @media (width > 600px) {
 	.oeCard {
-		min-width: 500px;*/
+		min-width: 500px;
 	}
 	.oeBdy {
 		grid-template-areas:

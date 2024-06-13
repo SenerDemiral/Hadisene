@@ -105,11 +105,11 @@
 	color: var(--fColor);
 }
 
-.ooBtnS[disabled],
-.ooBtnF[disabled] {
-	pointer-events: none;
-	color: black;
-}
+	.ooBtnS[disabled],
+	.ooBtnF[disabled] {
+		pointer-events: none;
+		color: black;
+	}
 
 .ooCard .ooHdr {
 	grid-area: ooHdr;
@@ -214,11 +214,11 @@
 }
 
 button.ooPin {
-	font-size: 1rem;
-	height: 2rem;
-	margin-top: auto;
-	width: fit-content;
-	text-align: center;
+	/*font-size: 1rem;*/
+	/*height: 2rem;*/
+	/*margin-top: auto;*/
+	/*width: fit-content;*/
+	/*text-align: center;*/
 }
 
 button[data-Pin="0"]::after {
@@ -333,3 +333,45 @@ button[data-Pin="1"]::after {
 .ooCard[data-Ytk="2"] .ooSbj {
 	font-weight: 600;
 }
+
+@media (width < 600px) {
+	.ooCards {
+		grid-template-columns: auto;
+		justify-content: normal;
+		gap: 4px;
+		min-width: 500px;
+	}
+
+	.ooCard {
+		/*min-width: 500px;*/
+		display: grid;
+		gap: 2px;
+		grid-template-rows: auto;
+		grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+		grid-template-areas:
+			"ooTsk ooAct ooDSH ooDFH ooPin"
+			"ooReq ooSbj ooDSH ooDFH ooPin";
+		background-color: #fff;
+		color: #444;
+		outline: none;
+		border-radius: 2px;
+		box-shadow: 8px 4px 16px gray;
+		align-items: center;
+	}
+
+		.ooCard > ::before {
+			display: none;
+		}
+
+	.ooHdr, .ooFtr,
+	.ooInf,
+	.ooRSD, .ooASD, .ooRFD, .ooAFD {
+		display: none !important;
+	}
+
+	.ooDSH, .ooDFH {
+		justify-self: end;
+	}
+	button.ooPin {
+		border: none;
+	}

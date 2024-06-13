@@ -40,7 +40,7 @@
 	<div class="ooCards">
 		@foreach (OO rec in ooList)
 		{
-			<div id="mypopover-@rec.OOId" popover>@rec.Inf</div>
+			<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
 
 			<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
@@ -62,22 +62,28 @@
 				<div class="box ooSbj">@rec.SbjAd</div>
 				<div class="box ooTsk">@rec.TskAd</div>
 				<div class="box ooInf">
-					<button class="pop-btn" popovertarget="mypopover-@rec.OOId">@rec.Inf</button>
+					<button class="pop-btn"
+							popovertarget="mypopover-@rec.OOId" 
+							popovertargetaction="toggle">
+						@rec.Inf
+					</button>
 				</div>
 
 				<div class="box ooAct">@rec.ActAd</div>
 
 				<div class="box ooS ooRSD">@rec.RSDf</div>
 				<div class="box ooS ooASD">@rec.ASDf</div>
-				<div class="box ooS ooDSH">@rec.DSX</div>
+				<div class="box ooS ooDSH ooOzet">@rec.DSX</div>
 
 				<div class="box ooF ooRFD">@rec.RFDf</div>
 				<div class="box ooF ooAFD">@rec.AFDf</div>
-				<div class="box ooF ooDFH">@rec.DFX</div>
+				<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
-					@{bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;}
+					@{
+						bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
+					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
 
@@ -258,7 +264,7 @@
 			}
 			else if (key == "UO")
 			{
-				// Insert bu halde çalışmaz. Bu kullanıcıyı ilgilendiriyor mu? 
+				// Insert bu halde çalışmaz. Bu kullanıcıyı ilgilendiriyor mu?
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
 				if (iof != -1)
 				{
@@ -267,7 +273,7 @@
 						new { A = appState.UsrId, B = qryStr, p3 = value.OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 						commandType: CommandType.StoredProcedure);
 
-						ooList[iof] = x;
+					ooList[iof] = x;
 
 					await InvokeAsync(() =>
 					{

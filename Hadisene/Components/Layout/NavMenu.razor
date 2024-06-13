@@ -7,12 +7,17 @@
 @inject NavigationManager navigationManager
 
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
-@* <CascadingBlazoredModal /> *@
-
+@* MainLayout da tanımlı *@
 
 <div class="nav-hdr">
-	<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd / @appState.UsrYtk</div>
-
+	@if (appState.UsrId > 0)
+	{
+		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd / @appState.UsrYtk</div>
+	}
+	else
+	{
+		<div>Giriş Yapılmadı</div>
+	}
 
 	<InputSelect TValue="string"
 				 Value="selVal"
@@ -70,10 +75,12 @@
 		if (selectedValue == "Login")
 		{
 			await MyLogin();
+			cbUsrDashBoard = false;
 		}
 		else if (selectedValue == "Logout")
 		{
 			await MyLogout();
+			cbUsrDashBoard = false;
 		}
 		else if (selectedValue == "SbjQry")
 		{

@@ -196,28 +196,30 @@
 		if (cbMnV)
 			sl.Add("MnV=1");
 
-		sl.Add("ReqId=" + GetIds(UDB.reqList));
-		sl.Add("SbjId=" + GetIds(UDB.sbjList));
-		sl.Add("ActId=" + GetIds(UDB.actList));
-		sl.Add("TskId=" + GetIds(UDB.tskList));
+		Add2List(sl, UDB.reqList, "ReqId=");
+		Add2List(sl, UDB.sbjList, "SbjId=");
+		Add2List(sl, UDB.actList, "ActId=");
+		Add2List(sl, UDB.tskList, "TskId=");
 
 		string url = $"/ordactive/{String.Join('&', sl)}";
 		navigationManager.NavigateTo(url);
-		// QueryHelpers.AddQueryString("/ordactive", queryStrDict));
 
 	}
-
-	private string GetIds(List<SelList> lst)
+	private void Add2List(List<string> slst, List<SelList> lst, string name)
 	{
 		List<string> sl = new();
 		foreach (var itm in lst)
 		{
 			if (itm.Selected)
 			{
-				sl.Add("[" + itm.Ad.Substring(itm.Ad.IndexOf('#') + 1) + "]");
+				sl.Add($"[{itm.Ad.Substring(itm.Ad.IndexOf('#') + 1)}]");
 			}
 		}
-		return String.Join('&', sl);
+		string x = String.Join("", sl);
+		if (!String.IsNullOrWhiteSpace(x))
+		{
+			slst.Add($"{name}{x}");
+		}
 	}
 
 	private void OnTimedEvent(Object? source, ElapsedEventArgs e)
