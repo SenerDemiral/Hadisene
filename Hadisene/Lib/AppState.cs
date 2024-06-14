@@ -10,6 +10,14 @@ public sealed class AppState
 	public string? UsrAd = null;
 	public string? UsrFrmAd = null;
 	public int UsrYtk = 0;  // 1:Admn, 2:ServisYetkilisi, 3:Actor, 4:Requester
+	public string UsrYtkAd => UsrYtk switch
+	{
+		1 => "[Admn]",
+		2 => "[BrmYtk]",
+		3 => "[Yapan]",
+		4 => "[İsteyen]",
+		_ => "[Yetkisiz]"
+	};
 	private string? _UsrSrvStr;
 	public string? UsrSrvStr {  
 		get => _UsrSrvStr; 

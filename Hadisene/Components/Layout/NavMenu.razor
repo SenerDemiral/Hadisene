@@ -12,49 +12,39 @@
 <div class="nav-hdr">
 	@if (appState.UsrId > 0)
 	{
-		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd / @appState.UsrYtk</div>
+		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd @appState.UsrYtkAd</div>
 	}
 	else
 	{
-		<div>Giriş Yapılmadı</div>
+		<div>@appState.UsrAd</div>
 	}
 
 	<InputSelect TValue="string"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
 				 ValueExpression="@(() => selVal)">
-		<optgroup label="-">
-			<option value="">🏠 HOME</option>
-			@if (appState.UsrId != 0)
+		<option value="">🏠 HOME</option>
+		@if (appState.UsrId != 0)
+		{
+			<option value="ordActive/x">🚧 Görevler &nbsp;&nbsp;</option>
+			@if (appState.UsrYtk == 1)
 			{
-				<option disabled />
-				<option value="ordActive/Stu=A">🚧 AktifGörevler</option>
-				@if (appState.UsrYtk == 1)
-				{
-					<option disabled />
-					<option value="SbjQry">⚓ Birimler</option>
-					<option disabled />
-					<option value="TskQry">📝 Görevler</option>
-					<option disabled />
-					<option value="UsrQry">👫 Kullanıcılar</option>
-				}
-
-				<option disabled />
-				<option value="Logout">↙️ Logout</option>
+				<optgroup label="Tanımlar">
+					<option value="SbjQry">⚓ Birim</option>
+					<option value="TskQry">📝 Görev</option>
+					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
+				</optgroup>
+				<option value="">💤 Arşiv</option>
 			}
-			else
-			{
-				<option disabled />
-				<option value="Login">↗️ Login</option>
-			}
-			<option disabled />
-			<option value="ordEdit">Edit</option>
+			<option value="Logout">↙️ Logout</option>
+		}
+		else
+		{
+			<option value="Login">↗️ Login</option>
+		}
+		<option value="counter">&emsp;🚧 Deneme</option>
+		<option value="counter">&nbsp;🚧 Deneme</option>
 
-			<option disabled />
-			<option value="counter">🚧 Counter</option>
-
-			<option disabled />
-		</optgroup>
 	</InputSelect>
 </div>
 
@@ -101,7 +91,7 @@
 		}
 	}
 
-	private async Task ShowUsrQry()
+	private ValueTask ShowUsrQry()
 	{
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
@@ -114,6 +104,7 @@
 					SizeCustomClass = "blazored-modal-custom-size",
 					Position = ModalPosition.Middle
 				});
+		return ValueTask.CompletedTask;
 	}
 
 	private async Task ShowTskQry()
@@ -191,6 +182,12 @@
 		using var conn = db.GetConnection();
 		conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
 
+		appState.UsrId = 0;
+		appState.UsrAd = "Giriş Yapın";
+		appState.UsrYtk = 0;
+		appState.UsrFrmId = 0;
+		appState.UsrFrmAd = null;
+
 		await Notifier.Invoke("UsrLogOut", new NotifyArgs { UsrTkn = usrTkn });
 		navigationManager.NavigateTo("");
 	}
@@ -249,9 +246,6 @@
 		}
 		if (key == "UsrLogOut" && value.UsrTkn == usrTkn)
 		{
-			appState.UsrId = 0;
-			appState.UsrAd = null;
-
 			await InvokeAsync(() =>
 			{
 				StateHasChanged();

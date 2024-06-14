@@ -20,7 +20,7 @@
 	<div>
 		<button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
 			<span class="material-symbols-outlined">
-				search
+				search &copy;
 			</span>
 		</button>
 	</div>
@@ -100,7 +100,7 @@
 
 @code {
 	[Parameter]
-	public string? qryStr { get; set; }
+	public string? qryStr { get; set; } = "";
 	private List<OO>? ooList;
 
 	// /ordopen?filter=scifi%20stars&page=3&star=LeVar%20Burton&star=Gary%20Oldman
@@ -218,12 +218,9 @@
 
 	private async Task Read()
 	{
+		qryStr = qryStr == "x" ? "" : qryStr;	// Boş ise x gönder
 		try
 		{
-			// var z = await conn.QueryAsync<OO>("OO_QRY",
-			//     new { A = 31, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
-			//     commandType: CommandType.StoredProcedure);
-
 			using var conn = db.GetConnection();
 			ooList = (await conn.QueryAsync<OO>("OO_QRY",
 				new { A = appState.UsrId, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli

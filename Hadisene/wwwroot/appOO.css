@@ -270,7 +270,7 @@ button[data-Pin="1"]::after {
 	/*background-color: snow;*/
 	overflow: auto;
 	min-height: 32px;
-	max-height: 100px;
+	max-height: 80px;
 }
 
 	.ooInf::before {
@@ -334,6 +334,10 @@ button[data-Pin="1"]::after {
 	font-weight: 600;
 }
 
+input[type="radio"] {
+	width: auto !important;
+}
+
 @media (width < 600px) {
 	.ooCards {
 		grid-template-columns: auto;
@@ -372,6 +376,15 @@ button[data-Pin="1"]::after {
 	.ooDSH, .ooDFH {
 		justify-self: end;
 	}
+
 	button.ooPin {
 		border: none;
 	}
+}
+
+@media print {
+	.nav-hdr,
+	.ooSrch {
+		display: none;
+	}
+}

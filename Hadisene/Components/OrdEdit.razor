@@ -13,7 +13,7 @@
 		 data-IoC="I" data-SoF="F">
 
 		<div class="oeHdr">
-			<button class="oeBtnCancel">Vazgeç</button>
+			<button class="oeBtnCancel" @onclick="Vazgec">Vazgeç</button>
 			<div>#@OOId</div>
 			<button class="oeBtnSave" @onclick="Kaydet">Kaydet</button>
 		</div>
@@ -33,24 +33,23 @@
 		</div>
 
 		<div class="oeBdy">
-			<div class="oeBox oeStu">
-				<select @bind="oo.Stu" disabled="@oo.StuRO">
-					@if (appState.UsrYtk < 3)
-					{
-						<option value="A">Açık</option>
-						<option value="X">İptal</option>
-						<option value="Z">Arşiv</option>
-					}
-					else if (appState.UsrId == oo.ReqId)
-					{
-						<option value="A">Açık</option>
-						<option value="X">İptal</option>
-					}
-					else
-					{
-						<option value="A">Açık</option>
-					}
-				</select>
+			<div class="oeBox oeStu" >
+				<div style="display:flex; gap:1rem;">
+					<InputRadioGroup @bind-Value="stu">
+						<div>
+							<InputRadio Value="Statu.Aktif" disabled="@oo.StuRO" />
+							Aktif
+						</div>
+						<div>
+							<InputRadio Value="Statu.İptal" disabled="@oo.StuRO" />
+							İptal
+						</div>
+						<div>
+							<InputRadio Value="Statu.Arşiv" disabled="@oo.StuRO" />
+							Arşiv
+						</div>
+					</InputRadioGroup>
+				</div>
 			</div>
 			<div class="oeBox oeReq">
 				<input type="text"
@@ -171,6 +170,10 @@
 	public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
 	private Dictionary<string, int>? ssd, ttd, sad, uud;
 
+	public enum Statu { Aktif='A', İptal='X', Arşiv='Z' };
+	public Statu stu;
+
+
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
 	private bool modeRO;
 	private Mode _mode = Mode.Show;
@@ -232,7 +235,7 @@
 			// Usr = Req ve ASD = null ise
 
 			if (appState.UsrYtk == 1 || // Admn
-				appState.UsrYtk == 2)   // Ytkl
+			appState.UsrYtk == 2)   // Ytkl
 			{
 				InitROfalse();
 			}
@@ -313,27 +316,30 @@
 
 	private async Task Kaydet()
 	{
+		oo.Stu = ((char)((int)stu)).ToString();
+
 		try
 		{
 			using var conn = db.GetConnection();
 			// SP parametreleri DB deki sırasıyla gönderilmeli
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
-					new
-					{
-						p1 = appState.UsrId,
-						p2 = oo.OOId,
-						p3 = appState.UsrFrmId,
-						p4 = oo.ReqId,
-						p5 = oo.SbjId,
-						p6 = oo.TskId,
-						p7 = oo.ActId,
-						p8 = oo.RSD,
-						p9 = oo.ASD,
-						pA = oo.RFD,
-						pB = oo.AFD,
-						pC = oo.Inf
-					},
-					commandType: CommandType.StoredProcedure);
+			new
+			{
+				p1 = appState.UsrId,
+				p2 = oo.OOId,
+				p0 = oo.Stu,
+				p3 = appState.UsrFrmId,
+				p4 = oo.ReqId,
+				p5 = oo.SbjId,
+				p6 = oo.TskId,
+				p7 = oo.ActId,
+				p8 = oo.RSD,
+				p9 = oo.ASD,
+				pA = oo.RFD,
+				pB = oo.AFD,
+				pC = oo.Inf
+			},
+			commandType: CommandType.StoredProcedure);
 
 			var key = oo.OOId == 0 ? "IO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
@@ -371,8 +377,8 @@
 		using var conn = db.GetConnection();
 		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
 		oo = conn.QuerySingle<OO>("OO_SEL",
-						new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure);
+		new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+		commandType: CommandType.StoredProcedure);
 
 		ooo = oo.ShallowCopy();
 
@@ -382,6 +388,9 @@
 
 		//Sbj Actors
 		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+		//oo.StuRO = oo.Stu != "A" ? true : false;
+		stu = Statu.Aktif;
 	}
 
 	private void SbjActLU(int SSId)

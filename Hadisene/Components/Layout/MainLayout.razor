@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using Blazored.Toast.Configuration
 
-<div class="x-page">
+<div class="page">
 	<div class="">
 		<CascadingBlazoredModal Position="ModalPosition.Middle" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
 		<BlazoredToasts Position="ToastPosition.BottomRight"
@@ -9,7 +9,7 @@
 						@rendermode="new InteractiveServerRenderMode(prerender: false)" />
 		@* </CascadingBlazoredModal> *@
 		
-		<NavMenu UsrTkn="@_usrTkn" />
+		<NavMenu UsrTkn="@_usrTkn"> </NavMenu>
 
 		@* <NavMenu UsrTkn="@usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" /> *@
 	</div>
