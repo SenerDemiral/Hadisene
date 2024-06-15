@@ -37,15 +37,15 @@
 				<div style="display:flex; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
 						<div>
-							<InputRadio Value="Statu.Aktif" disabled="@oo.StuRO" />
+							<InputRadio Value="Statu.Aktif" disabled="@oo.StuROa" />
 							Aktif
 						</div>
 						<div>
-							<InputRadio Value="Statu.İptal" disabled="@oo.StuRO" />
+							<InputRadio Value="Statu.İptal" disabled="@oo.StuROx" />
 							İptal
 						</div>
 						<div>
-							<InputRadio Value="Statu.Arşiv" disabled="@oo.StuRO" />
+							<InputRadio Value="Statu.Arşiv" disabled="@oo.StuROz" />
 							Arşiv
 						</div>
 					</InputRadioGroup>
@@ -196,7 +196,9 @@
 		{
 			oo = new();
 			InitROfalse();
-			oo.StuRO = true;
+			oo.StuROa = true;
+			oo.StuROx = true;
+			oo.StuROz = true;
 			oo.ReqId = appState.UsrId;
 			oo.ReqAd = appState.UsrAd;
 			oo.ReqRO = true;
@@ -209,7 +211,9 @@
 		if (newMode == Mode.Clone)
 		{
 			InitROfalse();
-			oo.StuRO = true;
+			oo.StuROa = true;
+			oo.StuROx = true;
+			oo.StuROz = true;
 
 			oo.OOId = 0;    // Insert
 
@@ -234,8 +238,7 @@
 			// Ytk = 1/2 ise
 			// Usr = Req ve ASD = null ise
 
-			if (appState.UsrYtk == 1 || // Admn
-			appState.UsrYtk == 2)   // Ytkl
+			if (appState.UsrYtk <= 2) // Admn, Ytk
 			{
 				InitROfalse();
 			}
@@ -243,7 +246,9 @@
 			{
 				InitROfalse();
 
-				oo.StuRO = true;    // Iptal edebilmeli
+				oo.StuROa = true;
+				oo.StuROx = false;    // Iptal edebilmeli
+				oo.StuROz = true;
 				oo.ReqRO = true;
 				oo.ASDro = true;
 				oo.AFDro = true;
@@ -253,7 +258,9 @@
 
 	private void InitROfalse()
 	{
-		oo.StuRO = false;
+		oo.StuROa = false;
+		oo.StuROx = false;
+		oo.StuROz = false;
 		oo.InfRO = false;
 		oo.ReqRO = false;
 		oo.SbjRO = false;
@@ -428,76 +435,4 @@
 		public string Ad;
 	}
 
-	public sealed class OOold
-	{
-		public int Idx;
-		public DateTime? UpdTS;
-
-		public int UsrId;   // Last updated by
-
-		public int OOId;
-		public int ReqId;
-		public int SbjId;
-		public int TskId;
-		public int ACTID;
-
-		public string? Inf;
-
-		public DateTime? RSD;
-		public DateTime? ASD;
-		public DateTime? RFD;
-		public DateTime? AFD;
-
-		public string? ReqAd;
-		public string? SbjAd;
-		public string? TskAd;
-		public string? ActAd;
-		public string? DENEME;
-
-		// Color/Condition
-		public string CS = "";  // Start R/B/G
-		public string CF = "";  // Finish R/B/G
-
-		// Delay Star/Finish Hour (+:Gecikme, -:Erken)
-		public int DSH;
-		public int DFH;
-
-		public string Stu = "";
-		public int Pin
-		{
-			get => Pinned ? 1 : 0;
-			set
-			{
-				Pinned = value == 1;
-			}
-		}
-		public bool Pinned = false;
-
-		public int MnVc;    // Msg Not Viewed Count (New) for this Usr
-
-		public string IoC = "I";    // Footer Input or Confirm
-		public string SoF = "S";    // Footer Start or Finish
-
-		public bool InfRO = true;
-		public bool ReqRO = true;
-		public bool SbjRO = false;
-		public bool TskRO = false;
-		public bool ActRO = false;
-		public bool RSDro = false;
-		public bool RFDro = false;
-		public bool ASDro = false;
-		public bool AFDro = false;
-
-		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
-		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
-		public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
-		public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
-
-		public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
-
-		public OO ShallowCopy()
-		{
-			return (OO)this.MemberwiseClone();
-		}
-	}
 }

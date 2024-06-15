@@ -1,43 +1,9 @@
-﻿.ooSrch {
-	margin-inline: auto;
-	width: fit-content;
-	position: sticky;
-	top: 2lh;
-	left: 0;
-	z-index: 99;
-	display: flex;
-	gap: 4rem;
-}
-
-	.ooSrch button {
-		background-color: yellow;
-	}
-
-.ooCnt {
+﻿.ooCnt {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
 	gap: 1.5rem;
 }
-
-.ooCards {
-	--sColor: yellow;
-	--fColor: gray;
-	/*container: cards inline-size;*/
-	/*max-height: 90vh;
-	overflow-y: auto;*/
-
-	font-family: arial;
-	margin: 1rem 0;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, 340px);
-	justify-content: center;
-	gap: 1.5rem;
-}
-
-	.ooCards .box {
-		margin: 0 4px;
-	}
 
 /* ColorStart */
 .ooCard[data-CS="G"] {
@@ -392,9 +358,3 @@ input[type="radio"] {
 	}
 }
 
-@media print {
-	.nav-hdr,
-	.ooSrch {
-		display: none;
-	}
-}

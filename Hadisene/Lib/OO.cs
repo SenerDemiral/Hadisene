@@ -47,7 +47,9 @@ public sealed class OO
 	public string IoC = "I";	// Footer Input or Confirm
 	public string SoF = "S";    // Footer Start or Finish
 
-	public bool StuRO = true;
+	public bool StuROa = true;
+	public bool StuROx = true;
+	public bool StuROz = true;
 	public bool InfRO = true;
 	public bool ReqRO = true;
 	public bool SbjRO = true;

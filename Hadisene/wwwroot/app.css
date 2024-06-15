@@ -457,3 +457,20 @@ tr:nth-child(even) {
 		background-color: khaki;
 		border-top: 4px solid black;
 	}
+
+@media print {
+	.pge .top,
+	.pge .btm,
+	.pge .stk {
+		display: none !important;
+	}
+	.pge {
+		grid-template-rows: 1fr;
+		grid-template-areas: "bdy";
+	}
+
+	.ooCard {
+		break-inside: avoid;
+	}
+
+}
