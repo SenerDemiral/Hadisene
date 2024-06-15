@@ -1,4 +1,5 @@
-﻿@page "/ordactive/{qryStr}"
+﻿@page "/ordactive"
+@page "/ordactive/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject AppState appState
 @inject IDbCon db
@@ -8,22 +9,18 @@
 @inject IJSRuntime js
 @implements IDisposable
 
-<div class="ooSrch">
-	<div>
-		<button @onclick="Read">
-			<span class="material-symbols-outlined">
-				refresh
-			</span>
-		</button>
-	</div>
+<div class="stk">
+	<button @onclick="Read" style="background-color: yellow;">
+		<span class="material-symbols-outlined">
+			refresh
+		</span>
+	</button>
 
-	<div>
-		<button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
-			<span class="material-symbols-outlined">
-				search &copy;
-			</span>
-		</button>
-	</div>
+	<button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
+		<span class="material-symbols-outlined">
+			search
+		</span>
+	</button>
 </div>
 
 <dialog id="ooSrchDlg">
@@ -37,7 +34,7 @@
 
 @if (ooList != null)
 {
-	<div class="ooCards">
+	<div class="ooCnt">
 		@foreach (OO rec in ooList)
 		{
 			<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
@@ -52,8 +49,8 @@
 					</button>
 					<div class="ooHdrTxt">@rec.SbjAd</div>
 					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
-						<span class="material-symbols-outlined">chat</span>
 						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
+						<span class="material-symbols-outlined">chat</span>
 					</button>
 				</div>
 				<div class="box ooReq">@rec.ReqAd</div>
@@ -63,7 +60,7 @@
 				<div class="box ooTsk">@rec.TskAd</div>
 				<div class="box ooInf">
 					<button class="pop-btn"
-							popovertarget="mypopover-@rec.OOId" 
+							popovertarget="mypopover-@rec.OOId"
 							popovertargetaction="toggle">
 						@rec.Inf
 					</button>
@@ -218,7 +215,8 @@
 
 	private async Task Read()
 	{
-		qryStr = qryStr == "x" ? "" : qryStr;	// Boş ise x gönder
+		//qryStr = qryStr == "x" ? "" : qryStr;   // Boş ise x gönder
+		qryStr = qryStr ?? "";   // coalesce(qryStr,'')
 		try
 		{
 			using var conn = db.GetConnection();

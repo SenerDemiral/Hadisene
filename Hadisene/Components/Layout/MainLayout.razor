@@ -1,24 +1,18 @@
 ﻿@inherits LayoutComponentBase
 @using Blazored.Toast.Configuration
 
-<div class="page">
-	<div class="">
-		<CascadingBlazoredModal Position="ModalPosition.Middle" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
-		<BlazoredToasts Position="ToastPosition.BottomRight"
-						Timeout="100"
-						@rendermode="new InteractiveServerRenderMode(prerender: false)" />
-		@* </CascadingBlazoredModal> *@
-		
-		<NavMenu UsrTkn="@_usrTkn"> </NavMenu>
+<CascadingBlazoredModal Position="ModalPosition.Middle" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+<BlazoredToasts Position="ToastPosition.BottomRight"
+				Timeout="100"
+				@rendermode="new InteractiveServerRenderMode(prerender: false)" />
+@* </CascadingBlazoredModal> *@
+@* <NavMenu UsrTkn="@_usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" /> *@
 
-		@* <NavMenu UsrTkn="@usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" /> *@
+<div class="pge">
+	<NavMenu UsrTkn="@_usrTkn"> </NavMenu>
+	<div class="bdy">
+		@Body
 	</div>
-
-	<main>
-		<article class="content px-4">
-			@Body
-		</article>
-	</main>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>

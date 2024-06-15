@@ -9,7 +9,7 @@
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
 @* MainLayout da tanımlı *@
 
-<div class="nav-hdr">
+<div class="top">
 	@if (appState.UsrId > 0)
 	{
 		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd @appState.UsrYtkAd</div>
@@ -26,7 +26,7 @@
 		<option value="">🏠 HOME</option>
 		@if (appState.UsrId != 0)
 		{
-			<option value="ordActive/x">🚧 Görevler &nbsp;&nbsp;</option>
+			<option value="ordActive">🚧 Görevler &nbsp;&nbsp;</option>
 			@if (appState.UsrYtk == 1)
 			{
 				<optgroup label="Tanımlar">
@@ -46,6 +46,10 @@
 		<option value="counter">&nbsp;🚧 Deneme</option>
 
 	</InputSelect>
+</div>
+<div class="btm">
+	<div>&copy;Şener Demiral 2024</div>
+	<div>User</div>
 </div>
 
 

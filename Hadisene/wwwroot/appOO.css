@@ -13,6 +13,12 @@
 		background-color: yellow;
 	}
 
+.ooCnt {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, 340px);
+	justify-content: center;
+	gap: 1.5rem;
+}
 
 .ooCards {
 	--sColor: yellow;
@@ -118,6 +124,10 @@
 	align-items: center;
 	background: linear-gradient(90deg, var(--sColor) 10%, 50%, var(--fColor) 90%);
 	color: white;
+	padding: 0 4px;
+}
+
+.ooCard .box {
 	padding: 0 4px;
 }
 
@@ -339,10 +349,10 @@ input[type="radio"] {
 }
 
 @media (width < 600px) {
-	.ooCards {
-		grid-template-columns: auto;
-		justify-content: normal;
-		gap: 4px;
+	.ooCnt {
+		grid-template-columns: auto !important;
+		justify-content: normal !important;
+		gap: 8px !important;
 		min-width: 500px;
 	}
 
@@ -353,8 +363,8 @@ input[type="radio"] {
 		grid-template-rows: auto;
 		grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
 		grid-template-areas:
-			"ooTsk ooAct ooDSH ooDFH ooPin"
-			"ooReq ooSbj ooDSH ooDFH ooPin";
+			"ooReq ooTsk ooDSH ooDFH ooPin"
+			"ooSbj ooAct ooDSH ooDFH ooPin";
 		background-color: #fff;
 		color: #444;
 		outline: none;
