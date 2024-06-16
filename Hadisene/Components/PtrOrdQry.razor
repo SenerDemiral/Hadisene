@@ -10,7 +10,7 @@
 				<span class="material-symbols-outlined">
 					add
 				</span>
-				Görevler
+				Görevler (Şablon)
 			</button>
 		</caption>
 		<tbody>
@@ -59,7 +59,7 @@
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
-		mp.Add("Id", id);
+		mp.Add("POId", id);
 
 		var x = Modal.Show<PtrOrdMdf>("", mp, options);
 		var r = await x.Result;

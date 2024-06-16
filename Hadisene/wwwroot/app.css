@@ -61,13 +61,13 @@ h1:focus {
 	--sbj-bgc: aquamarine;
 	--tsk-bgc: darkorange;
 	--act-bgc: yellowgreen;
-	
 	font-size: 16px;
 	--top-h: 2rem;
 	--btm-h: 2rem;
-	--mrg: 8px;
+	--mrg-h: 8px;
+	--mrg-w: 8px;
 	--brd-w: 0px;
-	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg) + var(--brd-w)) * 2 )
+	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg-h) + var(--brd-w)) * 2 )
 }
 
 .nav-hdr {

@@ -1,5 +1,245 @@
-﻿<h3>PtrOrdMdf</h3>
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (po != null)
+{
+	<table style="width:200px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">
+					check
+				</span>
+				Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>Id#</th>
+				<th>@Idf()</th>
+			</tr>
+			<tr>
+				<td>Birim</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="po.SbjAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckSbj" />
+				</td>
+			</tr>
+			<tr>
+				<td>Görev</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="TTL"
+						   @bind="po.TskAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckTsk" />
+				</td>
+			</tr>
+			<tr>
+				<td>Açıklama</td>
+				<td>
+					<InputTextArea @bind-Value="po.Inf"
+								   rows="2"
+								   style="width: 100%; resize: vertical;" />
+				</td>
+			</tr>
+			<tr>
+				<td>Yapan</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SAL"
+						   @bind="po.ActAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+	<datalist id="SSL">
+		@foreach (var r in ssd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="SAL">
+		@foreach (var r in sad!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+}
 
 @code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int POId { get; set; }
+	private PO? po, opo;
+	private Dictionary<string, int>? ssd, ttd, sad;
+
+	private void CheckSbj()
+	{
+		if (ssd!.TryGetValue(po.SbjAd, out var nid))
+		{
+			po.SbjId = nid;
+			SbjActLU(nid);
+
+			if (!String.IsNullOrEmpty(po.ActAd) && sad!.TryGetValue(po.ActAd, out var nid2))
+			{
+				po.ActId = nid2;
+			}
+			else
+			{
+				po.ActId = 0;
+				po.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			po.SbjAd = opo.SbjAd;
+	}
+	private void CheckTsk()
+	{
+		if (ttd!.TryGetValue(po.TskAd, out var nid))
+		{
+			po.TskId = nid;
+		}
+		else
+			po.TskAd = opo.TskAd;
+	}
+	private void CheckAct()
+	{
+		if (sad!.TryGetValue(po.ActAd, out var nid))
+		{
+			po.ActId = nid;
+		}
+		else
+			po.ActAd = opo.ActAd;
+	}
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("PO_MDF",
+					new
+					{
+						p1 = appState.UsrId,
+						p2 = po.POId,
+						p3 = POId,
+						p4 = po.RSD,
+						p5 = po.RFD,
+						p6 = po.SbjId,
+						p7 = po.TskId,
+						p8 = po.ActId,
+						p9 = po.Inf,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		using var conn = db.GetConnection();
+
+		if (POId == 0)
+		{
+			po = new();
+		}
+		else
+		{
+			try
+			{
+				po = conn.QuerySingle<PO>("PO_SEL",
+						new { Id = POId },
+						commandType: CommandType.StoredProcedure);
+
+				opo = po.ShallowCopy();
+
+			}
+			catch (Exception ex)
+			{
+				var hata = ex.Message.Split("\r\n")[1];
+				Modal.Show<ModalConfirm>(hata);
+			}
+		}
+		ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Sbj Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = po.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+	}
+	private void SbjActLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		sad = conn.Query<UU>("SA_LU", new { SSId = po.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+
+	private string Idf()
+	{
+		return POId == 0 ? "yeni" : POId.ToString();
+	}
+
+	public sealed class PO
+	{
+		public int POId;
+		public int SbjId;
+		public int TskId;
+		public int ActId;
+		public DateTime? RSD;
+		public DateTime? RFD;
+		public string? Inf;
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+
+		public PO ShallowCopy()
+		{
+			return (PO)this.MemberwiseClone();
+		}
+	}
+	public sealed class SS
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class UU
+	{
+		public int Id;
+		public string Ad;
+	}
+
 
 }
