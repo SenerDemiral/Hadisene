@@ -329,6 +329,7 @@
 		{
 			using var conn = db.GetConnection();
 			// SP parametreleri DB deki sırasıyla gönderilmeli
+			// refId = Ins ise yeni OOId, Upd ise mevcut OOId
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
 			new
 			{

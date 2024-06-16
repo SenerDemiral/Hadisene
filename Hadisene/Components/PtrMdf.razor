@@ -1,0 +1,93 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tt != null)
+{
+	<table style="width:200px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">
+					check
+				</span>
+				Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>Id#</th>
+				<th>Ad</th>
+			</tr>
+			<tr>
+				<td>@Idf()</td>
+				<td><input type="text" @bind="tt!.Ad" /></td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int Id { get; set; }
+	private PP? tt;
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("PP_MDF",
+					new
+					{
+						p1 = appState.UsrId,
+						p2 = appState.UsrFrmId,
+						p3 = Id,
+						p4 = tt!.Ad,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		//Modal.Show<ModalConfirm>("deneme");
+		if (Id == 0)
+		{
+			tt = new();
+			return;
+		}
+		try
+		{
+			using var conn = db.GetConnection();
+			tt = conn.QuerySingle<PP>("select * from PP where PPId = @Id",
+					new { Id = Id },
+					commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+
+	private string Idf()
+	{
+		return Id == 0 ? "yeni" : Id.ToString();
+	}
+
+	public sealed class PP
+	{
+		public int TTId;
+		public string? Ad;
+	}
+}

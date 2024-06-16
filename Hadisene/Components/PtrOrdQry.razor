@@ -4,32 +4,41 @@
 
 @if (tbl != null)
 {
-	<table >
+	<table>
 		<caption>
 			<button @onclick="@(() => ShowMdf(0))">
 				<span class="material-symbols-outlined">
 					add
 				</span>
-				Birimler
+				Görevler
 			</button>
 		</caption>
 		<tbody>
 			<tr>
-				<th>Id</th>
-				<th>Ad</th>
+				<th>Edit</th>
+				<th>Birim</th>
+				<th>Görev</th>
+				<th>Yapan</th>
+				<th>İstekBaş</th>
+				<th>İstekBit</th>
+
 			</tr>
 			@foreach (var rec in tbl)
 			{
 				<tr>
 					<td>
-						<button @onclick="@(() => ShowMdf(rec.SSId))">
+						<button @onclick="@(() => ShowMdf(rec.POId))">
 							<span class="material-symbols-outlined">
 								edit
 							</span>
-							@rec.SSId
+							@rec.POId
 						</button>
 					</td>
-					<td>@rec.Ad</td>
+					<td>@rec.SbjAd</td>
+					<td>@rec.TskAd</td>
+					<td>@rec.ActAd</td>
+					<td>@rec.RSDf</td>
+					<td>@rec.RFDf</td>
 				</tr>
 			}
 		</tbody>
@@ -37,20 +46,22 @@
 }
 
 @code {
-	private List<SS> tbl;
+	private List<PO> tbl;
+	[Parameter] public int PPId { get; set; }
+
 	ModalOptions options = new ModalOptions()
 		{
 			HideHeader = true,
-			Size = ModalSize.Medium,
+			Size = ModalSize.Large,
 			Position = ModalPosition.Middle
 		};
 
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
-		mp.Add("SSId", id);
+		mp.Add("Id", id);
 
-		var x = Modal.Show<SbjMdf>("", mp, options);
+		var x = Modal.Show<PtrOrdMdf>("", mp, options);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
@@ -63,8 +74,8 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			tbl = (await conn.QueryAsync<SS>("SS_QRY",
-				new { a = appState.UsrId, b = appState.UsrFrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			tbl = (await conn.QueryAsync<PO>("PO_QRY",
+				new { a = appState.UsrId, b = PPId },
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 
@@ -83,10 +94,21 @@
 	}
 
 
-	public sealed class SS
+	public sealed class PO
 	{
-		public int SSId;
-		public string? Ad;
+		public int POId;
+		public int SbjId;
+		public int TskId;
+		public int ActId;
+		public DateTime? RSD;
+		public DateTime? RFD;
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+
+		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
+		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
+
 	}
 }
 

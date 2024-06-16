@@ -33,6 +33,8 @@
 					<option value="SbjQry">⚓ Birim</option>
 					<option value="TskQry">📝 Görev</option>
 					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
+					<option value="PtrQry">⛓️ Şablon</option>
+
 				</optgroup>
 				<option value="">💤 Arşiv</option>
 			}
@@ -88,6 +90,10 @@
 		{
 			await ShowUsrQry();
 		}
+		else if (selectedValue == "PtrQry")
+		{
+			await ShowPtrQry();
+		}
 		else
 		{
 			selVal = selectedValue;
@@ -121,7 +127,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					// SizeCustomClass = "blazored-modal-custom-size",
 					Position = ModalPosition.Middle
 				});
 	}
@@ -135,7 +140,19 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					// SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+	}
+	private async Task ShowPtrQry()
+	{
+		ModalParameters mp = new();
+		// mp.Add("OOId", oo.OOId);
+
+		Modal.Show<PtrQry>("Şablonlar", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
 					Position = ModalPosition.Middle
 				});
 	}

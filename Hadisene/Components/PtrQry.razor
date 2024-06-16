@@ -4,32 +4,40 @@
 
 @if (tbl != null)
 {
-	<table >
+	<table>
 		<caption>
 			<button @onclick="@(() => ShowMdf(0))">
 				<span class="material-symbols-outlined">
 					add
 				</span>
-				Birimler
+				Görev Şablonları
 			</button>
 		</caption>
 		<tbody>
 			<tr>
-				<th>Id</th>
+				<th>Edit</th>
 				<th>Ad</th>
+				<th>Görevler</th>
 			</tr>
 			@foreach (var rec in tbl)
 			{
 				<tr>
 					<td>
-						<button @onclick="@(() => ShowMdf(rec.SSId))">
+						<button @onclick="@(() => ShowMdf(rec.PPId))">
 							<span class="material-symbols-outlined">
 								edit
 							</span>
-							@rec.SSId
+							@rec.PPId
 						</button>
 					</td>
 					<td>@rec.Ad</td>
+					<td>
+						<button @onclick="@(() => ShowDty(rec.PPId))">
+							<span class="material-symbols-outlined">
+								settings_b_roll
+							</span>
+						</button>
+					</td>
 				</tr>
 			}
 		</tbody>
@@ -37,7 +45,7 @@
 }
 
 @code {
-	private List<SS> tbl;
+	private List<PP> tbl;
 	ModalOptions options = new ModalOptions()
 		{
 			HideHeader = true,
@@ -48,9 +56,34 @@
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
-		mp.Add("SSId", id);
+		mp.Add("Id", id);
 
-		var x = Modal.Show<SbjMdf>("", mp, options);
+		var x = Modal.Show<PtrMdf>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.Large,
+					Position = ModalPosition.Middle
+				});
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	public async Task ShowDty(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("PPId", id);
+
+		var x = Modal.Show<PtrOrdQry>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.ExtraLarge,
+					Position = ModalPosition.Middle
+				});
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
@@ -63,7 +96,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			tbl = (await conn.QueryAsync<SS>("SS_QRY",
+			tbl = (await conn.QueryAsync<PP>("PP_QRY",
 				new { a = appState.UsrId, b = appState.UsrFrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
@@ -83,9 +116,9 @@
 	}
 
 
-	public sealed class SS
+	public sealed class PP
 	{
-		public int SSId;
+		public int PPId;
 		public string? Ad;
 	}
 }

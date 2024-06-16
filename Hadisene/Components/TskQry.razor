@@ -22,11 +22,11 @@
 			{
 				<tr>
 					<td>
-						<button @onclick="@(() => ShowMdf(rec.Id))">
+						<button @onclick="@(() => ShowMdf(rec.TTId))">
 							<span class="material-symbols-outlined">
 								edit
 							</span>
-							@rec.Id
+							@rec.TTId
 						</button>
 					</td>
 					<td>@rec.Ad</td>
@@ -85,10 +85,8 @@
 
 	public sealed class TT
 	{
-		public int Id;
+		public int TTId;
 		public string? Ad;
 	}
 }
 
-<style>
-</style>
