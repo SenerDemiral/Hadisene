@@ -244,9 +244,12 @@ button[data-Pin="1"]::after {
 .ooInf {
 	grid-area: ooInf;
 	/*background-color: snow;*/
-	overflow: auto;
+	/*overflow: auto;*/
+	overflow: clip;
+	overflow-wrap: break-word;
+	white-space: break-spaces;
 	min-height: 32px;
-	max-height: 80px;
+	max-height: 70px;
 }
 
 	.ooInf::before {
@@ -314,7 +317,7 @@ input[type="radio"] {
 	width: auto !important;
 }
 
-@media (width < 600px) {
+/*@media (width < 600px) {
 	.ooCnt {
 		grid-template-columns: auto !important;
 		justify-content: normal !important;
@@ -322,9 +325,9 @@ input[type="radio"] {
 		min-width: 500px;
 	}
 
-	.ooCard {
+	.ooCard {*/
 		/*min-width: 500px;*/
-		display: grid;
+		/*display: grid;
 		gap: 2px;
 		grid-template-rows: auto;
 		grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
@@ -356,5 +359,5 @@ input[type="radio"] {
 	button.ooPin {
 		border: none;
 	}
-}
+}*/
 

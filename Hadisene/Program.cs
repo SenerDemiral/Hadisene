@@ -39,14 +39,14 @@ if (!app.Environment.IsDevelopment())
 	Console.WriteLine("not Development");
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseImageSharp();
 
 app.UseAntiforgery();
 
-//app.UseStaticFiles();
-app.MapStaticAssets();
+app.UseStaticFiles();
+//app.MapStaticAssets();
 app.MapRazorComponents<App>()
 	.AddInteractiveServerRenderMode();
 

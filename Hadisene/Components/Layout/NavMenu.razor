@@ -22,7 +22,8 @@
 	<InputSelect TValue="string"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
-				 ValueExpression="@(() => selVal)">
+				 ValueExpression="@(() => selVal)"
+	style="font-size:16px">
 		<option value="">🏠 HOME</option>
 		@if (appState.UsrId != 0)
 		{
