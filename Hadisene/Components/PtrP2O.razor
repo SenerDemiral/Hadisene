@@ -1,0 +1,74 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+<table style="width:200px;">
+	<caption>
+		<button @onclick="Kaydet">
+			<span class="material-symbols-outlined">
+				check
+			</span>
+			Yap
+		</button>
+	</caption>
+	<tbody>
+		<tr>
+			<th>Id#</th>
+			<th>@Idf()</th>
+		</tr>
+		<tr>
+			<td>Başlangıç</td>
+			<td><input type="date" @bind="SD" /></td>
+		</tr>
+		<tr>
+			<td>Bağla</td>
+			<td><input type="checkbox" @bind="Chnd" /></td>
+		</tr>
+	</tbody>
+</table>
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int PPId { get; set; }
+
+	private DateTime? SD; // = DateTime.Today.AddDay(1);
+	private bool Chnd;
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("PP2OO",
+					new
+					{
+						p1 = appState.UsrId,
+						p2 = PPId,
+						p3 = SD,
+						p4 = Chnd ? 1 : 0,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+
+	}
+
+
+	private string Idf()
+	{
+		return PPId == 0 ? "yeni" : PPId.ToString();
+	}
+
+}

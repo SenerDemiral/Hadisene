@@ -22,7 +22,6 @@
     <None Remove="wwwroot\uploads\**" />
   </ItemGroup>
 
-  
 
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />

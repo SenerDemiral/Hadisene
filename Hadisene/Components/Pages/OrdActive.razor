@@ -16,11 +16,11 @@
 		</span>
 	</button>
 
-	<button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
+	@* <button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
 		<span class="material-symbols-outlined">
 			search
 		</span>
-	</button>
+	</button> *@
 </div>
 
 <dialog id="ooSrchDlg">
@@ -56,7 +56,7 @@
 				<div class="box ooReq">@rec.ReqAd</div>
 
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
-				<div class="box ooSbj">@rec.SbjAd</div>
+				@* <div class="box ooSbj">@rec.SbjAd</div> *@
 				<div class="box ooTsk">@rec.TskAd</div>
 				<div class="box ooInf">
 					<button class="pop-btn"
@@ -220,12 +220,12 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			ooList = (await conn.QueryAsync<OO>("OO_QRY",
-				new { A = appState.UsrId, B = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure)
+			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY(@UsrId, @QryStr) order by Idx, UpdTS desc",
+				new { UsrId = appState.UsrId, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.Text)
 			).ToList();
 
-			ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
+			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
 			Notifier.Notify += OnNotify;
 		}

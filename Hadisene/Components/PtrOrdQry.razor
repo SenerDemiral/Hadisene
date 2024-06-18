@@ -12,6 +12,14 @@
 				</span>
 				Görevler (Şablon)
 			</button>
+			<button @onclick="@(() => ShowP2O())">
+				<span class="material-symbols-outlined">
+					<span class="material-symbols-outlined">
+						contract
+					</span>
+				</span>
+				Görevleri ekle
+			</button>
 		</caption>
 		<tbody>
 			<tr>
@@ -62,6 +70,19 @@
 		mp.Add("POId", id);
 
 		var x = Modal.Show<PtrOrdMdf>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	public async Task ShowP2O()
+	{
+		ModalParameters mp = new();
+		mp.Add("PPId", PPId);
+
+		var x = Modal.Show<PtrP2O>("", mp, options);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

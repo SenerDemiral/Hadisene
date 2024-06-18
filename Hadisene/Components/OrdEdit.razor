@@ -34,7 +34,7 @@
 
 		<div class="oeBdy">
 			<div class="oeBox oeStu" >
-				<div style="display:flex; gap:1rem;">
+				<div style="display:flex; justify-content: center; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
 						<div>
 							<InputRadio Value="Statu.Aktif" disabled="@oo.StuROa" />
@@ -154,13 +154,11 @@
 
 }
 
-
-
-<details>
+@* <details>
 	<summary>Details</summary>
 	Something small enough to escape casual notice.
 </details>
-
+ *@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;

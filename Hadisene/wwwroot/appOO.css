@@ -91,22 +91,25 @@
 	background: linear-gradient(90deg, var(--sColor) 10%, 50%, var(--fColor) 90%);
 	color: white;
 	padding: 0 4px;
+	/*height: 36px;*/
 }
 
 .ooCard .box {
 	padding: 0 4px;
+	/*min-height: 32px;*/
 }
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
-	background-color: gray;
+	background-color: lightslategray;
 	color: white;
-	font-size: 1rem;
+	/*font-size: 1rem;*/
 	padding: 0 4px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 2rem;
+	/*height: 36px;*/
 }
 
 	.ooCard .ooFtr > * {
@@ -155,17 +158,18 @@
 .ooCard {
 	display: grid;
 	gap: 2px;
-	grid-template-rows: 36px 32px 32px 1fr repeat(4, 32px) 36px;
+	grid-template-rows: 36px repeat(5, 32px) 1fr 36px;
+	/*grid-template-rows: 36px 32px 32px 1fr repeat(6, 32px) 36px;*/
 	grid-template-columns: 2fr 2fr 1fr;
 	grid-template-areas:
 		"ooHdr ooHdr ooHdr"
-		"ooReq ooReq ooPin"
-		"ooSbj ooSbj ooSbj"
-		"ooInf ooInf ooInf"
+		"ooAct ooAct ooPin"
 		"ooTsk ooTsk ooTsk"
-		"ooAct ooAct ooAct"
+		"ooReq ooReq ooReq"
+		/*"ooSbj ooSbj ooSbj"*/
 		"ooRSD ooASD ooDSH"
 		"ooRFD ooAFD ooDFH"
+		"ooInf ooInf ooInf"
 		"ooFtr ooFtr ooFtr";
 	background-color: #fff;
 	color: #444;
@@ -225,8 +229,12 @@ button[data-Pin="1"]::after {
 		content: "birim";
 	}
 
+/*.ooCard:has(:not(.ooSbj)) > .ooSbj {
+	display: none;
+}*/
 .ooTsk {
 	grid-area: ooTsk;
+	font-weight: 500;
 }
 
 	.ooTsk::before {
@@ -235,6 +243,7 @@ button[data-Pin="1"]::after {
 
 .ooAct {
 	grid-area: ooAct;
+	font-weight:800;
 }
 
 	.ooAct::before {
