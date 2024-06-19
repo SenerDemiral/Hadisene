@@ -59,19 +59,20 @@
 				</span>
 			</button>
 
-			<InputTextArea @bind-Value="msg" rows="2" placeholder="Mesaj yazın." />
 
-			<label for="photo" style="cursor:pointer; margin: auto 12px;">
+			<label for="photo" style="cursor:pointer; display: inline-flex; align-items: center; padding-inline: inherit;">
 				<span class="material-symbols-outlined">
 					add_a_photo
 				</span>
 				<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
 			</label>
 
+			<InputTextArea @bind-Value="msg" rows="2" placeholder="Mesaj yazın." />
+
 			<button @onclick="InsertTextRec">
-				<span class="material-symbols-outlined">
-					keyboard_return
-				</span>OK
+				<span class="material-symbols-outlined" style="color: limegreen;">
+					send
+				</span>
 			</button>
 		</div>
 	</div>

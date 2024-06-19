@@ -16,6 +16,7 @@
 body {
 	/*box-sizing: border-box;*/
 	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
 	
 	/*margin: 0 8px;*/
 
@@ -364,6 +365,8 @@ tr:nth-child(even) {
 	white-space: initial;
 	overflow-wrap: break-word;
 	white-space: break-spaces;
+	font-size: 1em;
+	font-family: inherit;
 }
 
 [popover]:popover-open {
@@ -481,4 +484,13 @@ tr:nth-child(even) {
 		break-inside: avoid;
 	}
 
+}
+
+@media (width > 572px) {
+	body {
+		font-size: 16px;
+	}
+	.ooCard {
+		/*grid-template-rows: 36px repeat(5, 32px) 1fr 36px !important;*/
+	}
 }

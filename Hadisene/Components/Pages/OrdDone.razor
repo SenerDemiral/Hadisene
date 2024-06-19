@@ -1,0 +1,100 @@
+﻿@page "/orddone"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState appState
+@inject IDbCon db
+@inject IModalService Modal
+
+<h3>OrdDone</h3>
+
+
+<table>
+	<caption>
+	</caption>
+	<thead>
+		<tr>
+			<th>Id#</th>
+			<th>Stu</th>
+			<th>Birim</th>
+			<th>Görev</th>
+			<th>Aktör</th>
+			<th>İsteyen</th>
+			<th>İstekBaş</th>
+			<th>GerçekBaş</th>
+			<th>Geç</th>
+			<th>İstekBit</th>
+			<th>GerçekBit</th>
+			<th>Geç</th>
+			<th>Süre</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var r in ooList)
+		{
+			<tr>
+				<td>@r.OOId</td>
+				<td>@r.Stu</td>
+				<td>@r.SbjAd</td>
+				<td>@r.TskAd</td>
+				<td>@r.ActAd</td>
+				<td>@r.ReqAd</td>
+				<td>@r.RSDf</td>
+				<td>@r.ASDf</td>
+				<td>@r.DSX</td>
+				<td>@r.RFDf</td>
+				<td>@r.AFDf</td>
+				<td>@r.DFX</td>
+				<td>@r.SFX</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@code {
+	private List<OO>? ooList = new();
+	public string? qryStr { get; set; } = "";
+	
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY_DONE(@UsrId, @QryStr)",
+				new { UsrId = appState.UsrId, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.Text)
+			).ToList();
+
+			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	public sealed class OO
+	{
+		public int OOId;
+		public string? Stu;
+		public DateTime? RSD;
+		public DateTime? ASD;
+		public DateTime? RFD;
+		public DateTime? AFD;
+
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+		public string? ReqAd;
+
+		public string? DSX;
+		public string? DFX;
+		public string? SFX;
+
+		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
+		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
+		public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
+		public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
+
+	}
+}

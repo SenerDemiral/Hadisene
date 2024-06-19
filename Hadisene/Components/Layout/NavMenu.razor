@@ -37,7 +37,7 @@
 					<option value="PtrQry">⛓️ Şablon</option>
 
 				</optgroup>
-				<option value="">💤 Arşiv</option>
+				<option value="ordDone">💤 Arşiv</option>
 			}
 			<option value="Logout">↙️ Logout</option>
 		}
@@ -98,7 +98,7 @@
 		else
 		{
 			selVal = selectedValue;
-			navigationManager.NavigateTo(selectedValue);
+			navigationManager.NavigateTo(selectedValue, replace: true);
 		}
 	}
 
