@@ -184,6 +184,8 @@
 			modeRO = true;
 			ModeChanging(_mode, value);
 			_mode = value;
+			StateHasChanged();
+
 		}
 	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
@@ -382,12 +384,18 @@
 	{
 		using var conn = db.GetConnection();
 		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
-		oo = conn.QuerySingle<OO>("OO_SEL",
-		new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-		commandType: CommandType.StoredProcedure);
+		if (OOId == 0)
+		{
+			mode = Mode.New;
+		}
+		else
+		{
+			oo = conn.QuerySingle<OO>("OO_SEL",
+			new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			commandType: CommandType.StoredProcedure);
 
-		ooo = oo.ShallowCopy();
-
+			ooo = oo.ShallowCopy();
+		}
 		ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		uud = conn.Query<UU>("UU_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);

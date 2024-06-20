@@ -4,67 +4,244 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-<h3>OrdDone</h3>
-
-
 <table>
 	<caption>
+		<div style="display:inline-flex; gap:1rem">
+			<h3>💤 Arşiv</h3>
+			<button style="border:none;background-color:yellow"
+					popovertarget="search-popover"
+					popovertargetaction="toggle">
+				<span class="material-symbols-outlined">
+					search
+				</span>
+			</button>
+		</div>
 	</caption>
 	<thead>
 		<tr>
-			<th>Id#</th>
-			<th>Stu</th>
-			<th>Birim</th>
-			<th>Görev</th>
-			<th>Aktör</th>
-			<th>İsteyen</th>
-			<th>İstekBaş</th>
-			<th>GerçekBaş</th>
-			<th>Geç</th>
-			<th>İstekBit</th>
-			<th>GerçekBit</th>
-			<th>Geç</th>
-			<th>Süre</th>
+			<th rowspan="2">Id#</th>
+			<th rowspan="2">Stu</th>
+			<th rowspan="2">Birim</th>
+			<th rowspan="2">Görev</th>
+			<th rowspan="2">Aktör</th>
+			<th rowspan="2">İsteyen</th>
+			<th colspan="3">Başlangıç</th>
+			<th colspan="3">Bitiş</th>
+			<th rowspan="2">
+				<span class="material-symbols-outlined">
+					watch_check
+				</span>
+			</th>
+		</tr>
+		<tr>
+			<th>İstek</th>
+			<th>
+				<span class="material-symbols-outlined">
+					width
+				</span>
+			</th>
+			<th>Gerçek</th>
+			<th>İstek</th>
+			<th>
+				<span class="material-symbols-outlined">
+					width
+				</span>
+			</th>
+			<th>Gerçek</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="zebra">
 		@foreach (var r in ooList)
 		{
 			<tr>
-				<td>@r.OOId</td>
-				<td>@r.Stu</td>
+				<td class="t-r">@r.OOId</td>
+				<td class="t-c">@r.Stu</td>
 				<td>@r.SbjAd</td>
 				<td>@r.TskAd</td>
 				<td>@r.ActAd</td>
 				<td>@r.ReqAd</td>
-				<td>@r.RSDf</td>
-				<td>@r.ASDf</td>
-				<td>@r.DSX</td>
-				<td>@r.RFDf</td>
-				<td>@r.AFDf</td>
-				<td>@r.DFX</td>
-				<td>@r.SFX</td>
+				<td class="t-c">@r.RSD.ToS()</td>
+				<td class="t-c">@r.DSH</td>
+				<td class="t-c">@r.ASD.ToS()</td>
+				<td class="t-c">@r.RFD.ToS()</td>
+				<td class="t-c">@r.DFH</td>
+				<td class="t-c">@r.AFD.ToS()</td>
+				<td class="t-c">@r.SFH</td>
 			</tr>
 		}
 	</tbody>
 </table>
 
+
+<div id="search-popover" popover="auto" style="min-width:360px;">
+	<table>
+		<tr>
+			<td>Durum</td>
+			<td>
+				<div style="display:flex; justify-content: center; gap:1rem;">
+					<InputRadioGroup @bind-Value="stu">
+						<div>
+							<InputRadio Value="Statu.Arşiv" />
+							Arşiv
+						</div>
+						<div>
+							<InputRadio Value="Statu.İptal" />
+							İptal
+						</div>
+					</InputRadioGroup>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>Tarih &ge;</td>
+			<td><input type="date" @bind-value="bTrh" /></td>
+		</tr>
+		<tr>
+			<td>Tarih &lt;</td>
+			<td><input type="date" @bind-value="eTrh" /></td>
+
+		</tr>
+		<tr>
+			<td>Birim</td>
+			<td>
+				<div style="max-height: 100px; overflow: auto;">
+					@foreach (var itm in sbjList)
+					{
+						<div>
+							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
+						</div>
+					}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>Görev</td>
+			<td>
+				<div style="max-height: 100px; overflow: auto;">
+					@foreach (var itm in tskList)
+					{
+						<div>
+							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
+						</div>
+					}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>Aktör</td>
+			<td>
+				<div style="max-height: 100px; overflow: auto;">
+					@foreach (var itm in actList)
+					{
+						<div>
+							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
+						</div>
+					}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>İsteyen</td>
+			<td>
+				<div style="max-height: 100px; overflow: auto;">
+					@foreach (var itm in reqList)
+					{
+						<div>
+							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
+						</div>
+					}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="t-c">
+				<button @onclick="DoSearch">
+					<span class="material-symbols-outlined">
+						search
+					</span>
+				</button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<style>
+	#search-popover {
+		white-space: nowrap;
+	}
+	/* [popover]:popover-open {
+				white-space: nowrap;
+			} */
+</style>
+
 @code {
 	private List<OO>? ooList = new();
 	public string? qryStr { get; set; } = "";
-	
+	public List<SelList> reqList = new();
+	public List<SelList> sbjList = new();
+	public List<SelList> actList = new();
+	public List<SelList> tskList = new();
+
+	private DateTime bTrh = DateTime.Today.AddDays(-7);
+	private DateTime eTrh = DateTime.Today;
+
+	public enum Statu { İptal = 'X', Arşiv = 'Z' };
+	public Statu stu;
+
+	private void DoSearch()
+	{
+		List<string> sl = new();
+
+		Add2List(sl, reqList, "ReqId=");
+		Add2List(sl, sbjList, "SbjId=");
+		Add2List(sl, actList, "ActId=");
+		Add2List(sl, tskList, "TskId=");
+
+		qryStr = String.Join('&', sl);
+		Read();
+	}
+
+	private void Add2List(List<string> slst, List<SelList> lst, string name)
+	{
+		List<string> sl = new();
+		foreach (var itm in lst)
+		{
+			if (itm.Selected)
+			{
+				sl.Add($"[{itm.Ad.Substring(itm.Ad.IndexOf('#') + 1)}]");
+			}
+		}
+		string x = String.Join("", sl);
+		if (!String.IsNullOrWhiteSpace(x))
+		{
+			slst.Add($"{name}{x}");
+		}
+	}
+
+	private void Read()
+	{
+		var Stu = ((char)((int)stu)).ToString();
+
+		using var conn = db.GetConnection();
+		ooList = conn.Query<OO>("select * from OO_QRY_DONE(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
+			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
+			commandType: CommandType.Text)
+		.ToList();
+
+	}
+
 	protected override async Task OnInitializedAsync()
 	{
+		stu = Statu.Arşiv;
 		try
 		{
+			Read();
 			using var conn = db.GetConnection();
-			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY_DONE(@UsrId, @QryStr)",
-				new { UsrId = appState.UsrId, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.Text)
-			).ToList();
 
 			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
+			var LU = conn.QuerySingle<LookUp>("OO_DONE_LU", new { FormFile = appState.UsrFrmId }, commandType: CommandType.StoredProcedure);
+			LookUpInit(LU.Sbjs, LU.Tsks, LU.Usrs);
 		}
 		catch (Exception ex)
 		{
@@ -87,14 +264,45 @@
 		public string? ActAd;
 		public string? ReqAd;
 
-		public string? DSX;
-		public string? DFX;
-		public string? SFX;
+		public int DSH;
+		public int DFH;
+		public int SFH;
 
 		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
 		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
 		public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
 		public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
 
+
 	}
+
+	public sealed class LookUp
+	{
+		public string Sbjs;
+		public string Tsks;
+		public string Usrs;
+	}
+
+	public void LookUpInit(string Sbjs, string Tsks, string Usrs)
+	{
+		foreach (var s in Sbjs.Split(",", StringSplitOptions.TrimEntries))
+		{
+			sbjList.Add(new SelList { Ad = s, Selected = false });
+		}
+		foreach (var s in Tsks.Split(",", StringSplitOptions.TrimEntries))
+		{
+			tskList.Add(new SelList { Ad = s, Selected = false });
+		}
+		foreach (var s in Usrs.Split(",", StringSplitOptions.TrimEntries))
+		{
+			actList.Add(new SelList { Ad = s, Selected = false });
+			reqList.Add(new SelList { Ad = s, Selected = false });
+		}
+	}
+	public sealed class SelList
+	{
+		public string Ad;
+		public bool Selected;
+	}
+
 }

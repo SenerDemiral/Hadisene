@@ -15,6 +15,11 @@
 			refresh
 		</span>
 	</button>
+	<button @onclick="AddNew" style="background-color: yellow;">
+		<span class="material-symbols-outlined">
+			add
+		</span>
+	</button>
 
 	@* <button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
 		<span class="material-symbols-outlined">
@@ -115,6 +120,21 @@
 	private bool hasWaitConfirm()
 	{
 		return ooList!.Exists((z) => z.IoC == "C");
+	}
+
+	private void AddNew()
+	{
+		ModalParameters mp = new();
+		mp.Add("OOId", 0);
+
+		Modal.Show<OrdEdit>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
 	}
 
 	private void ShowEdit(OO oo)
