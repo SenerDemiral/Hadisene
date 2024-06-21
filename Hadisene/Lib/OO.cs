@@ -60,11 +60,6 @@ public sealed class OO
 	public bool ASDro = true;
 	public bool AFDro = true;
 
-	public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
-	public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
-	public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
-	public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
-
 	public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
 
 	public OO ShallowCopy()

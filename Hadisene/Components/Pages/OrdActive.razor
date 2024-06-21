@@ -139,12 +139,12 @@
 				});
 	}
 
-	private void ShowEdit(OO oo)
+	private async Task ShowEdit(OO oo)
 	{
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
-
-		Modal.Show<OrdEdit>("deneme", mp,
+		
+		var x = Modal.Show<OrdEdit>("deneme", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -152,6 +152,12 @@
 					SizeCustomClass = "blazored-modal-custom-size",
 					Position = ModalPosition.Middle
 				});
+
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
 	}
 
 	private void ShowMsg(OO oo)
@@ -242,7 +248,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY(@UsrId, @QryStr) order by Idx, UpdTS desc",
+			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY(@UsrId, @QryStr) order by Idx, Trh",
 				new { UsrId = appState.UsrId, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.Text)
 			).ToList();

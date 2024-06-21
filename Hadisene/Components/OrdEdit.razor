@@ -83,12 +83,6 @@
 					   @bind:after="CheckTsk" />
 			</div>
 
-			<div class="oeBox oeInf">
-				<InputTextArea @bind-Value="oo.Inf"
-							   rows="2"
-							   disabled="@oo.InfRO" />
-			</div>
-
 			<div class="oeBox oeAct">
 				<input type="text"
 					   maxlength="30"
@@ -121,6 +115,13 @@
 					   disabled="@oo.AFDro"
 					   @bind-value="@oo.AFD" />
 			</div>
+
+			<div class="oeBox oeInf">
+				<InputTextArea @bind-Value="oo.Inf"
+							   rows="2"
+							   disabled="@oo.InfRO" />
+			</div>
+
 		</div>
 
 		<div class="oeFtr">FOOTER</div>

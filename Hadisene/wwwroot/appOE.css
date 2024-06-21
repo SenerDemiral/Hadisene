@@ -259,15 +259,16 @@
 	.oeCard {
 		min-width: 500px;
 	}
+
 	.oeBdy {
 		grid-template-areas:
 			"oeStu oeStu"
 			"oeReq oeReq"
 			"oeSbj oeSbj"
 			"oeTsk oeTsk"
-			"oeInf oeInf"
 			"oeAct oeAct"
 			"oeRSD oeASD"
-			"oeRFD oeAFD";
+			"oeRFD oeAFD"
+			"oeInf oeInf";
 	}
 }
