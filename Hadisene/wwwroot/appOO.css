@@ -1,6 +1,6 @@
 ﻿.ooCnt {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, 360px);
+	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
 	gap: 1.5rem;
 }
@@ -248,7 +248,7 @@ button[data-Pin="1"]::after {
 }
 
 	.ooSbj::before {
-		content: "birim";
+		content: "servis";
 	}
 
 /*.ooCard:has(:not(.ooSbj)) > .ooSbj {

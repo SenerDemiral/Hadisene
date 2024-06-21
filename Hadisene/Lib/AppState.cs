@@ -13,8 +13,8 @@ public sealed class AppState
 	public string UsrYtkAd => UsrYtk switch
 	{
 		1 => "[Admn]",
-		2 => "[BrmYtk]",
-		3 => "[Yapan]",
+		2 => "[SrvYtk]",
+		3 => "[Görevli]",
 		4 => "[İsteyen]",
 		_ => "[Yetkisiz]"
 	};

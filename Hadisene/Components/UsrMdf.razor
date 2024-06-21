@@ -30,8 +30,8 @@
 						@if(rec.Ytk < 9)
 						{
 							<option value="1">Admin</option>
-							<option value="2">BirimYetkili</option>
-							<option value="3">Yapan</option>
+							<option value="2">ServisYtkl</option>
+							<option value="3">Görevli</option>
 							<option value="4">İsteyen</option>
 							<option value="8">Pasif</option>
 							<option value="9">Ayrıldı</option>
@@ -59,7 +59,7 @@
 			@if (rec.Ytk > 1 && rec.Ytk < 4)
 			{
 				<tr>
-					<td>Birimler</td>
+					<td>Servisler</td>
 					<td>
 						<div style="max-height:8lh;overflow:auto">
 							@foreach (var r in us)

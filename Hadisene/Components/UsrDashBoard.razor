@@ -11,16 +11,17 @@
 	<div class="dashboard" data-pos="@pos[p]">
 
 		<table>
-			<caption onclick="@PosChanged">
-				<span class="material-symbols-outlined">
-					zoom_out_map
-				</span>@* DashBoard @cnt @dnm *@
-			</caption>
 			<thead>
 				<tr>
-					<th></th>
-					<th>Start</th>
-					<th>Finish</th>
+					<th>
+						<div onclick="@PosChanged" style="cursor:move">
+							<span class="material-symbols-outlined">
+								zoom_out_map
+							</span>@* DashBoard @cnt @dnm *@
+						</div>
+					</th>
+					<th>Baş</th>
+					<th>Bit</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -60,7 +61,7 @@
 					<td colspan="2">@UDB.MnV <InputCheckbox @bind-Value="cbMnV" /></td>
 				</tr>
 				<tr class="req hdr">
-					<td colspan="3">İsteyenler</td>
+					<td colspan="3">İsteyen</td>
 				</tr>
 				<tr class="req">
 					<td colspan="3" class="bdy">
@@ -76,7 +77,7 @@
 					</td>
 				</tr>
 				<tr class="sbj hdr">
-					<td colspan="3">Birimler</td>
+					<td colspan="3">Servis</td>
 				</tr>
 				<tr class="sbj">
 					<td colspan="3" class="bdy">
@@ -92,7 +93,7 @@
 					</td>
 				</tr>
 				<tr class="tsk hdr">
-					<td colspan="3">Görevler</td>
+					<td colspan="3">Görev</td>
 				</tr>
 				<tr class="tsk">
 					<td colspan="3" class="bdy">
@@ -108,7 +109,7 @@
 					</td>
 				</tr>
 				<tr class="act hdr">
-					<td colspan="3">Yapanlar</td>
+					<td colspan="3">Görevli</td>
 				</tr>
 				<tr class="act">
 					<td colspan="3" class="bdy">

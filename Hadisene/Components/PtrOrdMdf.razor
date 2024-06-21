@@ -20,7 +20,7 @@
 				<th>@Idf()</th>
 			</tr>
 			<tr>
-				<td>Birim</td>
+				<td>Servis</td>
 				<td>
 					<input type="text"
 						   maxlength="30"
@@ -52,7 +52,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Yapan</td>
+				<td>Görevli</td>
 				<td>
 					<input type="text"
 						   maxlength="30"
@@ -61,6 +61,24 @@
 						   @bind="po.ActAd"
 						   @bind:event="onchange"
 						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+			<tr>
+				<td>İstek Başlangıç</td>
+				<td>
+					<div >
+						<input type="datetime-local"
+							   @bind-value="@po.RSD" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>İstek Bitiş</td>
+				<td>
+					<div>
+						<input type="datetime-local"
+							   @bind-value="@po.RFD" />
+					</div>
 				</td>
 			</tr>
 
@@ -90,6 +108,7 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int PPId { get; set; }
 	[Parameter] public int POId { get; set; }
 	private PO? po, opo;
 	private Dictionary<string, int>? ssd, ttd, sad;
@@ -143,8 +162,8 @@
 					new
 					{
 						p1 = appState.UsrId,
-						p2 = po.POId,
-						p3 = POId,
+						p2 = POId,
+						p3 = PPId,
 						p4 = po.RSD,
 						p5 = po.RFD,
 						p6 = po.SbjId,

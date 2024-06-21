@@ -30,7 +30,7 @@
 			@if (appState.UsrYtk == 1)
 			{
 				<optgroup label="Tanımlar">
-					<option value="SbjQry">⚓ Birim</option>
+					<option value="SbjQry">⚓ Servis</option>
 					<option value="TskQry">📝 Görev</option>
 					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
 					<option value="PtrQry">⛓️ Şablon</option>
@@ -135,7 +135,7 @@
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
 
-		Modal.Show<SbjQry>("Birimler", mp,
+		Modal.Show<SbjQry>("Servisler", mp,
 			new ModalOptions
 				{
 					HideHeader = true,

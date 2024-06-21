@@ -24,9 +24,9 @@
 		<tbody>
 			<tr>
 				<th>Edit</th>
-				<th>Birim</th>
+				<th>Servis</th>
 				<th>Görev</th>
-				<th>Yapan</th>
+				<th>Görevli</th>
 				<th>İstekBaş</th>
 				<th>İstekBit</th>
 
@@ -67,6 +67,7 @@
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
+		mp.Add("PPId", PPId);
 		mp.Add("POId", id);
 
 		var x = Modal.Show<PtrOrdMdf>("", mp, options);

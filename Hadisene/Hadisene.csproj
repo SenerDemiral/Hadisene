@@ -35,16 +35,5 @@
     <Folder Include="wwwroot\bootstrap\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\Pages\OrdDone.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\Pages\OrdDone.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Components\Pages\OrdDone.razor" />
-  </ItemGroup>
 
 </Project>

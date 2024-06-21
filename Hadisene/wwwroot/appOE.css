@@ -144,7 +144,7 @@
 }
 
 	.oeSbj::before {
-		content: "birim";
+		content: "servis";
 	}
 
 .oeTsk {
@@ -172,7 +172,7 @@
 }
 
 	.oeAct::before {
-		content: "yapan";
+		content: "görevli";
 	}
 
 .oeRSD {
