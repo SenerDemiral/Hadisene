@@ -20,10 +20,9 @@
 	<thead>
 		<tr>
 			<th rowspan="2">Id#</th>
-			<th rowspan="2">Stu</th>
 			<th rowspan="2">Birim</th>
 			<th rowspan="2">Görev</th>
-			<th rowspan="2">Aktör</th>
+			<th rowspan="2">Görevli</th>
 			<th rowspan="2">İsteyen</th>
 			<th colspan="3">Başlangıç</th>
 			<th colspan="3">Bitiş</th>
@@ -55,7 +54,6 @@
 		{
 			<tr>
 				<td class="t-r">@r.OOId</td>
-				<td class="t-c">@r.Stu</td>
 				<td>@r.SbjAd</td>
 				<td>@r.TskAd</td>
 				<td>@r.ActAd</td>
@@ -78,15 +76,15 @@
 		<tr>
 			<td>Durum</td>
 			<td>
-				<div style="display:flex; justify-content: center; gap:1rem;">
+				<div style="display:flex; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
 						<div>
-							<InputRadio Value="Statu.Arşiv" />
-							Arşiv
+							<InputRadio Value="Statu.Kapalı" />
+							@Statu.Kapalı
 						</div>
 						<div>
 							<InputRadio Value="Statu.İptal" />
-							İptal
+							@Statu.İptal
 						</div>
 					</InputRadioGroup>
 				</div>
@@ -104,7 +102,7 @@
 		<tr>
 			<td>Birim</td>
 			<td>
-				<div style="max-height: 100px; overflow: auto;">
+				<div class="lst">
 					@foreach (var itm in sbjList)
 					{
 						<div>
@@ -117,7 +115,7 @@
 		<tr>
 			<td>Görev</td>
 			<td>
-				<div style="max-height: 100px; overflow: auto;">
+				<div class="lst">
 					@foreach (var itm in tskList)
 					{
 						<div>
@@ -128,9 +126,9 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Aktör</td>
+			<td>Görevli</td>
 			<td>
-				<div style="max-height: 100px; overflow: auto;">
+				<div class="lst">
 					@foreach (var itm in actList)
 					{
 						<div>
@@ -143,7 +141,7 @@
 		<tr>
 			<td>İsteyen</td>
 			<td>
-				<div style="max-height: 100px; overflow: auto;">
+				<div class="lst">
 					@foreach (var itm in reqList)
 					{
 						<div>
@@ -169,6 +167,10 @@
 	#search-popover {
 		white-space: nowrap;
 	}
+	.lst {
+		max-height: 80px;
+		overflow: auto;
+	}
 	/* [popover]:popover-open {
 				white-space: nowrap;
 			} */
@@ -185,7 +187,7 @@
 	private DateTime bTrh = DateTime.Today.AddDays(-7);
 	private DateTime eTrh = DateTime.Today;
 
-	public enum Statu { İptal = 'X', Arşiv = 'Z' };
+	public enum Statu { İptal = 'X', Kapalı = 'Z' };
 	public Statu stu;
 
 	private void DoSearch()
@@ -232,7 +234,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		stu = Statu.Arşiv;
+		stu = Statu.Kapalı;
 		try
 		{
 			Read();
@@ -253,7 +255,6 @@
 	public sealed class OO
 	{
 		public int OOId;
-		public string? Stu;
 		public DateTime? RSD;
 		public DateTime? ASD;
 		public DateTime? RFD;

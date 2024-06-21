@@ -1,31 +1,37 @@
 ﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
-@inject IModalService Modal
+@* @inject IModalService Modal *@
 
 @page "/"
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world! @uyari</h1>
+<div style="display:flex;height:100%;justify-content:center;align-items:center">
+	<h1>
+		<span class="material-symbols-outlined" style="font-size:4em;color:olive;">
+			receipt_long
+		</span>
+	</h1>
+</div>
 
-Welcome to your new app.
+@* Welcome to your new app.
 <button @onclick="ShowModal" class="btn btn-primary">Show Modal</button>
-
+ *@
 
 @code {
-	[Parameter] public string? UsrTkn { get; set; } = default;
-	//[CascadingParameter] IModalService Modal2 { get; set; } = default!; 
-	private string uyari = "xxxxx";
+	// [Parameter] public string? UsrTkn { get; set; } = default;
+	// //[CascadingParameter] IModalService Modal2 { get; set; } = default!; 
+	// private string uyari = "xxxxx";
 
-	// sadece Interactive olursa çalışır
-	void ShowModal()
-	{
-		uyari = "abidik";
-		Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
-	}
-	protected override async Task OnInitializedAsync()
-	{
-		uyari = "zzzzzz";
-		// sadece Interactive olursa çalışır
-		Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
-	}
+	// // sadece Interactive olursa çalışır
+	// void ShowModal()
+	// {
+	// 	uyari = "abidik";
+	// 	Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
+	// }
+	// protected override async Task OnInitializedAsync()
+	// {
+	// 	uyari = "zzzzzz";
+	// 	// sadece Interactive olursa çalışır
+	// 	Modal.Show<ModalConfirm>("Welcome to Blazored Modal");
+	// }
 }

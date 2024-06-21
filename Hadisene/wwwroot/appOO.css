@@ -1,6 +1,6 @@
 ﻿.ooCnt {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, 340px);
+	grid-template-columns: repeat(auto-fit, 360px);
 	justify-content: center;
 	gap: 1.5rem;
 }
@@ -81,7 +81,29 @@
 	.ooBtnF[disabled] {
 		pointer-events: none;
 		color: black;
+		opacity: 0.5;
 	}
+
+.ooBtnS::before {
+	content: "play_circle";
+	font-family: 'Material Symbols Outlined';
+	font-size: inherit;
+}
+.ooBtnF::before {
+	content: "stop_circle";
+	font-family: 'Material Symbols Outlined';
+	font-size: inherit;
+}
+.ooBtnOK::before {
+	content: "check_circle";
+	font-family: 'Material Symbols Outlined';
+	font-size: inherit;
+}
+.ooBtnCancel::before {
+	content: "cancel";
+	font-family: 'Material Symbols Outlined';
+	font-size: inherit;
+}
 
 .ooCard .ooHdr {
 	grid-area: ooHdr;
@@ -101,8 +123,8 @@
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
-	background-color: lightslategray;
-	color: white;
+	background-color: gainsboro;
+	color: black;
 	/*font-size: 1rem;*/
 	padding: 0 4px;
 	display: flex;
@@ -243,11 +265,11 @@ button[data-Pin="1"]::after {
 
 .ooAct {
 	grid-area: ooAct;
-	font-weight:800;
+	font-weight: 800;
 }
 
 	.ooAct::before {
-		content: "yapan";
+		content: "görevli";
 	}
 
 .ooInf {
@@ -270,7 +292,7 @@ button[data-Pin="1"]::after {
 }
 
 	.ooRSD::before {
-		content: "başlangıç istek";
+		content: "istek başlangıç";
 	}
 
 .ooASD {
@@ -278,7 +300,7 @@ button[data-Pin="1"]::after {
 }
 
 	.ooASD::before {
-		content: "başlangıç gerçek";
+		content: "gerçek başlangıç";
 	}
 
 .ooDSH {
@@ -287,7 +309,7 @@ button[data-Pin="1"]::after {
 }
 
 	.ooDSH::before {
-		content: "gecikme";
+		content: "± gecikme";
 	}
 
 .ooRFD {
@@ -295,15 +317,16 @@ button[data-Pin="1"]::after {
 }
 
 	.ooRFD::before {
-		content: "bitiş istek";
+		content: "istek bitiş";
 	}
+
 
 .ooAFD {
 	grid-area: ooAFD;
 }
 
 	.ooAFD::before {
-		content: "bitiş gerçek";
+		content: "gerçek bitiş";
 	}
 
 .ooDFH {
@@ -335,8 +358,8 @@ input[type="radio"] {
 	}
 
 	.ooCard {*/
-		/*min-width: 500px;*/
-		/*display: grid;
+/*min-width: 500px;*/
+/*display: grid;
 		gap: 2px;
 		grid-template-rows: auto;
 		grid-template-columns: 2fr 2fr 1fr 1fr 1fr;

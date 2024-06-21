@@ -9,6 +9,8 @@
 @inject IJSRuntime js
 @implements IDisposable
 
+<PageTitle>AktifGörevler</PageTitle>
+
 <div class="stk">
 	<button @onclick="Read" style="background-color: yellow;">
 		<span class="material-symbols-outlined">
@@ -73,12 +75,12 @@
 
 				<div class="box ooAct">@rec.ActAd</div>
 
-				<div class="box ooS ooRSD">@rec.RSDf</div>
-				<div class="box ooS ooASD">@rec.ASDf</div>
-				<div class="box ooS ooDSH ooOzet">@rec.DSX</div>
+				<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
+				<div class="box ooS ooASD">@rec.ASD.ToS()</div>
+				<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
 
-				<div class="box ooF ooRFD">@rec.RFDf</div>
-				<div class="box ooF ooAFD">@rec.AFDf</div>
+				<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
+				<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
 				<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
@@ -92,7 +94,7 @@
 					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
 					<div class="ooStuA ooC ooTxtS">Başlat ?</div>
 					<div class="ooStuA ooC ooTxtF">Bitir ?</div>
-					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Cancel</button>
+					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
 				</div>
 			</div>
 		}

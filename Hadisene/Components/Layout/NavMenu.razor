@@ -22,8 +22,7 @@
 	<InputSelect TValue="string"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
-				 ValueExpression="@(() => selVal)"
-	style="font-size:16px">
+				 ValueExpression="@(() => selVal)" >
 		<option value="">🏠 HOME</option>
 		@if (appState.UsrId != 0)
 		{
@@ -45,14 +44,14 @@
 		{
 			<option value="Login">↗️ Login</option>
 		}
-		<option value="counter">&emsp;🚧 Deneme</option>
-		<option value="counter">&nbsp;🚧 Deneme</option>
+		@* <option value="counter">&nbsp;🚧 Deneme</option> *@
 
 	</InputSelect>
 </div>
+
 <div class="btm">
-	<div>&copy;Şener Demiral 2024</div>
-	<div>User</div>
+	<div>&copy;Şener Demiral @(DateTime.Now.Year)</div>
+	<div>YapHaydi.com</div>
 </div>
 
 
