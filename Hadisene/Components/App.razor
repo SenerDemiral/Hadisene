@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
     @* <link rel="stylesheet" href="bootstrap/bootstrap.min.css" /> *@
-    <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="appOO.css" />
-    <link rel="stylesheet" href="appOE.css" />
-    <link rel="stylesheet" href="appOZ.css" />
-    <link rel="stylesheet" href="Hadisene.styles.css" />
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="app.css?version=1" />
+    <link rel="stylesheet" href="appOO.css?version=1" />
+    <link rel="stylesheet" href="appOE.css?version=1" />
+    <link rel="stylesheet" href="appOZ.css?version=1" />
+    <link rel="stylesheet" href="Hadisene.styles.css?version=1" />
+    <link rel="icon" type="image/png" href="favicon.png?version=1" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <HeadOutlet />
+    @* <HeadOutlet /> *@
 </head>
 
 <body>
     <Routes  />
     <script src="_framework/blazor.web.js"></script>
-    <script src="js/deneme.js"></script>
+    <script src="js/deneme.js?version=1"></script>
 </body>
 
 </html>
@@ -35,4 +35,6 @@
     // private IComponentRenderMode? PageRenderMode
     // => HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
 
+
+    // css / js değişende version 1 artır ki eskisni cache den almasın
 }

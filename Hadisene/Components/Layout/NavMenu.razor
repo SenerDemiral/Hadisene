@@ -5,6 +5,7 @@
 @inject NotifierService Notifier
 @implements IAsyncDisposable
 @inject NavigationManager navigationManager
+@inject IJSRuntime js
 
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
 @* MainLayout da tanımlı *@
@@ -45,6 +46,7 @@
 			<option value="Login">↗️ Login</option>
 		}
 		@* <option value="counter">&nbsp;🚧 Deneme</option> *@
+		@* <option value="Refresh">🔄 Refresh</option> *@
 
 	</InputSelect>
 </div>
@@ -93,6 +95,10 @@
 		else if (selectedValue == "PtrQry")
 		{
 			await ShowPtrQry();
+		}
+		else if (selectedValue == "Refresh")
+		{
+			await js.InvokeVoidAsync("hardReload");
 		}
 		else
 		{

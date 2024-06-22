@@ -4,6 +4,7 @@ public sealed class OO
 {
 	public int Idx;
 	public DateTime? UpdTS;
+	public string? UpdFlg;
 
 	public int UsrId;   // Last updated by 
 

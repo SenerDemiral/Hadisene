@@ -180,7 +180,7 @@ button {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	/*gap: 8px;*/
 	outline: 0;
 	border: 1px solid #dedede;
 	border-radius: 4px;
@@ -189,8 +189,8 @@ button {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	font-size: 1rem;
-	padding: 2px 12px;
+	/*font-size: 1rem;*/
+	/*padding: 2px 12px;*/
 	transition: all .14s ease-out;
 	background-color: white;
 }

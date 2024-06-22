@@ -51,6 +51,7 @@
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
 				<div class="ooHdr">
 					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
+						<span>@((MarkupString)rec.UpdFlg)</span>
 						<span class="material-symbols-outlined">settings</span>
 						<span class="ooBtnEdtId">#@rec.OOId</span>
 					</button>
@@ -61,7 +62,7 @@
 					</button>
 				</div>
 				<div class="box ooReq">@rec.ReqAd</div>
-
+				
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
 				<div class="box ooTsk">@rec.TskAd</div>

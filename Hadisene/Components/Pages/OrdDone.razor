@@ -7,7 +7,7 @@
 <table>
 	<caption>
 		<div style="display:inline-flex; gap:1rem">
-			<h3>💤 Arşiv</h3>
+			<h3>💤 Arşiv @stu</h3>
 			<button style="border:none;background-color:yellow"
 					popovertarget="search-popover"
 					popovertargetaction="toggle">
@@ -225,7 +225,7 @@
 		var Stu = ((char)((int)stu)).ToString();
 
 		using var conn = db.GetConnection();
-		ooList = conn.Query<OO>("select * from OO_QRY_DONE(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
+		ooList = conn.Query<OO>("select * from OZ_QRY(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
 			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
 			commandType: CommandType.Text)
 		.ToList();
@@ -242,7 +242,7 @@
 
 			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
-			var LU = conn.QuerySingle<LookUp>("OO_DONE_LU", new { FormFile = appState.UsrFrmId }, commandType: CommandType.StoredProcedure);
+			var LU = conn.QuerySingle<LookUp>("OZ_LU", new { FormFile = appState.UsrFrmId }, commandType: CommandType.StoredProcedure);
 			LookUpInit(LU.Sbjs, LU.Tsks, LU.Usrs);
 		}
 		catch (Exception ex)
