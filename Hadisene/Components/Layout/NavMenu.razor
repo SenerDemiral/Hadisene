@@ -122,7 +122,6 @@
 				});
 		return ValueTask.CompletedTask;
 	}
-
 	private async Task ShowTskQry()
 	{
 		ModalParameters mp = new();
@@ -248,7 +247,7 @@
 
 			await Notifier.Invoke("UsrEnter", new NotifyArgs
 				{
-					UsrId = appState.UsrId,
+					UUId = appState.UsrId,
 					FFId = appState.UsrFrmId
 				});
 

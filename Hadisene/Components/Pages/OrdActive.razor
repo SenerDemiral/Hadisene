@@ -24,9 +24,9 @@
 	</button>
 
 	@* <button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
-		<span class="material-symbols-outlined">
-			search
-		</span>
+	<span class="material-symbols-outlined">
+	search
+	</span>
 	</button> *@
 </div>
 
@@ -62,7 +62,7 @@
 					</button>
 				</div>
 				<div class="box ooReq">@rec.ReqAd</div>
-				
+
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
 				<div class="box ooTsk">@rec.TskAd</div>
@@ -107,6 +107,7 @@
 	[Parameter]
 	public string? qryStr { get; set; } = "";
 	private List<OO>? ooList;
+	private bool MsgShowing;
 
 	// /ordopen?filter=scifi%20stars&page=3&star=LeVar%20Burton&star=Gary%20Oldman
 	// The Filter property resolves to scifi stars.
@@ -144,7 +145,7 @@
 	{
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
-		
+
 		var x = Modal.Show<OrdEdit>("deneme", mp,
 			new ModalOptions
 				{
@@ -157,16 +158,19 @@
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
-			await Read();
+			//await Read();
 		}
 	}
 
-	private void ShowMsg(OO oo)
+	private async Task ShowMsg(OO oo)
 	{
+		MsgShowing = true;
+		oo.MnVc = 0;
+
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		Modal.Show<OrdMsg>("deneme", mp,
+		var x = Modal.Show<OrdMsg>("deneme", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -174,6 +178,9 @@
 					SizeCustomClass = "blazored-modal-custom-size",
 					Position = ModalPosition.Middle
 				});
+
+		var r = await x.Result;
+		MsgShowing = false;
 	}
 
 	private void PinTgl(OO oo)
@@ -222,7 +229,7 @@
 
 			await Notifier.Invoke("UO", new NotifyArgs
 				{
-					UsrId = appState.UsrId,
+					UUId = appState.UsrId,
 					OOId = oo.OOId,
 				});
 		}
@@ -267,9 +274,12 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		if (value.UsrId != appState.UsrId)  // işlemi yapan kendisi değil
+		// if (value.UUId != appState.UsrId &&
+		if (
+			value.FFId == appState.UsrFrmId &&
+			value.OrdUsrSet.Contains(appState.UsrId))
 		{
-			if (key == "IM")
+			if (key == "IM" && !MsgShowing)
 			{
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
 				if (iof != -1)
@@ -284,11 +294,11 @@
 			}
 			else if (key == "IO")
 			{
-				toastService.ShowInfo("Yeni Görev eklendi");
+				toastService.ShowInfo($"Yeni Görev eklendi #{value.OOId}");
 			}
 			else if (key == "UO")
 			{
-				// Insert bu halde çalışmaz. Bu kullanıcıyı ilgilendiriyor mu?
+				// İlgili kaydı bul
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
 				if (iof != -1)
 				{
@@ -303,6 +313,8 @@
 					{
 						StateHasChanged();
 					});
+
+					toastService.ShowInfo($"Görevde değişiklik #{value.OOId}");
 				}
 
 			}

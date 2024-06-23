@@ -265,21 +265,21 @@
 			}
 		}
 
-		if (key == "IO")
-		{
-			await InvokeAsync(() =>
-			{
-				var x = Array.IndexOf(value.OrdUsrs, AppState.UsrId); // returns -1 if not found
-				if (x != -1)
-				{
-					// Read OoRec
-					// DnmList.Add(ooRec)
-					// DnmList.Sort
-					dnm = value.FFId;
-					StateHasChanged();
-				}
-			});
-		}
+		// if (key == "IO")
+		// {
+		// 	await InvokeAsync(() =>
+		// 	{
+		// 		var x = Array.IndexOf(value.OrdUsrs, AppState.UsrId); // returns -1 if not found
+		// 		if (x != -1)
+		// 		{
+		// 			// Read OoRec
+		// 			// DnmList.Add(ooRec)
+		// 			// DnmList.Sort
+		// 			dnm = value.FFId;
+		// 			StateHasChanged();
+		// 		}
+		// 	});
+		// }
 	}
 
 	public void Dispose()

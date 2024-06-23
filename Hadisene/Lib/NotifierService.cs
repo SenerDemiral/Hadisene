@@ -1,4 +1,6 @@
-﻿namespace Hadisene.Lib;
+﻿using Hadisene.Components;
+
+namespace Hadisene.Lib;
 
 public class NotifierService
 {
@@ -26,11 +28,28 @@ public sealed class NotifyArgs
 {
 	public string? UsrTkn;
 	public int UEXId;
-	public int UsrId;
+	public int UUId;
 	public int FFId;
 	public int OOId;
 	public int OMId;
 	public string? MsgTyp;
+    public string? Info;
+    public string? OrdUsrs { 
+		set {
+			var sa = value?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+			if (sa != null)
+			{
+				foreach (var s in sa)
+				{
+					if (int.TryParse(s, out int r))
+					{
+						OrdUsrSet.Add(r);
+					}
+				}
+			}
+		} 
+	}
 
-	public int[] OrdUsrs = [];
+	//public int[] OrdUsrs = [];
+    public HashSet<int> OrdUsrSet = new();
 }

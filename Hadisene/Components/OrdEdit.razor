@@ -332,29 +332,35 @@
 			// SP parametreleri DB deki sırasıyla gönderilmeli
 			// refId = Ins ise yeni OOId, Upd ise mevcut OOId
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
-			new
-			{
-				p1 = appState.UsrId,
-				p2 = oo.OOId,
-				p0 = oo.Stu,
-				p3 = appState.UsrFrmId,
-				p4 = oo.ReqId,
-				p5 = oo.SbjId,
-				p6 = oo.TskId,
-				p7 = oo.ActId,
-				p8 = oo.RSD,
-				p9 = oo.ASD,
-				pA = oo.RFD,
-				pB = oo.AFD,
-				pC = oo.Inf
-			},
-			commandType: CommandType.StoredProcedure);
+				new
+				{
+					p1 = appState.UsrId,
+					p2 = oo.OOId,
+					p0 = oo.Stu,
+					p3 = appState.UsrFrmId,
+					p4 = oo.ReqId,
+					p5 = oo.SbjId,
+					p6 = oo.TskId,
+					p7 = oo.ActId,
+					p8 = oo.RSD,
+					p9 = oo.ASD,
+					pA = oo.RFD,
+					pB = oo.AFD,
+					pC = oo.Inf
+				},
+				commandType: CommandType.StoredProcedure);
 
+			
+			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
+				commandType: CommandType.StoredProcedure);
+			
 			var key = oo.OOId == 0 ? "IO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
 				{
-					UsrId = appState.UsrId,
+					FFId = appState.UsrFrmId,
+					UUId = appState.UsrId,
 					OOId = refId,
+					OrdUsrs = ordUsrs
 				});
 			await ModalIns.CloseAsync(ModalResult.Ok());
 		}
@@ -392,8 +398,8 @@
 		else
 		{
 			oo = conn.QuerySingle<OO>("OO_SEL",
-			new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-			commandType: CommandType.StoredProcedure);
+				new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure);
 
 			ooo = oo.ShallowCopy();
 		}

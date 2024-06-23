@@ -86,6 +86,7 @@
 	private List<OM>? omList;
 	public string? msg;
 	private bool disposing;
+	private string? ordUsrs;
 
 	public void ShowImage(OM rec)
 	{
@@ -124,7 +125,7 @@
 
 					await Notifier.Invoke("IM", new NotifyArgs
 						{
-							UsrId = appState.UsrId,
+							UUId = appState.UsrId,
 							OMId = OMId,
 							OOId = OOId,
 							MsgTyp = "I",
@@ -162,9 +163,11 @@
 
 		await Notifier.Invoke("IM", new NotifyArgs
 			{
-				UsrId = appState.UsrId,
+				FFId = appState.UsrFrmId,
+				UUId = appState.UsrId,
 				OOId = OOId,
 				OMId = OMId,
+				OrdUsrs = ordUsrs,
 			});
 
 		msg = null;
@@ -194,6 +197,9 @@
 			).ToList();
 
 			omList = omList.OrderBy(x => x.InsTS).ToList();
+
+			ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = OOId },
+				commandType: CommandType.StoredProcedure);
 
 			Notifier.Notify += OnNotify;
 		}

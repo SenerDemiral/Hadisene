@@ -55,10 +55,10 @@
         await Notifier.InvokeIO("key", User.Clicks);
 
         NotifyArgs na = new();
-        na.UsrId = 31;
+        na.UUId = 31;
         na.FFId = 101;
         na.OOId = 17;
-        na.OrdUsrs = Array.ConvertAll("31,32,33,34".Split(','), int.Parse);
+        // na.OrdUsrs = Array.ConvertAll("31,32,33,34".Split(','), int.Parse);
 
         await Notifier.Invoke("IO", na);
     }
