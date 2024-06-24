@@ -186,7 +186,7 @@
 	grid-template-areas:
 		"ooHdr ooHdr ooHdr"
 		"ooAct ooAct ooPin"
-		"ooTsk ooTsk ooTsk"
+		"ooTsk ooTsk ooCID"
 		"ooReq ooReq ooReq"
 		/*"ooSbj ooSbj ooSbj"*/
 		"ooRSD ooASD ooDSH"
@@ -214,6 +214,10 @@
 	grid-area: ooPin;
 	justify-self: center;
 }
+.ooCID {
+	grid-area: ooCID;
+	justify-self: center;
+}
 
 button.ooPin {
 	/*font-size: 1rem;*/
@@ -223,17 +227,33 @@ button.ooPin {
 	/*text-align: center;*/
 }
 
-button[data-Pin="0"]::after {
+button[data-Pin="0"].ooPin::after {
 	content: "keep_off";
 	font-family: 'Material Symbols Outlined';
 	font-size: x-large;
 }
 
-button[data-Pin="1"]::after {
+button[data-Pin="1"].ooPin::after {
 	content: "keep";
 	font-family: 'Material Symbols Outlined';
 	font-size: x-large;
 }
+
+button.ooCID::after {
+	content: "link";
+	font-family: 'Material Symbols Outlined';
+	font-size: x-large;
+}
+
+button.ooCID:disabled {
+	cursor: not-allowed;
+	pointer-events: none;
+}
+	button.ooCID:disabled::after {
+		content: "link_off";
+		font-family: 'Material Symbols Outlined';
+		font-size: x-large;
+	}
 
 .ooReq {
 	grid-area: ooReq;

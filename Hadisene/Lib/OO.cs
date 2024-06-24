@@ -42,6 +42,8 @@ public sealed class OO
 		}
 	}
 	public bool Pinned = false;
+	public int CId; // ChainId, Sıfırdan farklıysa Chained
+	public bool Chain;
 
 	public int MnVc;	// Msg Not Viewed Count (New) for this Usr
 
@@ -60,6 +62,7 @@ public sealed class OO
 	public bool RFDro = true;
 	public bool ASDro = true;
 	public bool AFDro = true;
+	public bool ChainRO = true;
 
 	public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
 

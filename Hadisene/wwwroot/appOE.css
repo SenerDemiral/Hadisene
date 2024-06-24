@@ -61,7 +61,7 @@
 	grid-auto-rows: minmax(36px,auto);
 	grid-template-columns: 2fr 2fr;
 	grid-template-areas:
-		"oeStu oeStu"
+		"oeStu oeChn"
 		"oeReq oeReq"
 		"oeSbj oeSbj"
 		"oeTsk oeTsk"
@@ -124,6 +124,15 @@
 
 	.oeStu::before {
 		content: "Durum";
+	}
+
+.oeChn {
+	grid-area: oeChn;
+	text-align: center;
+}
+
+	.oeChn::before {
+		content: "Link";
 	}
 
 .oePin {
@@ -262,7 +271,7 @@
 
 	.oeBdy {
 		grid-template-areas:
-			"oeStu oeStu"
+			"oeStu oeChn"
 			"oeReq oeReq"
 			"oeSbj oeSbj"
 			"oeTsk oeTsk"

@@ -2,6 +2,7 @@
 @page "/ordactive/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject AppState appState
+@inject NavigationManager navigationManager
 @inject IDbCon db
 @inject IModalService Modal
 @inject IToastService toastService
@@ -9,7 +10,7 @@
 @inject IJSRuntime js
 @implements IDisposable
 
-<PageTitle>AktifGörevler</PageTitle>
+<PageTitle>AktifTalepler</PageTitle>
 
 <div class="stk">
 	<button @onclick="Read" style="background-color: yellow;">
@@ -64,6 +65,11 @@
 				<div class="box ooReq">@rec.ReqAd</div>
 
 				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+				<button class="ooCID"
+						disabled=@(rec.CId == 0)
+						@onclick="@(() => Chained(rec))"></button>
+
+
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
 				<div class="box ooTsk">@rec.TskAd</div>
 				<div class="box ooInf">
@@ -183,9 +189,19 @@
 		MsgShowing = false;
 	}
 
+	private async Task Chained(OO oo)
+	{
+		if (oo.CId > 0)
+		{
+			qryStr = $"CId={oo.CId}";
+			//await Read();
+			navigationManager.NavigateTo($"/ordactive/CId={oo.CId}");
+		}
+	}
+
 	private void PinTgl(OO oo)
 	{
-		toastService.ShowInfo("Yeni Görev eklendi");
+		toastService.ShowInfo("Yeni Talep eklendi");
 
 		try
 		{
@@ -290,11 +306,13 @@
 					{
 						StateHasChanged();
 					});
+
+					toastService.ShowInfo($"Yeni Mesaj var #{value.OOId}");
 				}
 			}
 			else if (key == "IO")
 			{
-				toastService.ShowInfo($"Yeni Görev eklendi #{value.OOId}");
+				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId}");
 			}
 			else if (key == "UO")
 			{
@@ -314,7 +332,8 @@
 						StateHasChanged();
 					});
 
-					toastService.ShowInfo($"Görevde değişiklik #{value.OOId}");
+					if (value.UUId != appState.UsrId)
+						toastService.ShowInfo($"Talepte değişiklik #{value.OOId}");
 				}
 
 			}

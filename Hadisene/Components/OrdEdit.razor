@@ -15,7 +15,7 @@
 		<div class="oeHdr">
 			<button class="oeBtnCancel" @onclick="Vazgec">Vazgeç</button>
 			<div>#@OOId</div>
-			<button class="oeBtnSave" @onclick="Kaydet">Kaydet</button>
+			<button class="oeBtnSave" @onclick="Kaydet" disabled="@SaveDsbl">Kaydet</button>
 		</div>
 
 		<div class="oeHdr">
@@ -50,6 +50,9 @@
 						</div>
 					</InputRadioGroup>
 				</div>
+			</div>
+			<div class="oeChn">
+				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO"/>
 			</div>
 			<div class="oeBox oeReq">
 				<input type="text"
@@ -168,6 +171,7 @@
 	public enum Mode { Show, Edit, Clone, New };
 	public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
 	private Dictionary<string, int>? ssd, ttd, sad, uud;
+	private bool SaveDsbl = true;
 
 	public enum Statu { Aktif='A', İptal='X', Arşiv='Z' };
 	public Statu stu;
@@ -191,7 +195,7 @@
 	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
 	{
-
+		SaveDsbl = false;
 		// Ilk girişte rec kopyasını al
 		if (newMode == Mode.New)
 		{
@@ -206,8 +210,10 @@
 			oo.RSD = DateTime.Today;
 			oo.ASDro = true;
 			oo.AFDro = true;
+			oo.ChainRO = true;
 
 			ooo = oo.ShallowCopy();
+
 		}
 		if (newMode == Mode.Clone)
 		{
@@ -254,6 +260,8 @@
 				oo.ASDro = true;
 				oo.AFDro = true;
 			}
+			oo.ChainRO = true;
+
 		}
 	}
 
@@ -271,6 +279,7 @@
 		oo.RFDro = false;
 		oo.ASDro = false;
 		oo.AFDro = false;
+		oo.ChainRO = false;
 	}
 
 	private void CheckReq()
@@ -324,11 +333,24 @@
 
 	private async Task Kaydet()
 	{
+		// Chain == true 
+		// Öncekinde CId == 0 ise, her ikisine de aynı CId yi koy
+		using var conn = db.GetConnection();
+
+		if (oo.Chain && ooo.CId == 0)
+		{
+			int cid = conn.ExecuteScalar<int>("CID_NEW", new { }, commandType: CommandType.StoredProcedure);
+			oo.CId = cid;	// Şimdikine
+
+			// Öncekine CId koy
+			int oldOOId = ooo.OOId;
+			conn.Execute("update OO set CId = @CId where OOId = @OOId", new { CId = cid, OOId = oldOOId });
+		}
+
 		oo.Stu = ((char)((int)stu)).ToString();
 
 		try
 		{
-			using var conn = db.GetConnection();
 			// SP parametreleri DB deki sırasıyla gönderilmeli
 			// refId = Ins ise yeni OOId, Upd ise mevcut OOId
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
@@ -338,6 +360,7 @@
 					p2 = oo.OOId,
 					p0 = oo.Stu,
 					p3 = appState.UsrFrmId,
+					pD = oo.CId,
 					p4 = oo.ReqId,
 					p5 = oo.SbjId,
 					p6 = oo.TskId,
