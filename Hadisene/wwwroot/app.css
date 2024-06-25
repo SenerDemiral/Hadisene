@@ -1,4 +1,4 @@
-﻿* {
+﻿:root {
 	--r-color: brown;
 	--b-color: royalblue;
 	--g-color: seagreen;
@@ -193,6 +193,7 @@ button {
 	/*padding: 2px 12px;*/
 	transition: all .14s ease-out;
 	background-color: white;
+	height: 28px;
 }
 	button:hover {
 		box-shadow: 2px 2px 8px;

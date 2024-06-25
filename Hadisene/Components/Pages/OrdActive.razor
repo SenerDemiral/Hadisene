@@ -1,5 +1,4 @@
-﻿@page "/ordactive"
-@page "/ordactive/{qryStr}"
+﻿@page "/ordactive/{typ}/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject AppState appState
 @inject NavigationManager navigationManager
@@ -19,6 +18,7 @@
 			refresh
 		</span>
 	</button>
+	<div>@PgeHdr</div>
 	<button @onclick="AddNew" style="background-color: yellow;">
 		<span class="material-symbols-outlined">
 			add
@@ -95,7 +95,8 @@
 					<div class="ooStuX">İ P T A L</div>
 					@{
 						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
-						bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) || appState.UsrYtk != 3;
+						bool dsb = !(rec.ActId == appState.UsrId || (rec.OrdUsrSet.Contains(appState.UsrId) && appState.UsrYtk == 3));
+						//bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) && appState.UsrYtk != 3;
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -113,7 +114,11 @@
 
 @code {
 	[Parameter]
+	public string? typ { get; set; } = "A";
+	[Parameter]
 	public string? qryStr { get; set; } = "";
+	[Parameter]
+	public string? PgeHdr { get; set; } = "";
 	private List<OO>? ooList;
 	private bool MsgShowing;
 
@@ -201,21 +206,22 @@
 	{
 		if (oo.CId > 0)
 		{
-			ModalParameters mp = new();
-			mp.Add("qryStr", $"CId={oo.CId}");
+			// ModalParameters mp = new();
+			// mp.Add("qryStr", $"CId={oo.CId}");
+			// mp.Add("PgeHdr", "Bağlı Talepler");
 
-			var x = Modal.Show<OrdActive>("deneme", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
-				});
+			// var x = Modal.Show<OrdActive>("deneme", mp,
+			// new ModalOptions
+			// 	{
+			// 		HideHeader = true,
+			// 		Size = ModalSize.Custom,
+			// 		SizeCustomClass = "blazored-modal-custom-size",
+			// 		Position = ModalPosition.Middle
+			// 	});
 
 
 			//await Read();
-			//navigationManager.NavigateTo($"/ordactive/CId={oo.CId}");
+			navigationManager.NavigateTo($"/ordactive/C/CId={oo.CId}");
 		}
 	}
 
@@ -282,6 +288,16 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		if (qryStr == "all")
+			qryStr = "";
+
+		PgeHdr = typ switch
+		{
+			"A" => "Aktif Talepler",
+			"D" => "Talepler",
+			"C" => "Bağlı Talepler",
+			_ => "?",
+		};
 		await Read();
 	}
 

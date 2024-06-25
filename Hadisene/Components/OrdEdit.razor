@@ -247,10 +247,12 @@
 
 			if (appState.UsrYtk <= 2) // Admn, Ytk
 			{
+				SaveDsbl = false;
 				InitROfalse();
 			}
 			else if (appState.UsrId == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
 			{
+				SaveDsbl = false;
 				InitROfalse();
 
 				oo.StuROa = true;
@@ -259,10 +261,6 @@
 				oo.ReqRO = true;
 				oo.ASDro = true;
 				oo.AFDro = true;
-			}
-			else
-			{
-				SaveDsbl = false;
 			}
 			oo.ChainRO = true;
 

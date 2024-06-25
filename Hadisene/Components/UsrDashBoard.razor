@@ -202,7 +202,12 @@
 		Add2List(sl, UDB.actList, "ActId=");
 		Add2List(sl, UDB.tskList, "TskId=");
 
-		string url = $"/ordactive/{String.Join('&', sl)}";
+		string url;
+		if (sl.Count == 0)
+			url = $"/ordactive/D/all";
+		else
+			url = $"/ordactive/D/{String.Join('&', sl)}";
+
 		navigationManager.NavigateTo(url);
 
 	}
