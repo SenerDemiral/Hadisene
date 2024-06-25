@@ -9,6 +9,7 @@
 @inject NotifierService Notifier
 @inject IJSRuntime js
 @implements IDisposable
+@using Hadisene.Components
 
 <PageTitle>AktifTalepler</PageTitle>
 
@@ -93,7 +94,9 @@
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
 					@{
-						bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
+						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
+						bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) || appState.UsrYtk != 3;
+						
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -170,6 +173,12 @@
 
 	private async Task ShowMsg(OO oo)
 	{
+		if (!oo.OrdUsrSet.Contains(appState.UsrId))
+		{
+			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
+			return;
+		}
+
 		MsgShowing = true;
 		oo.MnVc = 0;
 

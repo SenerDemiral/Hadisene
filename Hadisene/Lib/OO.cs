@@ -70,4 +70,23 @@ public sealed class OO
 	{
 		return (OO)this.MemberwiseClone();
 	}
+
+	public string? OrdUsrs
+	{
+		set
+		{
+			var sa = value?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+			if (sa != null)
+			{
+				foreach (var s in sa)
+				{
+					if (int.TryParse(s, out int r))
+					{
+						OrdUsrSet.Add(r);
+					}
+				}
+			}
+		}
+	}
+	public HashSet<int> OrdUsrSet = new();
 }
