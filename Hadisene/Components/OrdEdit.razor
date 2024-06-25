@@ -194,10 +194,10 @@
 	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
 	{
-		SaveDsbl = false;
 		// Ilk girişte rec kopyasını al
 		if (newMode == Mode.New)
 		{
+			SaveDsbl = false;
 			oo = new();
 			InitROfalse();
 			oo.StuROa = true;
@@ -216,6 +216,7 @@
 		}
 		if (newMode == Mode.Clone)
 		{
+			SaveDsbl = false;
 			InitROfalse();
 			oo.StuROa = true;
 			oo.StuROx = true;
@@ -258,6 +259,10 @@
 				oo.ReqRO = true;
 				oo.ASDro = true;
 				oo.AFDro = true;
+			}
+			else
+			{
+				SaveDsbl = false;
 			}
 			oo.ChainRO = true;
 

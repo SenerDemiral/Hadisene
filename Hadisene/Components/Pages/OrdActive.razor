@@ -96,7 +96,6 @@
 					@{
 						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
 						bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) || appState.UsrYtk != 3;
-						
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -202,9 +201,21 @@
 	{
 		if (oo.CId > 0)
 		{
-			qryStr = $"CId={oo.CId}";
+			ModalParameters mp = new();
+			mp.Add("qryStr", $"CId={oo.CId}");
+
+			var x = Modal.Show<OrdActive>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+					Position = ModalPosition.Middle
+				});
+
+
 			//await Read();
-			navigationManager.NavigateTo($"/ordactive/CId={oo.CId}");
+			//navigationManager.NavigateTo($"/ordactive/CId={oo.CId}");
 		}
 	}
 

@@ -264,6 +264,10 @@
 	font-family: 'Material Symbols Outlined';
 }
 
+.oeBtnSave:disabled {
+	pointer-events: none;
+}
+
 @media (width > 600px) {
 	.oeCard {
 		min-width: 500px;
