@@ -95,8 +95,8 @@
 							<div class="ooStuX">İ P T A L</div>
 					@{
 						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
-						bool dsb = !(rec.ActId == appState.UsrId || (rec.OrdUsrSet.Contains(appState.UsrId) && appState.UsrYtk == 3));
-						//bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) && appState.UsrYtk != 3;
+						bool dsb = !(rec.ActId == appState.UsrId || 
+									 (rec.OrdUsrSet.Contains(appState.UsrId) && appState.UsrYtk == 3));
 					}
 							<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 							<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -271,6 +271,7 @@
 
 			await Notifier.Invoke("UO", new NotifyArgs
 				{
+					FFId = appState.UsrFrmId,
 					UUId = appState.UsrId,
 					OOId = oo.OOId,
 				});
