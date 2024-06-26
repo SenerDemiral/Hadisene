@@ -32,6 +32,7 @@ public sealed class NotifyArgs
 	public int FFId;
 	public int OOId;
 	public int OMId;
+	public int CId;
 	public string? MsgTyp;
     public string? Info;
     public string? OrdUsrs { 

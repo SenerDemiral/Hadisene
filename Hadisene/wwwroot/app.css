@@ -8,18 +8,22 @@
 	--mrg-w: 8px;
 	--brd-w: 0px;
 	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg-h) + var(--brd-w)) * 2 );
-	
-	margin: 0;
+}
+
+html {
 	box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
 body {
-	/*box-sizing: border-box;*/
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	
-	/*margin: 0 8px;*/
-
+	margin: 0;
 }
 
 a, .btn-link {
@@ -433,7 +437,8 @@ tbody.zebra tr:nth-child(odd) {
 
 .pge {
 	display: grid;
-	grid-template-rows: var(--top-h) var(--bdy-h) var(--btm-h);
+	/*grid-template-rows: var(--top-h) var(--bdy-h) var(--btm-h);*/
+	grid-template-rows: 32px calc(100dvh - 64px) 32px;
 	grid-template-columns: 1fr;
 	grid-template-areas:
 		"top"
@@ -455,6 +460,7 @@ tbody.zebra tr:nth-child(odd) {
 			margin: 8px auto;
 			display: flex;
 			gap: 4rem;
+			background-color: yellow;
 		}
 
 	.pge .top {

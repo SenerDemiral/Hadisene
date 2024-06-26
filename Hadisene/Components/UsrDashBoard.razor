@@ -204,9 +204,9 @@
 
 		string url;
 		if (sl.Count == 0)
-			url = $"/ordactive/D/all";
+			url = $"/ordactive/0/all";
 		else
-			url = $"/ordactive/D/{String.Join('&', sl)}";
+			url = $"/ordactive/0/{String.Join('&', sl)}";
 
 		navigationManager.NavigateTo(url);
 

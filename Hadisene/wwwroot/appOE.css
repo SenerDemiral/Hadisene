@@ -6,7 +6,8 @@
 	border-radius: 2px;
 	box-shadow: 8px 4px 16px gray;
 	margin-inline: auto;
-	min-width: 360px;
+	min-width: 340px;
+	width: 340px;
 	/*max-width: 50%;*/
 }
 
@@ -59,18 +60,16 @@
 	padding: 8px 0;
 	/*grid-template-rows: repeat(3, 32px) 1fr repeat(3, 32px);*/
 	grid-auto-rows: minmax(36px,auto);
-	grid-template-columns: 2fr 2fr;
+	grid-template-columns: repeat(4, 1fr);
 	grid-template-areas:
-		"oeStu oeChn"
-		"oeReq oeReq"
-		"oeSbj oeSbj"
-		"oeTsk oeTsk"
-		"oeInf oeInf"
-		"oeAct oeAct"
-		"oeRSD .."
-		"oeASD .."
-		"oeRFD .."
-		"oeAFD ..";
+		"oeStu oeStu oeStu oeChn"
+		"oeReq oeReq oeReq oeReq"
+		"oeSbj oeSbj oeSbj oeSbj"
+		"oeTsk oeTsk oeTsk oeTsk"
+		"oeInf oeInf oeInf oeInf"
+		"oeAct oeAct oeAct oeAct"
+		"oeRSD oeRSD oeASD oeASD"
+		"oeRFD oeRFD oeAFD oeAFD";
 	background-color: #fff;
 	color: #444;
 }
@@ -90,7 +89,7 @@
 	.oeBdy input,
 	.oeBdy textarea {
 		background-color: azure;
-		font-size: 1rem;
+		font-size: inherit;
 		font-family: inherit;
 		border-style: inset;
 		border-width: thin;
@@ -128,12 +127,16 @@
 
 .oeChn {
 	grid-area: oeChn;
-	text-align: center;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 
-	.oeChn::before {
-		content: "Link";
-	}
+/*.oeChn::after {
+		content: "link";
+		font-family: 'Material Symbols Outlined';
+		font-size: x-large;
+	}*/
 
 .oePin {
 	grid-area: oePin;
@@ -268,12 +271,12 @@
 	pointer-events: none;
 }
 
-@media (width > 600px) {
+@media (width > 572px) {
 	.oeCard {
 		min-width: 500px;
 	}
 
-	.oeBdy {
+	/*.oeBdy {
 		grid-template-areas:
 			"oeStu oeChn"
 			"oeReq oeReq"
@@ -283,5 +286,5 @@
 			"oeRSD oeASD"
 			"oeRFD oeAFD"
 			"oeInf oeInf";
-	}
+	}*/
 }

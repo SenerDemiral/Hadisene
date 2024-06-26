@@ -4,7 +4,6 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-
 @if (oo != null)
 {
 	<div class="oeCard"
@@ -13,7 +12,7 @@
 
 		<div class="oeHdr">
 			<button class="oeBtnCancel" @onclick="Vazgec">Vazgeç</button>
-			<div>#@OOId</div>
+			<div>@OOId.toSqid()#@OOId</div>
 			<button class="oeBtnSave" @onclick="Kaydet" disabled="@SaveDsbl">Kaydet</button>
 		</div>
 
@@ -33,7 +32,7 @@
 
 		<div class="oeBdy">
 			<div class="oeBox oeStu" >
-				<div style="display:flex; justify-content: center; gap:1rem;">
+				<div style="display:flex; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
 						<div>
 							<InputRadio Value="Statu.Aktif" disabled="@oo.StuROa" />
@@ -51,7 +50,10 @@
 				</div>
 			</div>
 			<div class="oeChn">
-				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO"/>
+				<span class="material-symbols-outlined">
+					link
+				</span>
+				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO" style="width:auto"/>
 			</div>
 			<div class="oeBox oeReq">
 				<input type="text"
@@ -194,6 +196,7 @@
 	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
 	{
+		DateTime rsd = DateTime.Today.AddDays(1);
 		// Ilk girişte rec kopyasını al
 		if (newMode == Mode.New)
 		{
@@ -206,7 +209,8 @@
 			oo.ReqId = appState.UsrId;
 			oo.ReqAd = appState.UsrAd;
 			oo.ReqRO = true;
-			oo.RSD = DateTime.Today;
+			oo.RSD = DateTime.Today.AddDays(1);
+			oo.RFD = DateTime.Today.AddDays(2);
 			oo.ASDro = true;
 			oo.AFDro = true;
 			oo.ChainRO = true;
@@ -375,16 +379,17 @@
 				},
 				commandType: CommandType.StoredProcedure);
 
-			
+
 			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
 				commandType: CommandType.StoredProcedure);
-			
+
 			var key = oo.OOId == 0 ? "IO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
 				{
 					FFId = appState.UsrFrmId,
 					UUId = appState.UsrId,
 					OOId = refId,
+					CId = oo.CId,
 					OrdUsrs = ordUsrs
 				});
 			await ModalIns.CloseAsync(ModalResult.Ok());

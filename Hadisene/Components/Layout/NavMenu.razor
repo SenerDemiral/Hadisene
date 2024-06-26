@@ -27,7 +27,7 @@
 		<option value="">🏠 HOME</option>
 		@if (appState.UsrId != 0)
 		{
-			<option value="ordActive/A/all">🚧 Talepler &nbsp;&nbsp;</option>
+			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
 			@if (appState.UsrYtk == 1)
 			{
 				<optgroup label="Tanımlar">
@@ -53,7 +53,7 @@
 
 <div class="btm">
 	<div>&copy;Şener Demiral @(DateTime.Now.Year)</div>
-	<div>YapHaydi.com</div>
+	<div>@appState.UsrFrmAd</div>
 </div>
 
 

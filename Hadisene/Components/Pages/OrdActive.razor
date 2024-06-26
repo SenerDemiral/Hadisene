@@ -1,4 +1,4 @@
-﻿@page "/ordactive/{typ}/{qryStr}"
+﻿@page "/ordactive/{CId:int}/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject AppState appState
 @inject NavigationManager navigationManager
@@ -43,78 +43,78 @@
 
 @if (ooList != null)
 {
-	<div class="ooCnt">
+		<div class="ooCnt">
 		@foreach (OO rec in ooList)
 		{
-			<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
+					<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
 
-			<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
-				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
-				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
-				<div class="ooHdr">
-					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
-						<span>@((MarkupString)rec.UpdFlg)</span>
-						<span class="material-symbols-outlined">settings</span>
-						<span class="ooBtnEdtId">#@rec.OOId</span>
-					</button>
-					<div class="ooHdrTxt">@rec.SbjAd</div>
-					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
-						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
-						<span class="material-symbols-outlined">chat</span>
-					</button>
-				</div>
-				<div class="box ooReq">@rec.ReqAd</div>
+					<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
+						 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
+						 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
+						<div class="ooHdr">
+							<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
+								<span>@((MarkupString)rec.UpdFlg)</span>
+								<span class="material-symbols-outlined">settings</span>
+								<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
+							</button>
+							<div class="ooHdrTxt">@rec.SbjAd</div>
+							<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
+								<span class="ooBtnMsjCnt">@rec.MnVcF</span>
+								<span class="material-symbols-outlined">chat</span>
+							</button>
+						</div>
+						<div class="box ooReq">@rec.ReqAd</div>
 
-				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
-				<button class="ooCID"
-						disabled=@(rec.CId == 0)
-						@onclick="@(() => Chained(rec))"></button>
+						<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+						<button class="ooCID"
+								disabled=@(rec.CId == 0)
+								@onclick="@(() => Chained(rec))"></button>
 
 
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
-				<div class="box ooTsk">@rec.TskAd</div>
-				<div class="box ooInf">
-					<button class="pop-btn"
-							popovertarget="mypopover-@rec.OOId"
-							popovertargetaction="toggle">
-						<span>@rec.Inf</span>
-					</button>
-				</div>
+						<div class="box ooTsk">@rec.TskAd</div>
+						<div class="box ooInf">
+							<button class="pop-btn"
+									popovertarget="mypopover-@rec.OOId"
+									popovertargetaction="toggle">
+								<span>@rec.Inf</span>
+							</button>
+						</div>
 
-				<div class="box ooAct">@rec.ActAd</div>
+						<div class="box ooAct">@rec.ActAd</div>
 
-				<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
-				<div class="box ooS ooASD">@rec.ASD.ToS()</div>
-				<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
+						<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
+						<div class="box ooS ooASD">@rec.ASD.ToS()</div>
+						<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
 
-				<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
-				<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
-				<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
-				<div class="ooFtr">
-					<div class="ooStuZ">KAPANDI</div>
-					<div class="ooStuX">İ P T A L</div>
+						<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
+						<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
+						<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
+						<div class="ooFtr">
+							<div class="ooStuZ">KAPANDI</div>
+							<div class="ooStuX">İ P T A L</div>
 					@{
 						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
 						bool dsb = !(rec.ActId == appState.UsrId || (rec.OrdUsrSet.Contains(appState.UsrId) && appState.UsrYtk == 3));
 						//bool dsb = !rec.OrdUsrSet.Contains(rec.ActId) && appState.UsrYtk != 3;
 					}
-					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
-					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
+							<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
+							<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
 
-					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
-					<div class="ooStuA ooC ooTxtS">Başlat ?</div>
-					<div class="ooStuA ooC ooTxtF">Bitir ?</div>
-					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
-				</div>
-			</div>
+							<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
+							<div class="ooStuA ooC ooTxtS">Başlat ?</div>
+							<div class="ooStuA ooC ooTxtF">Bitir ?</div>
+							<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
+						</div>
+					</div>
 		}
-	</div>
+		</div>
 }
 
 
 @code {
 	[Parameter]
-	public string? typ { get; set; } = "A";
+	public int CId { get; set; }
 	[Parameter]
 	public string? qryStr { get; set; } = "";
 	[Parameter]
@@ -221,7 +221,7 @@
 
 
 			//await Read();
-			navigationManager.NavigateTo($"/ordactive/C/CId={oo.CId}");
+			navigationManager.NavigateTo($"/ordactive/{oo.CId}/all");
 		}
 	}
 
@@ -290,12 +290,15 @@
 	{
 		if (qryStr == "all")
 			qryStr = "";
-
-		PgeHdr = typ switch
+		if (CId > 0)
 		{
-			"A" => "Aktif Talepler",
-			"D" => "Talepler",
-			"C" => "Bağlı Talepler",
+			qryStr = $"CId={CId}";
+		}
+
+		PgeHdr = CId switch
+		{
+			0 => "Aktif Talepler",
+			> 1 => "Bağlı Talepler",
 			_ => "?",
 		};
 		await Read();
@@ -327,14 +330,13 @@
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
 		// if (value.UUId != appState.UsrId &&
-		if (
-			value.FFId == appState.UsrFrmId &&
-			value.OrdUsrSet.Contains(appState.UsrId))
+		if (value.FFId == appState.UsrFrmId)
 		{
-			if (key == "IM" && !MsgShowing)
+			int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+			//(value.CId == CId || value.OrdUsrSet.Contains(appState.UsrId)))
+			if (iof != -1)
 			{
-				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
-				if (iof != -1)
+				if (key == "IM" && !MsgShowing)
 				{
 					ooList[iof].MnVc++;
 
@@ -345,17 +347,13 @@
 
 					toastService.ShowInfo($"Yeni Mesaj var #{value.OOId}");
 				}
-			}
-			else if (key == "IO")
-			{
-				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId}");
-			}
-			else if (key == "UO")
-			{
-				// İlgili kaydı bul
-				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
-				if (iof != -1)
+				else if (key == "IO")
 				{
+					toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId}");
+				}
+				else if (key == "UO")
+				{
+					// İlgili kaydı bul
 					using var conn = db.GetConnection();
 					var x = conn.QuerySingle<OO>("OO_QRY",
 						new { A = appState.UsrId, B = qryStr, p3 = value.OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
@@ -371,7 +369,6 @@
 					if (value.UUId != appState.UsrId)
 						toastService.ShowInfo($"Talepte değişiklik #{value.OOId}");
 				}
-
 			}
 		}
 	}

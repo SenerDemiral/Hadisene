@@ -1,7 +1,22 @@
 ﻿namespace Hadisene.Lib;
+using Sqids;
 
 public static class Extensions
 {
+	private static SqidsEncoder<int> sqids = new SqidsEncoder<int>(new()
+	{
+		Alphabet = "pxPibcHdV90nTha5A6JegkGN4o7FQlyuCrS1EXvDBRj2zYIUmLOtfqKM38wWsZ",
+		//MinLength = 4,
+	});
+	public static string toSqid(this int inp)
+	{
+		return sqids.Encode(inp);
+	}
+	public static int frSqid(this string inp)
+	{
+		return sqids.Decode(inp).Single();
+	}
+
 	public static string? ToS(this DateTime? input)
 	{
 		if (!input.HasValue)
