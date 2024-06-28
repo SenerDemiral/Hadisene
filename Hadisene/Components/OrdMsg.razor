@@ -115,7 +115,9 @@
 				{
 					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
 					var OMId = InsertImageRec(e);
-					var fileName = $"{env.WebRootPath}\\uploads\\F101\\M{OMId}{Path.GetExtension(e.File.Name)}";
+					var dirName = $@"{env.WebRootPath}\uploads\F{appState.UsrFrmId}";
+					Directory.CreateDirectory(dirName);	// if not exists
+					var fileName = $@"{dirName}\M{OMId}{Path.GetExtension(e.File.Name)}";
 
 					image.Save(fileName);
 

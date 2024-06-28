@@ -1,4 +1,5 @@
 ﻿@using System.Timers
+@using System.Globalization
 @inject IDbCon db
 @inject NotifierService Notifier
 @inject AppState AppState
@@ -302,6 +303,8 @@
 			string[] sa = itm.Split("#", StringSplitOptions.RemoveEmptyEntries);
 			list.Add(new SelList { Ad = sa[0], Id = sa[1], Selected = false });
 		}
+		// DB den sorted geliyor
+		//list.Sort((x, y) => String.Compare(x.Ad, y.Ad, null, CompareOptions.OrdinalIgnoreCase));
 	}
 
 	public sealed class DashBoard
@@ -324,31 +327,19 @@
 
 		public string? Reqs
 		{
-			set
-			{
-				Add2List(value, reqList);
-			}
+			set { Add2List(value, reqList); }
 		}
 		public string? Sbjs
 		{
-			set
-			{
-				Add2List(value, sbjList);
-			}
+			set	{ Add2List(value, sbjList); }
 		}
 		public string? Acts
 		{
-			set
-			{
-				Add2List(value, actList);
-			}
+			set { Add2List(value, actList);	}
 		}
 		public string? Tsks
 		{
-			set
-			{
-				Add2List(value, tskList);
-			}
+			set	{ Add2List(value, tskList);	}
 		}
 
 		public DateTime LastUpd;

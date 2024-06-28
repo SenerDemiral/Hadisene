@@ -203,12 +203,13 @@
 
 	.ooCard > ::before {
 		display: block;
-		color: #b4b1b1;
+		color: var(--l-color);
 		font-family: monospace;
 		font-size: 0.6rem;
-		border-bottom: thin solid;
+		/*border-bottom: thin solid;*/
 		line-height: 1;
 		background-color: white;
+		/*opacity: .4;*/
 	}
 
 .ooPin {
@@ -356,7 +357,7 @@ button.ooCID:disabled {
 }
 
 	.ooDFH::before {
-		content: "gecikme";
+		content: "± gecikme";
 	}
 
 .ooCard[data-Ytk="3"] .ooAct,

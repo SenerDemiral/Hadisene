@@ -28,16 +28,16 @@
 					<select @bind="rec!.Ytk">
 						@if(rec.Ytk < 9)
 						{
-							<option value="1">Admin</option>
-							<option value="2">ServisYtkl</option>
-							<option value="3">Görevli</option>
-							<option value="4">İsteyen</option>
-							<option value="8">Pasif</option>
-							<option value="9">Ayrıldı</option>
+							<option value="1">[A] Admin</option>
+							<option value="2">[Y] ServisYtkl</option>
+							<option value="3">[G] Görevli</option>
+							<option value="4">[İ] İsteyen</option>
+							<option value="8">[P] Pasif</option>
+							<option value="9">[∞] Ayrıldı</option>
 						}
 						else
 						{
-							<option value="9">Ayrıldı</option>
+							<option value="9">[∞] Ayrıldı</option>
 						}
 					</select>
 				</td>

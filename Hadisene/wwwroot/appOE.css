@@ -43,7 +43,8 @@
 	color: teal;
 	font-size: 1rem;
 	padding: 0 4px;
-	display: flex;
+	/*display: flex;*/
+	display: none;
 	justify-content: center;
 	align-items: center;
 	gap: 2rem;
@@ -66,10 +67,10 @@
 		"oeReq oeReq oeReq oeReq"
 		"oeSbj oeSbj oeSbj oeSbj"
 		"oeTsk oeTsk oeTsk oeTsk"
-		"oeInf oeInf oeInf oeInf"
 		"oeAct oeAct oeAct oeAct"
 		"oeRSD oeRSD oeASD oeASD"
-		"oeRFD oeRFD oeAFD oeAFD";
+		"oeRFD oeRFD oeAFD oeAFD"
+		"oeInf oeInf oeInf oeInf"; 
 	background-color: #fff;
 	color: #444;
 }
@@ -77,7 +78,7 @@
 
 	.oeBdy > ::before {
 		display: block;
-		color: #b4b1b1;
+		color: var(--l-color);
 		font-family: monospace;
 		font-size: 0.6rem;
 		/*border-bottom: thin solid;*/
@@ -130,6 +131,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	color: var(--l-color);
 }
 
 /*.oeChn::after {
@@ -210,7 +212,7 @@
 }
 
 	.oeDSH::before {
-		content: "gecikme";
+		content: "± gecikme";
 	}
 
 
@@ -238,7 +240,7 @@
 }
 
 	.oeDFH::before {
-		content: "gecikme";
+		content: "± gecikme";
 	}
 
 

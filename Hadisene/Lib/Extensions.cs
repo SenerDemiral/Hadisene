@@ -20,7 +20,7 @@ public static class Extensions
 	public static string? ToS(this DateTime? input)
 	{
 		if (!input.HasValue)
-			return "⚠️";
+			return "";   // "⚠️";
 
 		DateTime dt = input.Value;
 		string result;

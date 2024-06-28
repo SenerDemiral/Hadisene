@@ -50,7 +50,7 @@
 		</tr>
 	</thead>
 	<tbody class="zebra">
-		@foreach (var r in ooList)
+		@foreach (var r in ozList)
 		{
 			<tr>
 				<td class="t-r">@r.OOId</td>
@@ -58,18 +58,65 @@
 				<td>@r.TskAd</td>
 				<td>@r.ActAd</td>
 				<td>@r.ReqAd</td>
-				<td class="t-c">@r.RSD.ToS()</td>
+				<td class="t-c">@r.RSDf</td>
 				<td class="t-c">@r.DSH</td>
-				<td class="t-c">@r.ASD.ToS()</td>
-				<td class="t-c">@r.RFD.ToS()</td>
+				<td class="t-c">@r.ASDf</td>
+				<td class="t-c">@r.RFDf</td>
 				<td class="t-c">@r.DFH</td>
-				<td class="t-c">@r.AFD.ToS()</td>
+				<td class="t-c">@r.AFDf</td>
 				<td class="t-c">@r.SFH</td>
 			</tr>
 		}
 	</tbody>
 </table>
 
+<div style="width: 360px; margin: 1rem auto;">
+	<table>
+		<tbody>
+			<tr>
+				<td>Toplam Talep</td>
+				<td>@ozs1.CntRec</td>
+			</tr>
+			<tr>
+				<td>Kapanmış Talep</td>
+				<td>@ozs1.CntSFH</td>
+			</tr>
+			<tr>
+				<td>Toplam Süre (S)</td>
+				<td>@ozs1.SumSFH</td>
+			</tr>
+			<tr>
+				<td>Min Süre (S)</td>
+				<td>@ozs1.MinSFH</td>
+			</tr>
+			<tr>
+				<td>Avg Süre (S)</td>
+				<td>@ozs1.AvgSFH</td>
+			</tr>
+			<tr>
+				<td>Max Süre (S)</td>
+				<td>@ozs1.MaxSFH</td>
+			</tr>
+			<tr>
+				<td>İlk Başlama</td>
+				<td>@ozs1.MinASD</td>
+			</tr>
+			<tr>
+				<td>Son Başlama</td>
+				<td>@ozs1.MaxASD</td>
+			</tr>
+			<tr>
+				<td>İlk Bitirme</td>
+				<td>@ozs1.MinAFD</td>
+			</tr>
+			<tr>
+				<td>Son Bitirme</td>
+				<td>@ozs1.MaxAFD</td>
+			</tr>
+		</tbody>
+
+	</table>
+</div>
 
 <div id="search-popover" popover="auto" style="min-width:360px;">
 	<table>
@@ -167,17 +214,19 @@
 	#search-popover {
 		white-space: nowrap;
 	}
+
 	.lst {
 		max-height: 80px;
 		overflow: auto;
 	}
 	/* [popover]:popover-open {
-				white-space: nowrap;
-			} */
+					white-space: nowrap;
+				} */
 </style>
 
 @code {
-	private List<OO>? ooList = new();
+	private List<OZ>? ozList = new();
+	private OZS1 ozs1 = new();
 	public string? qryStr { get; set; } = "";
 	public List<SelList> reqList = new();
 	public List<SelList> sbjList = new();
@@ -225,10 +274,14 @@
 		var Stu = ((char)((int)stu)).ToString();
 
 		using var conn = db.GetConnection();
-		ooList = conn.Query<OO>("select * from OZ_QRY(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
+		ozList = conn.Query<OZ>("select * from OZ_QRY(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
 			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
 			commandType: CommandType.Text)
 		.ToList();
+
+		ozs1 = conn.QuerySingle<OZS1>("select * from OZ_STAT_1(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
+			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
+			commandType: CommandType.Text);
 
 	}
 
@@ -252,7 +305,7 @@
 		}
 	}
 
-	public sealed class OO
+	public sealed class OZ
 	{
 		public int OOId;
 		public DateTime? RSD;
@@ -273,8 +326,20 @@
 		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
 		public string? ASDf => ASD?.ToString("dd.MM.yy HH:mm");
 		public string? AFDf => AFD?.ToString("dd.MM.yy HH:mm");
+	}
 
-
+	public sealed class OZS1
+	{
+		public int CntRec;
+		public int CntSFH;
+		public int SumSFH;
+		public int MinSFH;
+		public int AvgSFH;
+		public int MaxSFH;
+		public DateTime? MinASD;
+		public DateTime? MaxASD;
+		public DateTime? MinAFD;
+		public DateTime? MaxAFD;
 	}
 
 	public sealed class LookUp

@@ -18,7 +18,7 @@ builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
 
-builder.Services.AddSingleton<IDbCon, DbCon>();
+builder.Services.AddScoped<IDbCon, DbCon>();
 
 builder.Services.AddSingleton<NotifierService>();
 builder.Services.AddScoped<AppState>();
