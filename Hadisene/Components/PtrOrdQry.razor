@@ -1,4 +1,4 @@
-﻿@inject AppState appState
+﻿@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -97,7 +97,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<PO>("PO_QRY",
-				new { a = appState.UsrId, b = PPId },
+				new { a = my.Id, b = PPId },
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

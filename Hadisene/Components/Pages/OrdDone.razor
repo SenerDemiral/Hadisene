@@ -1,6 +1,6 @@
 ﻿@page "/orddone"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@inject AppState appState
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -275,12 +275,12 @@
 
 		using var conn = db.GetConnection();
 		ozList = conn.Query<OZ>("select * from OZ_QRY(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
-			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
+			new { UsrId = my.Id, FFId = my.FrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
 			commandType: CommandType.Text)
 		.ToList();
 
 		ozs1 = conn.QuerySingle<OZS1>("select * from OZ_STAT_1(@UsrId, @FFId, @Stu, @bTrh, @eTrh, @QryStr)",
-			new { UsrId = appState.UsrId, FFId = appState.UsrFrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
+			new { UsrId = my.Id, FFId = my.FrmId, Stu = Stu, bTrh = bTrh, eTrh = eTrh, QryStr = qryStr },
 			commandType: CommandType.Text);
 
 	}
@@ -295,7 +295,7 @@
 
 			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
-			var LU = conn.QuerySingle<LookUp>("OZ_LU", new { FormFile = appState.UsrFrmId }, commandType: CommandType.StoredProcedure);
+			var LU = conn.QuerySingle<LookUp>("OZ_LU", new { FormFile = my.FrmId }, commandType: CommandType.StoredProcedure);
 			LookUpInit(LU.Sbjs, LU.Tsks, LU.Usrs);
 		}
 		catch (Exception ex)

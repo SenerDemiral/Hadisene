@@ -1,4 +1,4 @@
-﻿@inject AppState appState
+﻿@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -42,7 +42,7 @@
 			_ = conn.Execute("PP2OO",
 					new
 					{
-						p1 = appState.UsrId,
+						p1 = my.Id,
 						p2 = PPId,
 						p3 = SD,
 						p4 = Chnd ? 1 : 0,

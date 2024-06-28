@@ -1,5 +1,5 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
-@inject AppState appState
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 @inject NotifierService Notifier
@@ -11,13 +11,13 @@
 @* MainLayout da tanımlı *@
 
 <div class="top">
-	@if (appState.UsrId > 0)
+	@if (my.Id > 0)
 	{
-		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @appState.UsrAd @appState.UsrYtkAd</div>
+		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @my.Ad @my.YtkAd</div>
 	}
 	else
 	{
-		<div>@appState.UsrAd</div>
+		<div>@my.Ad</div>
 	}
 
 	<InputSelect TValue="string"
@@ -25,10 +25,10 @@
 				 ValueChanged="MenuChange"
 				 ValueExpression="@(() => selVal)" >
 		<option value="">🏠 HOME</option>
-		@if (appState.UsrId != 0)
+		@if (my.Id != 0)
 		{
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
-			@if (appState.UsrYtk == 1)
+			@if (my.Ytk == 1)
 			{
 				<optgroup label="Tanımlar">
 					<option value="SbjQry">⚓ Servis</option>
@@ -53,7 +53,7 @@
 
 <div class="btm">
 	<div>&copy;Şener Demiral @(DateTime.Now.Year)</div>
-	<div>@appState.UsrFrmAd</div>
+	<div>@my.FrmAd</div>
 </div>
 
 
@@ -208,11 +208,13 @@
 		using var conn = db.GetConnection();
 		conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
 
-		appState.UsrId = 0;
-		appState.UsrAd = "Giriş Yapın";
-		appState.UsrYtk = 0;
-		appState.UsrFrmId = 0;
-		appState.UsrFrmAd = null;
+		my.UEXId = 0;
+		my.Id = 0;
+		my.Ad = "Giriş Yapın";
+		my.Ytk = 0;
+		my.FrmId = 0;
+		my.FrmAd = "";
+		my.SrvSet.Clear();
 
 		await Notifier.Invoke("UsrLogOut", new NotifyArgs { UsrTkn = usrTkn });
 		navigationManager.NavigateTo("");
@@ -234,21 +236,22 @@
 			//var x = conn.QuerySingle($"select * from USR_ENTER('{UsrTkn}')");
 
 			// SP parametreleri DB deki sırasıyla gönderilmeli
-			var x = conn.QuerySingle<AppState>("USR_ENTER", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle("USR_ENTER", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
 
-			appState.UsrTkn = usrTkn;
-			appState.UsrId = x.UsrId;
-			appState.UsrAd = x.UsrAd;
-			appState.UsrYtk = x.UsrYtk;
-			appState.UEXId = x.UEXId;
-			appState.UsrFrmId = x.UsrFrmId;
-			appState.UsrFrmAd = x.UsrFrmAd;
-			appState.UsrSrvStr = x.UsrSrvStr;
+			// null gelmez
+			my.Tkn = usrTkn;
+			my.UEXId = x.UEXID;
+			my.Id = x.ID;
+			my.Ytk = x.YTK;
+			my.Ad = x.AD;
+			my.FrmId = x.FRMID;
+			my.FrmAd = x.FRMAD;
+			my.SrvStr = x.SRVSTR;
 
 			await Notifier.Invoke("UsrEnter", new NotifyArgs
 				{
-					UUId = appState.UsrId,
-					FFId = appState.UsrFrmId
+					UUId = my.Id,
+					FFId = my.FrmId
 				});
 
 			Notifier.Notify += OnNotify;
@@ -287,7 +290,7 @@
 		Notifier.Notify -= OnNotify;
 
 		using var conn = db.GetConnection();
-		conn.Execute("USR_EXIT", new { UEXId = appState.UEXId }, commandType: CommandType.StoredProcedure);
+		conn.Execute("USR_EXIT", new { UEXId = my.UEXId }, commandType: CommandType.StoredProcedure);
 
 		await Notifier.Invoke("UsrExit", new NotifyArgs());
 

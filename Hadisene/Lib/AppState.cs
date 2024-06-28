@@ -2,15 +2,14 @@
 
 public sealed class AppState
 {
-	public string? UsrTkn = null;
+	public string? Tkn = null;
 	public int UEXId;
-	public int UsrFrmId;
-	public int UsrId;
-	public int OOId;
-	public string? UsrAd = null;
-	public string? UsrFrmAd = null;
-	public int UsrYtk = 0;  // 1:Admn, 2:ServisYetkilisi, 3:Actor, 4:Requester
-	public string UsrYtkAd => UsrYtk switch
+	public int Id;
+	public string? Ad = null;
+	public int FrmId;
+	public string? FrmAd = null;
+	public int Ytk = 0;  // 1:Admn, 2:ServisYetkilisi, 3:Actor/Görevli, 4:Requester/İsteyen, 8:Pasif, 9:Ayrıldı
+	public string YtkAd => Ytk switch
 	{
 		1 => "[Admn]",
 		2 => "[SrvYtk]",
@@ -18,33 +17,13 @@ public sealed class AppState
 		4 => "[İsteyen]",
 		_ => "[Yetkisiz]"
 	};
-	private string? _UsrSrvStr;
-	public string? UsrSrvStr {  
-		get => _UsrSrvStr; 
-		set {
-			_UsrSrvStr = value;
-			UsrSrv.Clear();
-			var sa = value?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-			if (sa != null)
-			{
-				foreach (var s in sa)
-				{
-					if (int.TryParse(s, out int r))
-					{
-						UsrSrv.Add(r);
-					}
-				}
-			}
+	public string SrvStr
+	{
+		set
+		{
+			var sa = value.Split(',', StringSplitOptions.RemoveEmptyEntries);
+			SrvSet = sa.Select(x => Convert.ToInt32(x)).ToHashSet<int>();
 		}
 	}
-	public HashSet<int> UsrSrv = new HashSet<int>();
-
-	private void Init()
-	{
-		//if(UsrSrv.Contains(55))
-			
-		//foreach (var s in UsrSrv) { 
-			
-		//}
-	}
+	public required HashSet<int> SrvSet;// = new HashSet<int>();
 }

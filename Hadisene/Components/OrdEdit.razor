@@ -1,7 +1,7 @@
 ﻿@using System.Globalization
 @implements IDisposable
 @inject NotifierService Notifier
-@inject AppState appState
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -207,8 +207,8 @@
             oo.StuROa = true;
             oo.StuROx = true;
             oo.StuROz = true;
-            oo.ReqId = appState.UsrId;
-            oo.ReqAd = appState.UsrAd;
+            oo.ReqId = my.Id;
+            oo.ReqAd = my.Ad;
             oo.ReqRO = true;
             oo.RSD = DateTime.Today.AddDays(1);
             oo.RFD = DateTime.Today.AddDays(2);
@@ -229,10 +229,10 @@
 
             oo.OOId = 0;    // Insert
 
-            if (appState.UsrYtk > 2)
+            if (my.Ytk > 2)
             {
-                oo.ReqId = appState.UsrId;
-                oo.ReqAd = appState.UsrAd;
+                oo.ReqId = my.Id;
+                oo.ReqAd = my.Ad;
                 oo.ReqRO = true;
             }
             oo.RSD = null;
@@ -250,12 +250,12 @@
             // Ytk = 1/2 ise
             // Usr = Req ve ASD = null ise
 
-            if (appState.UsrYtk <= 2) // Admn, Ytk
+            if (my.Ytk <= 2) // Admn, Ytk
             {
                 SaveDsbl = false;
                 InitROfalse();
             }
-            else if (appState.UsrId == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+            else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
             {
                 SaveDsbl = false;
                 InitROfalse();
@@ -363,10 +363,10 @@
             int refId = conn.ExecuteScalar<int>("OO_MDF",
                 new
                 {
-                    p1 = appState.UsrId,
+                    p1 = my.Id,
                     p2 = oo.OOId,
                     p0 = oo.Stu,
-                    p3 = appState.UsrFrmId,
+                    p3 = my.FrmId,
                     pD = oo.CId,
                     p4 = oo.ReqId,
                     p5 = oo.SbjId,
@@ -384,11 +384,11 @@
             string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
                 commandType: CommandType.StoredProcedure);
 
-            var key = oo.OOId == 0 ? "IO" : "UO";
+            var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
             await Notifier.Invoke(key, new NotifyArgs
 				{
-					FFId = appState.UsrFrmId,
-					UUId = appState.UsrId,
+					FFId = my.FrmId,
+					UUId = my.Id,
 					OOId = refId,
 					CId = oo.CId,
 					OrdUsrs = ordUsrs
@@ -434,9 +434,9 @@
 
             ooo = oo.ShallowCopy();
         }
-        ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-        ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-        uud = conn.Query<UU>("UU_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+        ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+        ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+        uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
         //Sbj Actors
         SbjActLU(oo.SbjId);

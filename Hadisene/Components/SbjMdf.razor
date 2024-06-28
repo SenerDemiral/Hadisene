@@ -1,4 +1,4 @@
-﻿@inject AppState appState
+﻿@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -55,8 +55,8 @@
 			int newId = conn.ExecuteScalar<int>("SS_MDF",
 					new
 					{
-						p1 = appState.UsrId,
-						p2 = appState.UsrFrmId,
+						p1 = my.Id,
+						p2 = my.FrmId,
 						p3 = SSId,
 						p4 = ss!.Ad,
 					},
@@ -68,7 +68,7 @@
 					new
 					{
 						p1 = r.UUId,
-						p2 = appState.UsrFrmId,
+						p2 = my.FrmId,
 						p3 = newId,
 						p4 = r.SUId,
 						p5 = r.Mbr
@@ -104,7 +104,7 @@
 				new
 				{
 					p1 = SSId,
-					p2 = appState.UsrFrmId
+					p2 = my.FrmId
 				},
 				commandType: CommandType.StoredProcedure).ToList();
 		}

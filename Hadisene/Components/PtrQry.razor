@@ -1,4 +1,4 @@
-﻿@inject AppState appState
+﻿@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -97,7 +97,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<PP>("PP_QRY",
-				new { a = appState.UsrId, b = appState.UsrFrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

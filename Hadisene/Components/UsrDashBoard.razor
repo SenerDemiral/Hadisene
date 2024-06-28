@@ -2,7 +2,7 @@
 @using System.Globalization
 @inject IDbCon db
 @inject NotifierService Notifier
-@inject AppState AppState
+@inject AppState my
 @inject NavigationManager navigationManager
 @implements IDisposable
 
@@ -127,7 +127,7 @@
 				</tr>
 				<tr>
 					<td class="fld-hdr">Güncelleme</td>
-					<td colspan="2">@FormatDate(UDB.LastUpd)</td>
+					<td colspan="2">@UDB.LastUpd.ToShortTimeString()</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding:0;">
@@ -153,23 +153,6 @@
 	private int dnm = 0;
 	private List<int> DnmList = new();
 	private bool cbCSR, cbCSB, cbCSG, cbCFR, cbCFB, cbCFG, cbPin, cbOnV, cbMnV;
-
-	private string FormatDate(DateTime? dt)
-	{
-		if (dt is null)
-			return "";
-
-		if (dt.Value.Date == DateTime.Today)
-			return dt.Value.ToString("HH:mm:ss");
-
-		if (dt.Value.Date == DateTime.Today.AddDays(-1))
-			return "Dün " + dt.Value.ToString("HH:mm");
-
-		if (dt.Value.Date == DateTime.Today.AddDays(1))
-			return "Yarın " + dt.Value.ToString("HH:mm");
-
-		return dt.Value.ToString("dd.MM.yy HH:mm");
-	}
 
 	private void PosChanged()
 	{
@@ -241,7 +224,7 @@
 	private void Read()
 	{
 		using var conn = db.GetConnection();
-		UDB = conn.QuerySingle<DashBoard>("UU_DASHBOARD", new { UsrId = AppState.UsrId }, commandType: CommandType.StoredProcedure);
+		UDB = conn.QuerySingle<DashBoard>("UU_DASHBOARD", new { UsrId = my.Id }, commandType: CommandType.StoredProcedure);
 
 	}
 

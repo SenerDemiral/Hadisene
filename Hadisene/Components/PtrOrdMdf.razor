@@ -1,4 +1,4 @@
-﻿@inject AppState appState
+﻿@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
@@ -160,7 +160,7 @@
 			_ = conn.Execute("PO_MDF",
 					new
 					{
-						p1 = appState.UsrId,
+						p1 = my.Id,
 						p2 = POId,
 						p3 = PPId,
 						p4 = po.RSD,
@@ -207,8 +207,8 @@
 				Modal.Show<ModalConfirm>(hata);
 			}
 		}
-		ssd = conn.Query<SS>("SS_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		ttd = conn.Query<TT>("TT_LU", new { FFId = appState.UsrFrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		//Sbj Actors
 		sad = conn.Query<UU>("SA_LU", new { SSId = po.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 

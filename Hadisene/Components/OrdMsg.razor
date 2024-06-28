@@ -4,7 +4,7 @@
 @using SixLabors.ImageSharp.Processing
 
 @inject NotifierService Notifier
-@inject AppState appState
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 @inject NavigationManager Navigation
@@ -17,7 +17,7 @@
 	@* <div style="container: sener / inline-size;max-width:80vw;max-height:80vh"> *@
 
 	<div class="msg-cnt">
-		<div class="msg-bdy" id="myDIV">
+		<div class="msg-bdy" id="scroll-area">
 			@foreach (var rec in omList)
 			{
 				@if (rec.PB == 1)
@@ -45,13 +45,13 @@
 			}
 		</div>
 		<div class="msg-inp">
-			<button onclick="document.getElementById('myDIV').scrollTop = 0">
+			<button onclick="document.getElementById('scroll-area').scrollTop = 0">
 				<span class="material-symbols-outlined">
 					north
 				</span>
 			</button>
 
-			<button onclick="document.getElementById('myDIV').scrollTop = 99999">
+			<button onclick="document.getElementById('scroll-area').scrollTop = 99999">
 				<span class="material-symbols-outlined">
 					south
 				</span>
@@ -115,7 +115,7 @@
 				{
 					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
 					var OMId = InsertImageRec(e);
-					var dirName = $@"{env.WebRootPath}\uploads\F{appState.UsrFrmId}";
+					var dirName = $@"{env.WebRootPath}\uploads\F{my.FrmId}";
 					Directory.CreateDirectory(dirName);	// if not exists
 					var fileName = $@"{dirName}\M{OMId}{Path.GetExtension(e.File.Name)}";
 
@@ -125,7 +125,7 @@
 
 					await Notifier.Invoke("IM", new NotifyArgs
 						{
-							UUId = appState.UsrId,
+							UUId = my.Id,
 							OMId = OMId,
 							OOId = OOId,
 							MsgTyp = "I",
@@ -156,15 +156,15 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_TXT",
-			new { a = appState.UsrId, b = OOId, c = appState.UsrFrmId, f = msg },
+			new { a = my.Id, b = OOId, c = my.FrmId, f = msg },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
 
 		await Notifier.Invoke("IM", new NotifyArgs
 			{
-				FFId = appState.UsrFrmId,
-				UUId = appState.UsrId,
+				FFId = my.FrmId,
+				UUId = my.Id,
 				OOId = OOId,
 				OMId = OMId,
 				OrdUsrs = ordUsrs,
@@ -179,7 +179,7 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_IMG",
-			new { a = appState.UsrId, b = OOId, c = appState.UsrFrmId, d = "I", f = fileExt },
+			new { a = my.Id, b = OOId, c = my.FrmId, d = "I", f = fileExt },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
@@ -192,7 +192,7 @@
 		try
 		{
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
-				new { a = appState.UsrId, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 
@@ -220,7 +220,7 @@
 		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
-			var x = conn.QuerySingle<OM>("OM_SEL", new { a = appState.UsrId, b = value.OMId }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<OM>("OM_SEL", new { a = my.Id, b = value.OMId }, commandType: CommandType.StoredProcedure);
 			omList!.Add(x);
 
 			await InvokeAsync(() =>
@@ -231,7 +231,7 @@
 			await Task.Delay(value.MsgTyp == "I" ? 1000 : 100);
 			try
 			{
-				await js.InvokeVoidAsync("scrollBottom", "myDIV");
+				await js.InvokeVoidAsync("scrollBottom", "scroll-area");
 			}
 			catch (JSDisconnectedException) { }
 		}

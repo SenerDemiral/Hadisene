@@ -1,7 +1,7 @@
 ﻿@page "/ordactive/{CId:int}/{qryStr}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@inject AppState appState
 @inject NavigationManager navigationManager
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 @inject IToastService toastService
@@ -43,72 +43,72 @@
 
 @if (ooList != null)
 {
-		<div class="ooCnt">
+	<div class="ooCnt">
 		@foreach (OO rec in ooList)
 		{
-					<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
+			<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
 
-					<div class="ooCard" data-Ytk="@appState.UsrYtk" data-Act="@(rec.ActId == appState.UsrId)"
-						 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
-						 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
-						<div class="ooHdr">
-							<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
-								<span>@((MarkupString)rec.UpdFlg)</span>
-								<span class="material-symbols-outlined">settings</span>
-								<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
-							</button>
-							<div class="ooHdrTxt">@rec.SbjAd</div>
-							<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
-								<span class="ooBtnMsjCnt">@rec.MnVcF</span>
-								<span class="material-symbols-outlined">chat</span>
-							</button>
-						</div>
-						<div class="box ooReq">@rec.ReqAd</div>
+			<div class="ooCard" data-Ytk="@my.Ytk" data-Act="@(rec.ActId == my.Id)"
+				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
+				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
+				<div class="ooHdr">
+					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
+						<span>@((MarkupString)rec.UpdFlg)</span>
+						<span class="material-symbols-outlined">settings</span>
+						<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
+					</button>
+					<div class="ooHdrTxt">@rec.SbjAd</div>
+					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
+						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
+						<span class="material-symbols-outlined">chat</span>
+					</button>
+				</div>
+				<div class="box ooReq">@rec.ReqAd</div>
 
-						<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
-						<button class="ooCID"
-								disabled=@(rec.CId == 0)
-								@onclick="@(() => Chained(rec))"></button>
+				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+				<button class="ooCID"
+						disabled=@(rec.CId == 0)
+						@onclick="@(() => Chained(rec))"></button>
 
 
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
-						<div class="box ooTsk">@rec.TskAd</div>
-						<div class="box ooInf">
-							<button class="pop-btn"
-									popovertarget="mypopover-@rec.OOId"
-									popovertargetaction="toggle">
-								<span>@rec.Inf</span>
-							</button>
-						</div>
+				<div class="box ooTsk">@rec.TskAd</div>
+				<div class="box ooInf">
+					<button class="pop-btn"
+							popovertarget="mypopover-@rec.OOId"
+							popovertargetaction="toggle">
+						<span>@rec.Inf</span>
+					</button>
+				</div>
 
-						<div class="box ooAct">@rec.ActAd</div>
+				<div class="box ooAct">@rec.ActAd</div>
 
-						<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
-						<div class="box ooS ooASD">@rec.ASD.ToS()</div>
-						<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
+				<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
+				<div class="box ooS ooASD">@rec.ASD.ToS()</div>
+				<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
 
-						<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
-						<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
-						<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
-						<div class="ooFtr">
-							<div class="ooStuZ">KAPANDI</div>
-							<div class="ooStuX">İ P T A L</div>
+				<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
+				<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
+				<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
+				<div class="ooFtr">
+					<div class="ooStuZ">KAPANDI</div>
+					<div class="ooStuX">İ P T A L</div>
 					@{
-						// bool dsb = rec.ActId != appState.UsrId && appState.UsrYtk != 3;
-						bool dsb = !(rec.ActId == appState.UsrId || 
-									 (rec.OrdUsrSet.Contains(appState.UsrId) && appState.UsrYtk == 3));
+						// bool dsb = rec.ActId != my.UsrId && my.UsrYtk != 3;
+						bool dsb = !(rec.ActId == my.Id ||
+						(rec.OrdUsrSet.Contains(my.Id) && my.Ytk == 3));
 					}
-							<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
-							<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
+					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
+					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
 
-							<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
-							<div class="ooStuA ooC ooTxtS">Başlat ?</div>
-							<div class="ooStuA ooC ooTxtF">Bitir ?</div>
-							<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
-						</div>
-					</div>
+					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
+					<div class="ooStuA ooC ooTxtS">Başlat ?</div>
+					<div class="ooStuA ooC ooTxtF">Bitir ?</div>
+					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
+				</div>
+			</div>
 		}
-		</div>
+	</div>
 }
 
 
@@ -177,7 +177,7 @@
 
 	private async Task ShowMsg(OO oo)
 	{
-		if (!oo.OrdUsrSet.Contains(appState.UsrId))
+		if (!oo.OrdUsrSet.Contains(my.Id))
 		{
 			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
 			return;
@@ -232,7 +232,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = appState.UsrId, b = oo.OOId });
+			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = my.Id, b = oo.OOId });
 			oo.Pin = (int)x;
 		}
 		catch (Exception ex)
@@ -256,7 +256,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = appState.UsrId, b = oo.OOId, c = oo.SoF });
+			var res = conn.QuerySingle("OO_UPD_ACTUALDATES", new { a = my.Id, b = oo.OOId, c = oo.SoF });
 
 			oo.ASD = res.ASD;
 			oo.AFD = res.AFD;
@@ -271,8 +271,8 @@
 
 			await Notifier.Invoke("UO", new NotifyArgs
 				{
-					FFId = appState.UsrFrmId,
-					UUId = appState.UsrId,
+					FFId = my.FrmId,
+					UUId = my.Id,
 					OOId = oo.OOId,
 				});
 		}
@@ -302,6 +302,9 @@
 			> 1 => "Bağlı Talepler",
 			_ => "?",
 		};
+
+		Notifier.Notify += OnNotify;
+
 		await Read();
 	}
 
@@ -313,13 +316,12 @@
 		{
 			using var conn = db.GetConnection();
 			ooList = (await conn.QueryAsync<OO>("select * from OO_QRY(@UsrId, @QryStr) order by Idx, Trh",
-				new { UsrId = appState.UsrId, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { UsrId = my.Id, QryStr = qryStr }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.Text)
 			).ToList();
 
 			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
-			Notifier.Notify += OnNotify;
 		}
 		catch (Exception ex)
 		{
@@ -330,45 +332,73 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		// if (value.UUId != appState.UsrId &&
-		if (value.FFId == appState.UsrFrmId)
+		if (value.FFId == my.FrmId)
 		{
-			int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
-			//(value.CId == CId || value.OrdUsrSet.Contains(appState.UsrId)))
-			if (iof != -1)
+			if (key == "DO")
 			{
-				if (key == "IM" && !MsgShowing)
+				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+				if (iof != -1)
 				{
-					ooList[iof].MnVc++;
-
+					ooList.RemoveAt(iof);	
 					await InvokeAsync(() =>
 					{
 						StateHasChanged();
 					});
-
-					toastService.ShowInfo($"Yeni Mesaj var #{value.OOId}");
+					toastService.ShowInfo($"Talep Arşivlendi #{value.OOId.toSqid()}");
 				}
-				else if (key == "IO")
-				{
-					toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId}");
-				}
-				else if (key == "UO")
-				{
-					// İlgili kaydı bul
-					using var conn = db.GetConnection();
-					var x = conn.QuerySingle<OO>("OO_QRY",
-						new { A = appState.UsrId, B = qryStr, p3 = value.OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-						commandType: CommandType.StoredProcedure);
+			}
+			else if (key == "IO")
+			{
+				// İlgili kaydı bul
+				using var conn = db.GetConnection();
+				var x = conn.QuerySingle<OO>("OO_QRY",
+					new { A = my.Id, B = qryStr, p3 = value.OOId },
+					commandType: CommandType.StoredProcedure);
 
-					ooList[iof] = x;
+				ooList.Insert(0, x);
 
-					await InvokeAsync(() =>
+				await InvokeAsync(() =>
+				{
+					StateHasChanged();
+				});
+
+				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
+			}
+			else 
+			{
+				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
+				//(value.CId == CId || value.OrdUsrSet.Contains(my.UsrId)))
+				if (iof != -1)
+				{
+					if (key == "UO")
 					{
-						StateHasChanged();
-					});
+						// İlgili kaydı bul
+						using var conn = db.GetConnection();
+						var x = conn.QuerySingle<OO>("OO_QRY",
+							new { A = my.Id, B = qryStr, p3 = value.OOId },
+							commandType: CommandType.StoredProcedure);
 
-					if (value.UUId != appState.UsrId)
-						toastService.ShowInfo($"Talepte değişiklik #{value.OOId}");
+						ooList[iof] = x;
+
+						await InvokeAsync(() =>
+						{
+							StateHasChanged();
+						});
+
+						if (value.UUId != my.Id)	// Gönderen ben değilsem
+							toastService.ShowInfo($"Talepte değişiklik #{value.OOId.toSqid()}");
+					}
+					else if (key == "IM" && !MsgShowing)
+					{
+						ooList[iof].MnVc++;
+
+						await InvokeAsync(() =>
+						{
+							StateHasChanged();
+						});
+
+						toastService.ShowInfo($"Yeni Mesaj var #{value.OOId.toSqid()}");
+					}
 				}
 			}
 		}
