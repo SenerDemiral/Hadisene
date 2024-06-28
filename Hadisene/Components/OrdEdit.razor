@@ -13,39 +13,54 @@
 
 		<div class="oeHdr">
 			<button class="oeBtnCancel" @onclick="Vazgec">Vazgeç</button>
-			<div>@OOId.toSqid()#@OOId</div>
+			<div style="font-family: monospace;">@OOId.toSqid()#@OOId</div>
 			<button class="oeBtnSave" @onclick="Kaydet" disabled="@SaveDsbl">Kaydet</button>
 		</div>
 
 		<div class="oeHdr">
-			<InputRadioGroup @bind-Value="mode">
-				@foreach (var mode in Enum.GetValues<Mode>())
-				{
-					<div>
-						<label>
-							<InputRadio Value="mode" disabled="@modeRO" />
-							@ModeT[(int)mode]
-						</label>
+			<div class="inp-radio-group">
+				<InputRadioGroup @bind-Value="mode">
+					<div class="inp-radio">
+						<span class="material-symbols-outlined">eyeglasses</span>
+						<InputRadio Value="Mode.Show" disabled="@modeRO" />
 					</div>
-				}
-			</InputRadioGroup>
+					<div class="inp-radio">
+						<span class="material-symbols-outlined">edit</span>
+						<InputRadio Value="Mode.Edit" disabled="@modeRO" />
+					</div>
+					<div class="inp-radio">
+						<span class="material-symbols-outlined">content_copy</span>
+						<InputRadio Value="Mode.Clone" disabled="@modeRO" />
+					</div>
+					<div class="inp-radio">
+						<span class="material-symbols-outlined">add</span>
+						<InputRadio Value="Mode.New" disabled="@modeRO" />
+					</div>
+				@* @foreach (var mode in Enum.GetValues<Mode>())
+				{
+				<div>
+				<label>
+				<InputRadio Value="mode" disabled="@modeRO" />
+				@ModeT[(int)mode]
+				</label>
+				</div>
+				} *@
+				</InputRadioGroup>
+			</div>
 		</div>
 
 		<div class="oeBdy">
-			<div class="oeBox oeStu" >
+			<div class="oeBox oeStu">
 				<div style="display:flex; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
 						<div>
-							<InputRadio Value="Statu.Aktif" disabled="@oo.StuROa" />
-							Aktif
+							<InputRadio Value="Statu.Aktif" disabled="@oo.StuROa" /> Aktif
 						</div>
 						<div>
-							<InputRadio Value="Statu.İptal" disabled="@oo.StuROx" />
-							İptal
+							<InputRadio Value="Statu.İptal" disabled="@oo.StuROx" /> İptal
 						</div>
 						<div>
-							<InputRadio Value="Statu.Arşiv" disabled="@oo.StuROz" />
-							Arşiv
+							<InputRadio Value="Statu.Arşiv" disabled="@oo.StuROz" /> Arşiv
 						</div>
 					</InputRadioGroup>
 				</div>
@@ -54,7 +69,7 @@
 				<span class="material-symbols-outlined">
 					link
 				</span>
-				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO" style="width:auto"/>
+				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO" style="width:auto" />
 			</div>
 			<div class="oeBox oeReq">
 				<input type="text"
@@ -167,225 +182,234 @@
  *@
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
-    [Parameter] public int OOId { get; set; } = 0;
-    private OO? oo, ooo;
-    public enum Mode { Show, Edit, Clone, New };
-    public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
-    private Dictionary<string, int>? ssd, ttd, sad, uud;
-    private bool SaveDsbl = true;
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int OOId { get; set; } = 0;
+	private OO? oo, ooo;
+	public enum Mode { Show, Edit, Clone, New };
+	public string[] ModeT = ["Oku", "Edit", "Çoğalt", "Yeni"];
+	private Dictionary<string, int>? ssd, ttd, sad, uud;
+	private bool SaveDsbl = true;
 
-    public enum Statu { Aktif='A', İptal='X', Arşiv='Z' };
-    public Statu stu;
-
-
-    //private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
-    private bool modeRO;
-    private Mode _mode = Mode.Show;
-    public Mode mode
-    {
-        get => _mode;
-        set
-        {
-            // mode bir kere değişebilir, yanlış yaptıysa çık/gir yapsın
-            modeRO = true;
-            ModeChanging(_mode, value);
-            _mode = value;
-            StateHasChanged();
-
-        }
-    }
-    private void ModeChanging(Mode oldMode, Mode newMode)
-    {
-        DateTime rsd = DateTime.Today.AddDays(1);
-        // Ilk girişte rec kopyasını al
-        if (newMode == Mode.New)
-        {
-            SaveDsbl = false;
-            oo = new();
-            InitROfalse();
-            oo.StuROa = true;
-            oo.StuROx = true;
-            oo.StuROz = true;
-            oo.ReqId = my.Id;
-            oo.ReqAd = my.Ad;
-            oo.ReqRO = true;
-            oo.RSD = DateTime.Today.AddDays(1);
-            oo.RFD = DateTime.Today.AddDays(2);
-            oo.ASDro = true;
-            oo.AFDro = true;
-            oo.ChainRO = true;
-
-            ooo = oo.ShallowCopy();
-
-        }
-        if (newMode == Mode.Clone)
-        {
-            SaveDsbl = false;
-            InitROfalse();
-            oo.StuROa = true;
-            oo.StuROx = true;
-            oo.StuROz = true;
-
-            oo.OOId = 0;    // Insert
-
-            if (my.Ytk > 2)
-            {
-                oo.ReqId = my.Id;
-                oo.ReqAd = my.Ad;
-                oo.ReqRO = true;
-            }
-            oo.RSD = null;
-            oo.RFD = null;
-            oo.ASD = null;
-            oo.AFD = null;
-            oo.ASDro = true;
-            oo.AFDro = true;
-        }
-        if (newMode == Mode.Edit)
-        {
-            // Yeni rec = initialRec then update
-            // Yetkisine göre hangi alanları değiştirebilir (DB de tanımlı aslında)
-            // Yetkililer
-            // Ytk = 1/2 ise
-            // Usr = Req ve ASD = null ise
-
-            if (my.Ytk <= 2) // Admn, Ytk
-            {
-                SaveDsbl = false;
-                InitROfalse();
-            }
-            else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
-            {
-                SaveDsbl = false;
-                InitROfalse();
-
-                oo.StuROa = true;
-                oo.StuROx = false;    // Iptal edebilmeli
-                oo.StuROz = true;
-                oo.ReqRO = true;
-                oo.ASDro = true;
-                oo.AFDro = true;
-            }
-            oo.ChainRO = true;
-
-        }
-    }
-
-    private void InitROfalse()
-    {
-        oo.StuROa = false;
-        oo.StuROx = false;
-        oo.StuROz = false;
-        oo.InfRO = false;
-        oo.ReqRO = false;
-        oo.SbjRO = false;
-        oo.TskRO = false;
-        oo.ActRO = false;
-        oo.RSDro = false;
-        oo.RFDro = false;
-        oo.ASDro = false;
-        oo.AFDro = false;
-        oo.ChainRO = false;
-    }
-
-    private void CheckReq()
-    {
-        if (uud!.TryGetValue(oo.ReqAd, out var nid))
-        {
-            oo.ReqId = nid;
-        }
-        else
-            oo.ReqAd = ooo.ReqAd;
-    }
-    private void CheckSbj()
-    {
-        if (ssd!.TryGetValue(oo.SbjAd, out var nid))
-        {
-            oo.SbjId = nid;
-            SbjActLU(nid);
-
-            if (!String.IsNullOrEmpty(oo.ActAd) && sad!.TryGetValue(oo.ActAd, out var nid2))
-            {
-                oo.ActId = nid2;
-            }
-            else
-            {
-                oo.ActId = 0;
-                oo.ActAd = "";
-            }
-            //CheckAct();
-        }
-        else
-            oo.SbjAd = ooo.SbjAd;
-    }
-    private void CheckTsk()
-    {
-        if (ttd!.TryGetValue(oo.TskAd, out var nid))
-        {
-            oo.TskId = nid;
-        }
-        else
-            oo.TskAd = ooo.TskAd;
-    }
-    private void CheckAct()
-    {
-        if (sad!.TryGetValue(oo.ActAd, out var nid))
-        {
-            oo.ActId = nid;
-        }
-        else
-            oo.ActAd = ooo.ActAd;
-    }
-
-    private async Task Kaydet()
-    {
-        // Chain == true 
-        // Öncekinde CId == 0 ise, her ikisine de aynı CId yi koy
-        using var conn = db.GetConnection();
-
-        if (oo.Chain && ooo.CId == 0)
-        {
-            int cid = conn.ExecuteScalar<int>("CID_NEW", new { }, commandType: CommandType.StoredProcedure);
-            oo.CId = cid;	// Şimdikine
-
-            // Öncekine CId koy
-            int oldOOId = ooo.OOId;
-            conn.Execute("update OO set CId = @CId where OOId = @OOId", new { CId = cid, OOId = oldOOId });
-        }
-
-        oo.Stu = ((char)((int)stu)).ToString();
-
-        try
-        {
-            // SP parametreleri DB deki sırasıyla gönderilmeli
-            // refId = Ins ise yeni OOId, Upd ise mevcut OOId
-            int refId = conn.ExecuteScalar<int>("OO_MDF",
-                new
-                {
-                    p1 = my.Id,
-                    p2 = oo.OOId,
-                    p0 = oo.Stu,
-                    p3 = my.FrmId,
-                    pD = oo.CId,
-                    p4 = oo.ReqId,
-                    p5 = oo.SbjId,
-                    p6 = oo.TskId,
-                    p7 = oo.ActId,
-                    p8 = oo.RSD,
-                    p9 = oo.ASD,
-                    pA = oo.RFD,
-                    pB = oo.AFD,
-                    pC = oo.Inf
-                },
-                commandType: CommandType.StoredProcedure);
+	public enum Statu { Aktif = 'A', İptal = 'X', Arşiv = 'Z' };
+	public Statu stu;
 
 
-            string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
-                commandType: CommandType.StoredProcedure);
+	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
+	private bool modeRO;
+	private Mode _mode = Mode.Show;
+	public Mode mode
+	{
+		get => _mode;
+		set
+		{
+			// mode bir kere değişebilir, yanlış yaptıysa çık/gir yapsın
+			modeRO = true;
+			ModeChanging(_mode, value);
+			_mode = value;
+			StateHasChanged();
 
-            var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
-            await Notifier.Invoke(key, new NotifyArgs
+		}
+	}
+	private void ModeChanging(Mode oldMode, Mode newMode)
+	{
+		DateTime rsd = DateTime.Today.AddDays(1);
+		// Ilk girişte rec kopyasını al
+		if (newMode == Mode.New)
+		{
+			SaveDsbl = false;
+			oo = new();
+			InitROfalse();
+			oo.StuROa = true;
+			oo.StuROx = true;
+			oo.StuROz = true;
+			oo.ReqRO = true;
+			oo.RSD = DateTime.Today.AddDays(1);
+			oo.RFD = DateTime.Today.AddDays(2);
+			oo.ASDro = true;
+			oo.AFDro = true;
+			oo.ChainRO = true;
+
+			oo.ReqId = my.Id;
+			oo.ReqAd = my.Ad;
+			if (ttd?.Count == 1)
+			{
+				oo.TskId = ttd.Values.ElementAt(0);
+				oo.TskAd = ttd.Keys.ElementAt(0);
+			}
+			if (ssd?.Count == 1)
+			{
+				oo.SbjId = ssd.Values.ElementAt(0);
+				oo.SbjAd = ssd.Keys.ElementAt(0);
+			}
+			ooo = oo.ShallowCopy();
+		}
+		if (newMode == Mode.Clone)
+		{
+			SaveDsbl = false;
+			InitROfalse();
+			oo.StuROa = true;
+			oo.StuROx = true;
+			oo.StuROz = true;
+
+			oo.OOId = 0;    // Insert
+
+			if (my.Ytk > 2)
+			{
+				oo.ReqId = my.Id;
+				oo.ReqAd = my.Ad;
+				oo.ReqRO = true;
+			}
+			oo.RSD = null;
+			oo.RFD = null;
+			oo.ASD = null;
+			oo.AFD = null;
+			oo.ASDro = true;
+			oo.AFDro = true;
+		}
+		if (newMode == Mode.Edit)
+		{
+			// Yeni rec = initialRec then update
+			// Yetkisine göre hangi alanları değiştirebilir (DB de tanımlı aslında)
+			// Yetkililer
+			// Ytk = 1/2 ise
+			// Usr = Req ve ASD = null ise
+
+			if (my.Ytk <= 2) // Admn, Ytk
+			{
+				SaveDsbl = false;
+				InitROfalse();
+			}
+			else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+			{
+				SaveDsbl = false;
+				InitROfalse();
+
+				oo.StuROa = true;
+				oo.StuROx = false;    // Iptal edebilmeli
+				oo.StuROz = true;
+				oo.ReqRO = true;
+				oo.ASDro = true;
+				oo.AFDro = true;
+			}
+			oo.ChainRO = true;
+
+		}
+	}
+
+	private void InitROfalse()
+	{
+		oo.StuROa = false;
+		oo.StuROx = false;
+		oo.StuROz = false;
+		oo.InfRO = false;
+		oo.ReqRO = false;
+		oo.SbjRO = false;
+		oo.TskRO = false;
+		oo.ActRO = false;
+		oo.RSDro = false;
+		oo.RFDro = false;
+		oo.ASDro = false;
+		oo.AFDro = false;
+		oo.ChainRO = false;
+	}
+
+	private void CheckReq()
+	{
+		if (uud!.TryGetValue(oo.ReqAd, out var nid))
+		{
+			oo.ReqId = nid;
+		}
+		else
+			oo.ReqAd = ooo.ReqAd;
+	}
+	private void CheckSbj()
+	{
+		if (ssd!.TryGetValue(oo.SbjAd, out var nid))
+		{
+			oo.SbjId = nid;
+			SbjActLU(nid);
+
+			if (!String.IsNullOrEmpty(oo.ActAd) && sad!.TryGetValue(oo.ActAd, out var nid2))
+			{
+				oo.ActId = nid2;
+			}
+			else
+			{
+				oo.ActId = 0;
+				oo.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			oo.SbjAd = ooo.SbjAd;
+	}
+	private void CheckTsk()
+	{
+		if (ttd!.TryGetValue(oo.TskAd, out var nid))
+		{
+			oo.TskId = nid;
+		}
+		else
+			oo.TskAd = ooo.TskAd;
+	}
+	private void CheckAct()
+	{
+		if (sad!.TryGetValue(oo.ActAd, out var nid))
+		{
+			oo.ActId = nid;
+		}
+		else
+			oo.ActAd = ooo.ActAd;
+	}
+
+	private async Task Kaydet()
+	{
+		// Chain == true
+		// Öncekinde CId == 0 ise, her ikisine de aynı CId yi koy
+		using var conn = db.GetConnection();
+
+		if (oo.Chain && ooo.CId == 0)
+		{
+			int cid = conn.ExecuteScalar<int>("CID_NEW", new { }, commandType: CommandType.StoredProcedure);
+			oo.CId = cid;   // Şimdikine
+
+			// Öncekine CId koy
+			int oldOOId = ooo.OOId;
+			conn.Execute("update OO set CId = @CId where OOId = @OOId", new { CId = cid, OOId = oldOOId });
+		}
+
+		oo.Stu = ((char)((int)stu)).ToString();
+
+		try
+		{
+			// SP parametreleri DB deki sırasıyla gönderilmeli
+			// refId = Ins ise yeni OOId, Upd ise mevcut OOId
+			int refId = conn.ExecuteScalar<int>("OO_MDF",
+				new
+				{
+					p1 = my.Id,
+					p2 = oo.OOId,
+					p0 = oo.Stu,
+					p3 = my.FrmId,
+					pD = oo.CId,
+					p4 = oo.ReqId,
+					p5 = oo.SbjId,
+					p6 = oo.TskId,
+					p7 = oo.ActId,
+					p8 = oo.RSD,
+					p9 = oo.ASD,
+					pA = oo.RFD,
+					pB = oo.AFD,
+					pC = oo.Inf
+				},
+				commandType: CommandType.StoredProcedure);
+
+
+			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
+				commandType: CommandType.StoredProcedure);
+
+			var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
+			await Notifier.Invoke(key, new NotifyArgs
 				{
 					FFId = my.FrmId,
 					UUId = my.Id,
@@ -393,67 +417,66 @@
 					CId = oo.CId,
 					OrdUsrs = ordUsrs
 				});
-            await ModalIns.CloseAsync(ModalResult.Ok());
-        }
-        catch (Exception ex)
-        {
-            var hata = ex.Message.Split("\r\n")[1];
-            Modal.Show<ModalWarning>(hata);
-        }
+			await ModalIns.CloseAsync(ModalResult.Ok());
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
 
-    }
-    private async Task Vazgec() => await ModalIns.CancelAsync();
+	}
+	private async Task Vazgec() => await ModalIns.CancelAsync();
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            Read();
-            Notifier.Notify += OnNotify;
-        }
-        catch (Exception ex)
-        {
-            var hata = ex.Message.Split("\r\n")[1];
-            // Modal.Show<Confirm>(hata);
-        }
-    }
+	protected override void OnInitialized()
+	{
+		try
+		{
+			Read();
+			Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			// Modal.Show<Confirm>(hata);
+		}
+	}
 
-    private void Read()
-    {
-        using var conn = db.GetConnection();
-        //oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
-        if (OOId == 0)
-        {
-            mode = Mode.New;
-        }
-        else
-        {
-            oo = conn.QuerySingle<OO>("OO_SEL",
-                new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-                commandType: CommandType.StoredProcedure);
+	private void Read()
+	{
+		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-            ooo = oo.ShallowCopy();
-        }
-        ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-        ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-        uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
+		if (OOId == 0)
+		{
+			mode = Mode.New;
+		}
+		else
+		{
+			oo = conn.QuerySingle<OO>("OO_SEL",
+				new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure);
 
-        //Sbj Actors
-        SbjActLU(oo.SbjId);
-        //sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			ooo = oo.ShallowCopy();
+		}
+		//Sbj Actors
+		SbjActLU(oo.SbjId);
 
-        //oo.StuRO = oo.Stu != "A" ? true : false;
-        stu = Statu.Aktif;
-    }
+		//oo.StuRO = oo.Stu != "A" ? true : false;
+		stu = Statu.Aktif;
+	}
 
-    private void SbjActLU(int SSId)
-    {
-        using var conn = db.GetConnection();
-        sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-        
-        // DB de sort ediliyor
-        // var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
-        // list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+	private void SbjActLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+		// DB de sort ediliyor
+		// var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
+		// list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 		// sad = list.ToDictionary(k => k.Ad, e => e.Id);
 	}
 

@@ -33,7 +33,7 @@
 					</div>
 					@if (rec.Typ == "I")
 					{
-						<button @onclick="@(() => ShowImage(rec))">
+						<button style="height:auto;" @onclick="@(() => ShowImage(rec))">
 							<img src=@rec.Msg />
 						</button>
 					}

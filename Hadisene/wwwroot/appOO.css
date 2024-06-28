@@ -88,21 +88,25 @@
 .ooBtnS::before {
 	content: "play_circle";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
 	font-size: inherit;
 }
 .ooBtnF::before {
 	content: "stop_circle";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
 	font-size: inherit;
 }
 .ooBtnOK::before {
 	content: "check_circle";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
 	font-size: inherit;
 }
 .ooBtnCancel::before {
 	content: "cancel";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
 	font-size: inherit;
 }
 
@@ -194,7 +198,7 @@
 		"ooRFD ooAFD ooDFH"
 		"ooInf ooInf ooInf"
 		"ooFtr ooFtr ooFtr";
-	background-color: #fff;
+	background-color: azure;
 	color: #444;
 	outline: 1px solid gray;
 	border-radius: 2px;
@@ -207,8 +211,8 @@
 		font-family: monospace;
 		font-size: 0.6rem;
 		/*border-bottom: thin solid;*/
-		line-height: 1;
-		background-color: white;
+		/*line-height: 1;*/
+		/*background-color: white;*/
 		/*opacity: .4;*/
 	}
 
@@ -287,7 +291,7 @@ button.ooCID:disabled {
 
 .ooAct {
 	grid-area: ooAct;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 	.ooAct::before {
@@ -369,6 +373,7 @@ button.ooCID:disabled {
 
 input[type="radio"] {
 	width: auto !important;
+	margin: 0;
 }
 
 /*@media (width < 600px) {

@@ -65,12 +65,12 @@
 	grid-template-areas:
 		"oeStu oeStu oeStu oeChn"
 		"oeReq oeReq oeReq oeReq"
-		"oeSbj oeSbj oeSbj oeSbj"
 		"oeTsk oeTsk oeTsk oeTsk"
+		"oeSbj oeSbj oeSbj oeSbj"
 		"oeAct oeAct oeAct oeAct"
 		"oeRSD oeRSD oeASD oeASD"
 		"oeRFD oeRFD oeAFD oeAFD"
-		"oeInf oeInf oeInf oeInf"; 
+		"oeInf oeInf oeInf oeInf";
 	background-color: #fff;
 	color: #444;
 }
@@ -262,11 +262,15 @@
 .oeBtnCancel::before {
 	content: "close";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
+	font-size: 1.5rem;
 }
 
 .oeBtnSave::before {
 	content: "check";
 	font-family: 'Material Symbols Outlined';
+	padding-right: 4px;
+	font-size: 1.5rem;
 }
 
 .oeBtnSave:disabled {

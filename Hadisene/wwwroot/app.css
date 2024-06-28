@@ -1,14 +1,24 @@
-﻿:root {
-	--r-color: brown;
-	--b-color: royalblue;
-	--g-color: seagreen;
-	--l-color: gray; /*label*/
-	--top-h: 2rem;
-	--btm-h: 2rem;
-	--mrg-h: 0px;
-	--mrg-w: 8px;
-	--brd-w: 0px;
-	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg-h) + var(--brd-w)) * 2 );
+﻿@font-face {
+	font-family: 'Material Symbols Outlined';
+	font-style: normal;
+	font-weight: 400;
+	src: url(GoogleFonts.woff2) format('woff2');
+}
+
+.material-symbols-outlined {
+	font-family: 'Material Symbols Outlined';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-moz-font-feature-settings: 'liga';
+	-moz-osx-font-smoothing: grayscale;
 }
 
 html {
@@ -21,10 +31,34 @@ body {
 	margin: 0;
 }
 
+:root {
+	--r-color: brown;
+	--b-color: royalblue;
+	--g-color: seagreen;
+	--l-color: gray; /*label*/
+	--top-h: 2rem;
+	--btm-h: 2rem;
+	--mrg-h: 0px;
+	--mrg-w: 8px;
+	--brd-w: 0px;
+	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg-h) + var(--brd-w)) * 2 );
+}
+
+
 *,
 *::before,
 *::after {
 	box-sizing: inherit;
+}
+
+.inp-radio-group {
+	display: inline-flex;
+	justify-content: space-evenly;
+}
+
+.inp-radio {
+	display: inline-flex;
+	gap: 8px;
 }
 
 a, .btn-link {
@@ -514,3 +548,4 @@ tbody.zebra tr:nth-child(odd) {
 		/*grid-template-rows: 36px repeat(5, 32px) 1fr 36px !important;*/
 	}
 }
+
