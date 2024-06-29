@@ -46,7 +46,13 @@
 	<div class="ooCnt">
 		@foreach (OO rec in ooList)
 		{
-			<div id="mypopover-@rec.OOId" popover="auto">@rec.Inf</div>
+			<div id="mypopover-@rec.OOId" popover="auto">
+				<div>
+					<div class="ooRf1">@rec.Rf1</div>
+					<div class="ooRf2">@rec.Rf2</div>
+				</div>
+				<p>@rec.Inf</p>
+			</div>
 
 			<div class="ooCard" data-Ytk="@my.Ytk" data-Act="@(rec.ActId == my.Id)"
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
@@ -77,6 +83,12 @@
 					<button class="pop-btn"
 							popovertarget="mypopover-@rec.OOId"
 							popovertargetaction="toggle">
+						@if (!string.IsNullOrEmpty(rec.Rf1) || !string.IsNullOrEmpty(rec.Rf2))
+						{
+							<span style="font-size:.6rem">@rec.Rf1 &ensp;&ensp; @rec.Rf2</span>
+
+							<br />
+						}
 						<span>@rec.Inf</span>
 					</button>
 				</div>

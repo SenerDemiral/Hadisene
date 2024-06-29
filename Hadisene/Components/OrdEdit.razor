@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using System.Text
 @implements IDisposable
 @inject NotifierService Notifier
 @inject AppState my
@@ -36,7 +37,7 @@
 						<span class="material-symbols-outlined">add</span>
 						<InputRadio Value="Mode.New" disabled="@modeRO" />
 					</div>
-				@* @foreach (var mode in Enum.GetValues<Mode>())
+					@* @foreach (var mode in Enum.GetValues<Mode>())
 				{
 				<div>
 				<label>
@@ -133,7 +134,24 @@
 			<div class="oeBox oeF oeAFD">
 				<input type="datetime-local"
 					   disabled="@oo.AFDro"
-					   @bind-value="@oo.AFD" />
+					   @bind-value="oo.AFD" />
+			</div>
+
+			<div class="oeBox oeRf1">
+				<input type="text"
+					   disabled="@oo.Rf1RO"
+					   maxlength="20"
+					   @bind="oo.Rf1"
+					   @bind:event="onchange"
+					   @bind:after="(() =>CheckRf(ref oo.Rf1))" />
+			</div>
+			<div class="oeBox oeRf2">
+				<input type="text"
+					   disabled="@oo.Rf2RO"
+					   maxlength="20"
+					   @bind="oo.Rf2"
+					   @bind:event="onchange"
+					   @bind:after="(() =>CheckRf(ref oo.Rf2))" />
 			</div>
 
 			<div class="oeBox oeInf">
@@ -302,6 +320,8 @@
 		oo.StuROx = false;
 		oo.StuROz = false;
 		oo.InfRO = false;
+		oo.Rf1RO = false;
+		oo.Rf2RO = false;
 		oo.ReqRO = false;
 		oo.SbjRO = false;
 		oo.TskRO = false;
@@ -313,6 +333,58 @@
 		oo.ChainRO = false;
 	}
 
+
+	private void CheckRf1()
+
+	{
+		if (!string.IsNullOrEmpty(oo?.Rf1))
+		{
+			Encoding ascii = Encoding.ASCII;
+			byte[] encodedBytes = ascii.GetBytes(oo.Rf1);
+			oo.Rf1 = ascii.GetString(encodedBytes).Replace(' ', '-').ToUpperInvariant();
+		}
+	}
+	private void CheckRf(ref string? rf)
+	{
+		if (!string.IsNullOrEmpty(rf))
+		{
+			char d;
+			string rfs = "";
+			foreach( char c in rf)
+			{
+				d = c switch
+				{
+					'Ç' => 'C',
+					'ç' => 'C',
+					'İ' => 'I',
+					'i' => 'I',
+					'Ğ' => 'G',
+					'ğ' => 'G',
+					'Ş' => 'S',
+					'ş' => 'S',
+					'Ö' => 'O',
+					'ö' => 'O',
+					'Ü' => 'U',
+					'ü' => 'U',
+					',' => '.',
+					';' => ':',
+					'"' => '-',
+					'\'' => '-',
+					'|' => '-',
+					'`' => '-',
+					'^' => '-',
+					' ' => '-',
+
+					_ => Char.IsAscii(c) ? Char.ToUpper(c) : '-',
+				};
+				rfs += d;
+			}
+			//Encoding ascii = Encoding.ASCII;
+			//byte[] encodedBytes = ascii.GetBytes(rfs);
+			//rf = ascii.GetString(encodedBytes);
+			rf = rfs;
+		}
+	}
 	private void CheckReq()
 	{
 		if (uud!.TryGetValue(oo.ReqAd, out var nid))
@@ -385,28 +457,30 @@
 			// SP parametreleri DB deki sırasıyla gönderilmeli
 			// refId = Ins ise yeni OOId, Upd ise mevcut OOId
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
-				new
-				{
-					p1 = my.Id,
-					p2 = oo.OOId,
-					p0 = oo.Stu,
-					p3 = my.FrmId,
-					pD = oo.CId,
-					p4 = oo.ReqId,
-					p5 = oo.SbjId,
-					p6 = oo.TskId,
-					p7 = oo.ActId,
-					p8 = oo.RSD,
-					p9 = oo.ASD,
-					pA = oo.RFD,
-					pB = oo.AFD,
-					pC = oo.Inf
-				},
-				commandType: CommandType.StoredProcedure);
+			new
+			{
+				p1 = my.Id,
+				p2 = oo.OOId,
+				p3 = oo.Stu,
+				p4 = my.FrmId,
+				p5 = oo.CId,
+				p6 = oo.ReqId,
+				p7 = oo.SbjId,
+				p8 = oo.TskId,
+				p9 = oo.ActId,
+				pA = oo.RSD,
+				pB = oo.ASD,
+				pC = oo.RFD,
+				pD = oo.AFD,
+				pE = oo.Inf,
+				pF = oo.Rf1,
+				pG = oo.Rf2,
+			},
+			commandType: CommandType.StoredProcedure);
 
 
 			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
-				commandType: CommandType.StoredProcedure);
+			commandType: CommandType.StoredProcedure);
 
 			var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
@@ -457,8 +531,8 @@
 		else
 		{
 			oo = conn.QuerySingle<OO>("OO_SEL",
-				new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure);
+			new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			commandType: CommandType.StoredProcedure);
 
 			ooo = oo.ShallowCopy();
 		}
@@ -509,4 +583,4 @@
 		public string Ad;
 	}
 
-}
+				}

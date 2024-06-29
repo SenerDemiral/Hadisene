@@ -16,6 +16,8 @@ public sealed class OO
 	public int ActId;
 
 	public string? Inf;
+	public string? Rf1;
+	public string? Rf2;
 
 	public DateTime? RSD;
 	public DateTime? ASD;
@@ -63,6 +65,8 @@ public sealed class OO
 	public bool ASDro = true;
 	public bool AFDro = true;
 	public bool ChainRO = true;
+	public bool Rf1RO = true;
+	public bool Rf2RO = true;
 
 	public string MnVcF => MnVc > 99 ? "+99" : MnVc.ToString("#");
 

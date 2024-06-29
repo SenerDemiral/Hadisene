@@ -70,6 +70,7 @@
 		"oeAct oeAct oeAct oeAct"
 		"oeRSD oeRSD oeASD oeASD"
 		"oeRFD oeRFD oeAFD oeAFD"
+		"oeRf1 oeRf1 oeRf2 oeRf2"
 		"oeInf oeInf oeInf oeInf";
 	background-color: #fff;
 	color: #444;
@@ -187,6 +188,23 @@
 
 	.oeAct::before {
 		content: "görevli";
+	}
+
+.oeRf1 {
+	grid-area: oeRf1;
+	font-family: monospace;
+}
+
+	.oeRf1::before {
+		content: "Ref1";
+	}
+.oeRf2 {
+	grid-area: oeRf2;
+	font-family: monospace;
+}
+
+	.oeRf2::before {
+		content: "Ref2";
 	}
 
 .oeRSD {
