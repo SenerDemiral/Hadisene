@@ -17,6 +17,98 @@ public static class Extensions
 		return sqids.Decode(inp).Single();
 	}
 
+	public static string? toASCII(this string? inp)
+	{
+		if (string.IsNullOrEmpty(inp))
+			return inp;
+
+		char d;
+		string rfs = "";
+		foreach (char c in inp)
+		{
+			d = c switch
+			{
+				'Ç' => 'C',
+				'ç' => 'C',
+				'ı' => 'I',
+				'İ' => 'I',
+				'i' => 'I',
+				'Ğ' => 'G',
+				'ğ' => 'G',
+				'Ş' => 'S',
+				'ş' => 'S',
+				'Ö' => 'O',
+				'ö' => 'O',
+				'Ü' => 'U',
+				'ü' => 'U',
+				',' => '.',
+				';' => ':',
+
+				'=' => ',',	// query de kullanıyor, burda izin verme
+				'_' => ',',	// like single char
+				'%' => ',',	// like string
+
+				'"' => ',',
+				'`' => ',',
+				'\'' => ',',
+				'^' => ',',
+				' ' => ',',
+
+				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ',',
+			};
+			rfs += d;
+		}
+		return rfs.Replace(",", "");
+	
+		//Encoding ascii = Encoding.ASCII;
+		//byte[] encodedBytes = ascii.GetBytes(rfs);
+		//rf = ascii.GetString(encodedBytes);
+	}
+	public static string? toASCIIqry(this string? inp)
+	{
+		if (string.IsNullOrEmpty(inp))
+			return inp;
+
+		char d;
+		string rfs = "";
+		foreach (char c in inp)
+		{
+			d = c switch
+			{
+				'Ç' => 'C',
+				'ç' => 'C',
+				'ı' => 'I',
+				'İ' => 'I',
+				'i' => 'I',
+				'Ğ' => 'G',
+				'ğ' => 'G',
+				'Ş' => 'S',
+				'ş' => 'S',
+				'Ö' => 'O',
+				'ö' => 'O',
+				'Ü' => 'U',
+				'ü' => 'U',
+				',' => '.',
+				';' => ':',
+
+				'=' => ',', // query de kullanıyor, burda izin verme
+				'"' => ',',
+				'`' => ',',
+				'\'' => ',',
+				'^' => ',',
+				' ' => ',',
+
+				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ',',
+			};
+			rfs += d;
+		}
+		return rfs.Replace(",", "");
+
+		//Encoding ascii = Encoding.ASCII;
+		//byte[] encodedBytes = ascii.GetBytes(rfs);
+		//rf = ascii.GetString(encodedBytes);
+	}
+
 	public static string? ToS(this DateTime? input)
 	{
 		if (!input.HasValue)

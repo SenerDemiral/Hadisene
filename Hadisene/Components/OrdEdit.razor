@@ -143,7 +143,7 @@
 					   maxlength="20"
 					   @bind="oo.Rf1"
 					   @bind:event="onchange"
-					   @bind:after="(() =>CheckRf(ref oo.Rf1))" />
+					   @bind:after="(() => oo.Rf1 = oo.Rf1.toASCII())" />
 			</div>
 			<div class="oeBox oeRf2">
 				<input type="text"
@@ -151,7 +151,7 @@
 					   maxlength="20"
 					   @bind="oo.Rf2"
 					   @bind:event="onchange"
-					   @bind:after="(() =>CheckRf(ref oo.Rf2))" />
+					   @bind:after="(() => oo.Rf2 = oo.Rf2.toASCII())" />
 			</div>
 
 			<div class="oeBox oeInf">
@@ -334,56 +334,15 @@
 	}
 
 
-	private void CheckRf1()
-
-	{
-		if (!string.IsNullOrEmpty(oo?.Rf1))
-		{
-			Encoding ascii = Encoding.ASCII;
-			byte[] encodedBytes = ascii.GetBytes(oo.Rf1);
-			oo.Rf1 = ascii.GetString(encodedBytes).Replace(' ', '-').ToUpperInvariant();
-		}
-	}
 	private void CheckRf(ref string? rf)
 	{
-		if (!string.IsNullOrEmpty(rf))
-		{
-			char d;
-			string rfs = "";
-			foreach( char c in rf)
-			{
-				d = c switch
-				{
-					'Ç' => 'C',
-					'ç' => 'C',
-					'İ' => 'I',
-					'i' => 'I',
-					'Ğ' => 'G',
-					'ğ' => 'G',
-					'Ş' => 'S',
-					'ş' => 'S',
-					'Ö' => 'O',
-					'ö' => 'O',
-					'Ü' => 'U',
-					'ü' => 'U',
-					',' => '.',
-					';' => ':',
-					'"' => '-',
-					'\'' => '-',
-					'|' => '-',
-					'`' => '-',
-					'^' => '-',
-					' ' => '-',
-
-					_ => Char.IsAscii(c) ? Char.ToUpper(c) : '-',
-				};
-				rfs += d;
-			}
-			//Encoding ascii = Encoding.ASCII;
-			//byte[] encodedBytes = ascii.GetBytes(rfs);
-			//rf = ascii.GetString(encodedBytes);
-			rf = rfs;
-		}
+		rf = rf.toASCII();
+		
+		// if (!string.IsNullOrEmpty(rf))
+		// {
+		// 	string? rfx = rf;
+		// 	rf = rfx.toASCII();
+		// }
 	}
 	private void CheckReq()
 	{
