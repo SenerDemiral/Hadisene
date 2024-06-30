@@ -4,6 +4,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
+
 <table>
 	<caption>
 		<div style="display:inline-flex; gap:1rem">
@@ -151,12 +152,18 @@
 
 		</tr>
 		<tr>
-			<td>Rf1</td>
-			<td><input type="text" @bind="Rf1" @bind:after="(() => Rf1 = Rf1.toASCIIqry())" /></td>
+			<td>Ref1</td>
+			<td><input type="text" maxlength="20" class="refs" 
+				@bind="Rf1" 
+				@bind:after="(() => Rf1 = Rf1.toASCIIqry())" /></td>
 		</tr>
 		<tr>
-			<td>Rf2</td>
-			<td><input type="text" @bind="Rf2" @bind:after="(() => Rf2 = Rf2.toASCIIqry())" /></td>
+			<td>Ref2</td>
+			@* <td><input type="text" @bind="Rf2.toASCII()"  /></td> *@
+			@* <td><input type="text" @bind="Rf2" @bind:after="(() => Rf2.RefIncrement(ref Rf2))" /></td> *@
+			<td><input type="text" maxlength="20" class="refs" 
+				@bind="Rf2" 
+				@bind:after="(() => Rf2 = Rf2.toASCIIqry())" /></td>
 		</tr>
 		<tr>
 			<td>Servis</td>

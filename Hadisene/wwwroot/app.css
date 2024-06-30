@@ -51,6 +51,11 @@ body {
 	box-sizing: inherit;
 }
 
+.refs {
+	font-family: monospace;
+	font-size: 1rem;
+}
+
 .inp-radio-group {
 	display: inline-flex;
 	justify-content: space-evenly;

@@ -1,8 +1,14 @@
 ﻿namespace Hadisene.Lib;
+
+using Microsoft.AspNetCore.Components.Forms;
 using Sqids;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 public static class Extensions
 {
+	//public static StringBuilder sb = new(64);
+
 	private static SqidsEncoder<int> sqids = new SqidsEncoder<int>(new()
 	{
 		Alphabet = "pxPibcHdV90nTha5A6JegkGN4o7FQlyuCrS1EXvDBRj2zYIUmLOtfqKM38wWsZ",
@@ -16,14 +22,25 @@ public static class Extensions
 	{
 		return sqids.Decode(inp).Single();
 	}
-
+	// Use Extensions.ChangeToUpper(ref INP);
+	public static void ChangeToUpper(ref string? inp)
+	{
+		inp = inp.ToUpper();
+	}
+	// Use Rf1.RefIncrement(ref ABC)
+	public static void RefIncrement(this string src, ref string abc)
+	{
+		abc = src.ToUpper();
+	}
 	public static string? toASCII(this string? inp)
 	{
+		// string is immutable(readonly) so do not change itself
 		if (string.IsNullOrEmpty(inp))
 			return inp;
 
 		char d;
-		string rfs = "";
+		StringBuilder sb = new(32);
+		
 		foreach (char c in inp)
 		{
 			d = c switch
@@ -44,21 +61,23 @@ public static class Extensions
 				',' => '.',
 				';' => ':',
 
-				'=' => ',',	// query de kullanıyor, burda izin verme
-				'_' => ',',	// like single char
-				'%' => ',',	// like string
+				'=' => ' ',	// query de kullanıyor, burda izin verme
+				'_' => ' ',	// like single char
+				'%' => ' ',	// like string
 
-				'"' => ',',
-				'`' => ',',
-				'\'' => ',',
-				'^' => ',',
-				' ' => ',',
+				'"' => ' ',
+				'`' => ' ',
+				'\'' => ' ',
+				'^' => ' ',
 
-				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ',',
+				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ' ',
 			};
-			rfs += d;
+			if (d != ' ')
+			{
+				sb.Append(d);
+			}
 		}
-		return rfs.Replace(",", "");
+		return sb.ToString();
 	
 		//Encoding ascii = Encoding.ASCII;
 		//byte[] encodedBytes = ascii.GetBytes(rfs);
@@ -70,7 +89,8 @@ public static class Extensions
 			return inp;
 
 		char d;
-		string rfs = "";
+		StringBuilder sb = new(32);
+
 		foreach (char c in inp)
 		{
 			d = c switch
@@ -91,22 +111,21 @@ public static class Extensions
 				',' => '.',
 				';' => ':',
 
-				'=' => ',', // query de kullanıyor, burda izin verme
-				'"' => ',',
-				'`' => ',',
-				'\'' => ',',
-				'^' => ',',
-				' ' => ',',
+				'=' => ' ', // query de kullanıyor, burda izin verme
+				'"' => ' ',
+				'`' => ' ',
+				'\'' => ' ',
+				'^' => ' ',
+				' ' => ' ',
 
-				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ',',
+				_ => Char.IsAscii(c) ? Char.ToUpper(c) : ' ',
 			};
-			rfs += d;
+			if (d != ' ')
+			{
+				sb.Append(d);
+			}
 		}
-		return rfs.Replace(",", "");
-
-		//Encoding ascii = Encoding.ASCII;
-		//byte[] encodedBytes = ascii.GetBytes(rfs);
-		//rf = ascii.GetString(encodedBytes);
+		return sb.ToString();
 	}
 
 	public static string? ToS(this DateTime? input)

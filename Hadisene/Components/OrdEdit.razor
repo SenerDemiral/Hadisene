@@ -139,6 +139,7 @@
 
 			<div class="oeBox oeRf1">
 				<input type="text"
+					   class="refs"
 					   disabled="@oo.Rf1RO"
 					   maxlength="20"
 					   @bind="oo.Rf1"
@@ -147,6 +148,7 @@
 			</div>
 			<div class="oeBox oeRf2">
 				<input type="text"
+					   class="refs"
 					   disabled="@oo.Rf2RO"
 					   maxlength="20"
 					   @bind="oo.Rf2"
@@ -508,8 +510,8 @@
 		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		// DB de sort ediliyor
-		// var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
-		// list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+		var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
+		list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 		// sad = list.ToDictionary(k => k.Ad, e => e.Id);
 	}
 

@@ -192,7 +192,6 @@
 
 .oeRf1 {
 	grid-area: oeRf1;
-	font-family: monospace;
 }
 
 	.oeRf1::before {
@@ -200,7 +199,6 @@
 	}
 .oeRf2 {
 	grid-area: oeRf2;
-	font-family: monospace;
 }
 
 	.oeRf2::before {
