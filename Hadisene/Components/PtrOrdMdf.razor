@@ -7,9 +7,7 @@
 	<table style="width:200px;">
 		<caption>
 			<button @onclick="Kaydet">
-				<span class="material-symbols-outlined">
-					check
-				</span>
+				<span class="material-symbols-outlined">check</span>
 				Kaydet
 			</button>
 		</caption>
@@ -65,22 +63,24 @@
 			<tr>
 				<td>İstek Başlangıç</td>
 				<td>
-					<div >
-						<input type="datetime-local"
-							   @bind-value="@po.RSD" />
-					</div>
+					<input type="datetime-local" @bind-value="@po.RSD" />
 				</td>
 			</tr>
 			<tr>
 				<td>İstek Bitiş</td>
 				<td>
-					<div>
-						<input type="datetime-local"
-							   @bind-value="@po.RFD" />
-					</div>
+					<input type="datetime-local" @bind-value="@po.RFD" />
 				</td>
 			</tr>
-
+			@if (po.POId != 0)
+			{
+				<tr>
+					<td>Silinecek</td>
+					<td>
+						<input type="checkbox" @bind=@po.Del disabled=@(po.POId == 0) style="width:auto" />
+					</td>
+				</tr>
+			}
 		</tbody>
 	</table>
 
@@ -161,6 +161,7 @@
 					new
 					{
 						p1 = my.Id,
+						p0 = po.Del ? 1 : 0,
 						p2 = POId,
 						p3 = PPId,
 						p4 = po.RSD,
@@ -189,6 +190,7 @@
 		if (POId == 0)
 		{
 			po = new();
+			opo = new();
 		}
 		else
 		{
@@ -237,6 +239,8 @@
 		public string? SbjAd;
 		public string? TskAd;
 		public string? ActAd;
+
+		public bool Del;
 
 		public PO ShallowCopy()
 		{

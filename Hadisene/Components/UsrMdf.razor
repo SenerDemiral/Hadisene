@@ -7,10 +7,7 @@
 	<table style="width:200px;">
 		<caption>
 			<button @onclick="Kaydet">
-				<span class="material-symbols-outlined">
-					check
-				</span>
-				Kaydet
+				<span class="material-symbols-outlined">check</span>Kaydet
 			</button>
 		</caption>
 		<tbody>
@@ -26,7 +23,7 @@
 				<td>YetkiSvy</td>
 				<td>
 					<select @bind="rec!.Ytk">
-						@if(rec.Ytk < 9)
+						@if (rec.Ytk < 9)
 						{
 							<option value="1">[A] Admin</option>
 							<option value="2">[Y] ServisYtkl</option>
@@ -63,10 +60,8 @@
 						<div style="max-height:8lh;overflow:auto">
 							@foreach (var r in us)
 							{
-								<div>
-									<input type="checkbox" @bind="r.isMbr" />
-									@r.SSAd
-								</div>
+								<input type="checkbox" @bind="r.isMbr" />
+								@r.SSAd
 							}
 						</div>
 					</td>
@@ -101,7 +96,7 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
-			if (rec.Ytk > 1 && rec.Ytk < 4)	// Yetkili ve Aktör Servis seçebilir
+			if (rec.Ytk > 1 && rec.Ytk < 4) // Yetkili ve Aktör Servis seçebilir
 			{
 				foreach (var r in us)
 				{

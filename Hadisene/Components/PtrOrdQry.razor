@@ -1,56 +1,58 @@
-﻿@inject AppState my
+﻿@using System.Globalization
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
 
 @if (tbl != null)
 {
-	<table>
-		<caption>
-			<button @onclick="@(() => ShowMdf(0))">
-				<span class="material-symbols-outlined">
-					add
-				</span>
-				ŞablonTalepTanım
-			</button>
-			<button @onclick="@(() => ShowP2O())">
-				<span class="material-symbols-outlined">
-					<span class="material-symbols-outlined">
-						contract
-					</span>
-				</span>
-				Bu Talepleri ekle
-			</button>
-		</caption>
-		<tbody>
-			<tr>
-				<th>Edit</th>
-				<th>Servis</th>
-				<th>Görev</th>
-				<th>Görevli</th>
-				<th>İstekBaş</th>
-				<th>İstekBit</th>
-
-			</tr>
-			@foreach (var rec in tbl)
-			{
+	<div style="max-height:80vh;overflow:auto;">
+		<table>
+			<caption>
+				<button @onclick="@(() => ShowMdf(0))">
+					<span class="material-symbols-outlined">add</span>
+					ŞablonTalepleri
+				</button>
+				<button @onclick="@(() => ShowP2O())">
+					<span class="material-symbols-outlined">contract</span>
+					Bu Talepleri ekle
+				</button>
+			</caption>
+			<tbody>
 				<tr>
-					<td>
-						<button @onclick="@(() => ShowMdf(rec.POId))">
-							<span class="material-symbols-outlined">
-								edit
-							</span>
-							@rec.POId
-						</button>
-					</td>
-					<td>@rec.SbjAd</td>
-					<td>@rec.TskAd</td>
-					<td>@rec.ActAd</td>
-					<td>@rec.RSDf</td>
-					<td>@rec.RFDf</td>
+					<th>Edit</th>
+					<th>
+						<button @onclick="@(() => SortSbj())">Servis</button>
+					</th>
+					<th>
+						<button @onclick="@(() => SortTsk())">Görev</button>
+					</th>
+					<th>
+						<button @onclick="@(() => SortAct())">Görevli</button>
+					</th>
+					<th>
+						<button @onclick="@(() => SortRSD())">İstekBaş</button>
+					</th>
+					<th>İstekBit</th>
+
 				</tr>
-			}
-		</tbody>
-	</table>
+				@foreach (var rec in tbl)
+				{
+					<tr>
+						<td>
+							<button @onclick="@(() => ShowMdf(rec.POId))">
+								<span class="material-symbols-outlined">edit</span>@rec.POId
+							</button>
+						</td>
+						<td>@rec.SbjAd</td>
+						<td>@rec.TskAd</td>
+						<td>@rec.ActAd</td>
+						<td>@rec.RSDf</td>
+						<td>@rec.RFDf</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 }
 
 @code {
@@ -63,6 +65,26 @@
 			Size = ModalSize.Large,
 			Position = ModalPosition.Middle
 		};
+
+
+	private void SortSbj()
+	{
+		//tbl.Sort((x, y) => String.Compare(x.SbjAd, y.SbjAd, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+
+		tbl = tbl.OrderBy(x => x.SbjAd).ThenBy(y => y.RSD).ToList();
+	}
+	private void SortTsk()
+	{
+		tbl = tbl.OrderBy(x => x.TskAd).ThenBy(y => y.RSD).ToList();
+	}
+	private void SortAct()
+	{
+		tbl = tbl.OrderBy(x => x.ActAd).ThenBy(y => y.RSD).ToList();
+	}
+	private void SortRSD()
+	{
+		tbl.Sort((x, y) => DateTime.Compare(x.RSD, y.RSD));
+	}
 
 	public async Task ShowMdf(int id)
 	{
@@ -122,14 +144,14 @@
 		public int SbjId;
 		public int TskId;
 		public int ActId;
-		public DateTime? RSD;
-		public DateTime? RFD;
+		public DateTime RSD;
+		public DateTime RFD;
 		public string? SbjAd;
 		public string? TskAd;
 		public string? ActAd;
 
-		public string? RSDf => RSD?.ToString("dd.MM.yy HH:mm");
-		public string? RFDf => RFD?.ToString("dd.MM.yy HH:mm");
+		public string? RSDf => RSD.ToString("dd.MM HH:mm ddd");
+		public string? RFDf => RFD.ToString("dd.MM.yy HH:mm");
 
 	}
 }

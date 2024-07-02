@@ -522,6 +522,7 @@ tbody.zebra tr:nth-child(odd) {
 			width: fit-content;
 			margin: 8px auto;
 			display: flex;
+			align-items: center;
 			gap: 4rem;
 			background-color: yellow;
 		}

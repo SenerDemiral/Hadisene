@@ -137,15 +137,15 @@ public static class Extensions
 		string result;
 
 		if (DateTime.Today == dt.Date)
-			result = "Bugün";
+			result = $"Bugün/{dt.ToString("ddd")}";
 		else if (DateTime.Today.AddDays(-1) == dt.Date)
-			result = "Dün";
+			result = $"Dün/{dt.ToString("ddd")}";
 		else if (DateTime.Today.AddDays(1) == dt.Date)
-			result = "Yarın";
+			result = $"Yarın/{dt.ToString("ddd")}";
 		else
 		{
 			if (dt.Year == DateTime.Today.Year)
-				result = dt.ToString("dd-MMM");
+				result = dt.ToString("dd.MMM.ddd");
 			else
 				result = dt.ToString("dd.MM.yy");
 		}

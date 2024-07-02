@@ -67,9 +67,7 @@
 				</div>
 			</div>
 			<div class="oeChn">
-				<span class="material-symbols-outlined">
-					link
-				</span>
+				<span class="material-symbols-outlined">link</span>
 				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO" style="width:auto" />
 			</div>
 			<div class="oeBox oeReq">
@@ -213,7 +211,6 @@
 	public enum Statu { Aktif = 'A', İptal = 'X', Arşiv = 'Z' };
 	public Statu stu;
 
-
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
 	private bool modeRO;
 	private Mode _mode = Mode.Show;
@@ -242,12 +239,16 @@
 			oo.StuROa = true;
 			oo.StuROx = true;
 			oo.StuROz = true;
-			oo.ReqRO = true;
+
+
 			oo.RSD = DateTime.Today.AddDays(1);
 			oo.RFD = DateTime.Today.AddDays(2);
 			oo.ASDro = true;
 			oo.AFDro = true;
 			oo.ChainRO = true;
+
+			if (my.Ytk > 2 )
+				oo.ReqRO = true;
 
 			oo.ReqId = my.Id;
 			oo.ReqAd = my.Ad;
@@ -510,8 +511,8 @@
 		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		// DB de sort ediliyor
-		var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
-		list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+		//var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
+		//list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 		// sad = list.ToDictionary(k => k.Ad, e => e.Id);
 	}
 

@@ -7,10 +7,7 @@
 	<table>
 		<caption>
 			<button @onclick="@(() => ShowMdf(0))">
-				<span class="material-symbols-outlined">
-					add
-				</span>
-				GörevTanım
+				<span class="material-symbols-outlined">add</span>GörevTanım
 			</button>
 		</caption>
 		<tbody>
@@ -23,10 +20,8 @@
 				<tr>
 					<td>
 						<button @onclick="@(() => ShowMdf(rec.TTId))">
-							<span class="material-symbols-outlined">
-								edit
-							</span>
-							@rec.TTId
+							<span class="material-symbols-outlined">edit</span>
+							<span style="font-size:.6rem;">@rec.TTId</span>
 						</button>
 					</td>
 					<td>@rec.Ad</td>

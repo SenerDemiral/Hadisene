@@ -24,18 +24,13 @@
 				<tr>
 					<td>
 						<button @onclick="@(() => ShowMdf(rec.PPId))">
-							<span class="material-symbols-outlined">
-								edit
-							</span>
-							@rec.PPId
+							<span class="material-symbols-outlined">edit</span>@rec.PPId
 						</button>
 					</td>
 					<td>@rec.Ad</td>
 					<td class="t-c">
 						<button @onclick="@(() => ShowDty(rec.PPId))">
-							<span class="material-symbols-outlined">
-								settings_b_roll
-							</span>
+							<span class="material-symbols-outlined">settings_b_roll</span>
 						</button>
 					</td>
 				</tr>

@@ -4,6 +4,7 @@
 	justify-content: center;
 	gap: 1.5rem;
 	min-width:360px;
+	margin-bottom: .5rem;
 }
 
 /* ColorStart */
@@ -202,7 +203,7 @@
 	color: #444;
 	outline: 1px solid gray;
 	border-radius: 2px;
-	box-shadow: 8px 4px 16px gray;
+	box-shadow: 4px 4px 8px gray;
 }
 
 	.ooCard > ::before {
@@ -315,6 +316,7 @@ button.ooCID:disabled {
 
 .ooRSD {
 	grid-area: ooRSD;
+	font-size:.9rem;
 }
 
 	.ooRSD::before {
@@ -323,6 +325,7 @@ button.ooCID:disabled {
 
 .ooASD {
 	grid-area: ooASD;
+	font-size: .9rem;
 }
 
 	.ooASD::before {
@@ -340,6 +343,7 @@ button.ooCID:disabled {
 
 .ooRFD {
 	grid-area: ooRFD;
+	font-size: .9rem;
 }
 
 	.ooRFD::before {
@@ -349,6 +353,7 @@ button.ooCID:disabled {
 
 .ooAFD {
 	grid-area: ooAFD;
+	font-size: .9rem;
 }
 
 	.ooAFD::before {

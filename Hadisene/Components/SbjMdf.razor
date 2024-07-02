@@ -7,10 +7,7 @@
 	<table style="width:360px;">
 		<caption>
 			<button @onclick="Kaydet">
-				<span class="material-symbols-outlined">
-					check
-				</span>
-				Kaydet
+				<span class="material-symbols-outlined">check</span>Kaydet
 			</button>
 		</caption>
 		<tbody>
@@ -22,16 +19,23 @@
 				<td>@Idf()</td>
 				<td><input type="text" @bind="ss!.Ad" /></td>
 			</tr>
+			@if (ss.SSId != 0)
+			{
+				<tr>
+					<td>Kullanılmadıysa Silinecek </td>
+					<td>
+						<input type="checkbox" @bind="ss.Del" style="width:auto" />
+					</td>
+				</tr>
+			}
+
 			<tr>
 				<td>Kullanıcılar</td>
 				<td>
 					<div style="max-height:8lh;overflow:auto">
 						@foreach (var r in su)
 						{
-							<div>
-								<input type="checkbox" @bind="r.isMbr" />
-								@r.UUAd
-							</div>
+							<input type="checkbox" @bind="r.isMbr" />@r.UUAd
 						}
 					</div>
 				</td>
@@ -56,6 +60,7 @@
 					new
 					{
 						p1 = my.Id,
+						p0 = ss.Del ? 1 : 0,
 						p2 = my.FrmId,
 						p3 = SSId,
 						p4 = ss!.Ad,
@@ -123,6 +128,7 @@
 	public sealed class SS
 	{
 		public int SSId;
+		public bool Del;
 		public string? Ad;
 	}
 
