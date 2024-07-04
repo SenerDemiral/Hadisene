@@ -369,10 +369,11 @@ button.ooCID:disabled {
 		content: "± gecikme";
 	}
 
-.ooCard[data-Ytk="3"] .ooAct,
-.ooCard[data-Ytk="4"] .ooReq,
+.ooCard[data-Ytk="4"] .ooAct,
+.ooCard[data-Ytk="5"] .ooReq,
 .ooCard[data-Ytk="1"] .ooSbj,
-.ooCard[data-Ytk="2"] .ooSbj {
+.ooCard[data-Ytk="2"] .ooSbj
+.ooCard[data-Ytk="3"] .ooSbj {
 	font-weight: 600;
 }
 

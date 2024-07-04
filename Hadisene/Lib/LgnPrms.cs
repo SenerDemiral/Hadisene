@@ -2,7 +2,7 @@
 {
 	public sealed class LgnPrms
 	{
-		public int Id { get; set; } = 31;
-		public string? Pwd { get; set; } = "sener";
+		public int Id { get; set; } = 0;
+		public string? Pwd { get; set; } = "";
 	}
 }

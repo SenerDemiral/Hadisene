@@ -8,13 +8,16 @@ public sealed class AppState
 	public string? Ad = null;
 	public int FrmId;
 	public string? FrmAd = null;
-	public int Ytk = 0;  // 1:Admn, 2:ServisYetkilisi, 3:Actor/Görevli, 4:Requester/İsteyen, 8:Pasif, 9:Ayrıldı
+	public int Ytk = 0;  // 1:Admn, 2:Sorumlu, 3:Denetci, 4:Actor/Görevli, 4:Requester/İsteyen, 8:Pasif, 9:Ayrıldı
 	public string YtkAd => Ytk switch
 	{
 		1 => "[Admn]",
-		2 => "[SrvYtk]",
-		3 => "[Görevli]",
-		4 => "[İsteyen]",
+		2 => "[Sorumlu]",
+		3 => "[Denetci]",
+		4 => "[Görevli]",
+		5 => "[İsteyen]",
+		8 => "[Pasif]",
+		9 => "[Ayrıldı]",
 		_ => "[Yetkisiz]"
 	};
 	public string SrvStr

@@ -7,16 +7,14 @@
 	<table>
 		<caption>
 			<button @onclick="@(() => ShowMdf(0))">
-				<span class="material-symbols-outlined">
-					add
-				</span>
-				Talep Şablonları
+				<span class="material-symbols-outlined">add</span>Talep Şablonları
 			</button>
 		</caption>
 		<tbody>
 			<tr>
 				<th>Edit</th>
 				<th>Ad</th>
+				<th>Aylık</th>
 				<th class="t-c">Talepler</th>
 			</tr>
 			@foreach (var rec in tbl)
@@ -28,6 +26,7 @@
 						</button>
 					</td>
 					<td>@rec.Ad</td>
+					<td><input type="checkbox" disabled @bind="@rec.isAYLIK" /></td>
 					<td class="t-c">
 						<button @onclick="@(() => ShowDty(rec.PPId))">
 							<span class="material-symbols-outlined">settings_b_roll</span>
@@ -115,6 +114,16 @@
 	{
 		public int PPId;
 		public string? Ad;
+		public int AYLIK
+		{
+			get => isAYLIK ? 1 : 0;
+			set
+			{
+				isAYLIK = value == 1;
+			}
+		}
+		public bool isAYLIK = false;
+
 	}
 }
 

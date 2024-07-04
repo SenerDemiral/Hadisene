@@ -8,17 +8,13 @@
 
 @if (UDB != null)
 {
-
 	<div class="dashboard" data-pos="@pos[p]">
-
 		<table>
 			<thead>
 				<tr>
 					<th>
 						<div onclick="@PosChanged" style="cursor:move">
-							<span class="material-symbols-outlined">
-								zoom_out_map
-							</span>
+							<span class="material-symbols-outlined">zoom_out_map</span>
 						</div>
 					</th>
 					<th>Baş</th>
@@ -51,9 +47,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="material-symbols-outlined">
-							keep
-						</span>
+						<span class="material-symbols-outlined">keep</span>
 					</td>
 					<td colspan="2">@UDB.OP  <InputCheckbox @bind-Value="cbPin" /></td>
 				</tr>
@@ -77,13 +71,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="sbj hdr">
-					<td colspan="3">Servis</td>
+				<tr class="tsk hdr">
+					<td colspan="3">Görev</td>
 				</tr>
-				<tr class="sbj">
+				<tr class="tsk">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.sbjList)
+							@foreach (var itm in UDB.tskList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />
@@ -93,13 +87,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="tsk hdr">
-					<td colspan="3">Görev</td>
+				<tr class="sbj hdr">
+					<td colspan="3">Servis</td>
 				</tr>
-				<tr class="tsk">
+				<tr class="sbj">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.tskList)
+							@foreach (var itm in UDB.sbjList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />
@@ -132,9 +126,7 @@
 				<tr>
 					<td colspan="3" style="padding:0;">
 						<button @onclick="GoOrdActive" style="width: 100%;background-color: yellow;padding: 0;">
-							<span class="material-symbols-outlined">
-								search
-							</span>
+							<span class="material-symbols-outlined">search</span>
 						</button>
 					</td>
 				</tr>

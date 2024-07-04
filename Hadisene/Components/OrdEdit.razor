@@ -116,7 +116,8 @@
 			<div class="oeBox oeS oeRSD">
 				<input type="datetime-local"
 					   disabled="@oo.RSDro"
-					   @bind-value="@oo.RSD" />
+					   @bind="@oo.RSD"
+					   @bind:after=CheckRSD />
 			</div>
 			<div class="oeBox oeS oeASD">
 				<input type="datetime-local"
@@ -127,7 +128,8 @@
 			<div class="oeBox oeF oeRFD">
 				<input type="datetime-local"
 					   disabled="@oo.RFDro"
-					   @bind-value="@oo.RFD" />
+					   @bind="@oo.RFD"
+					   @bind:after=CheckRFD />
 			</div>
 			<div class="oeBox oeF oeAFD">
 				<input type="datetime-local"
@@ -210,6 +212,31 @@
 
 	public enum Statu { Aktif = 'A', İptal = 'X', Arşiv = 'Z' };
 	public Statu stu;
+	@* min="@(DateTime.Today.ToString("yyyy-MM-ddTHH:mm"))" *@
+
+	private void CheckRSD()
+	{
+		DateTime min;
+
+		TimeSpan timeSpan = new TimeSpan();
+
+		if (oo.InsTS == null)
+			min = DateTime.Now;
+		else
+			min = (DateTime)oo.InsTS;
+
+		min = new DateTime(min.Year, min.Month, min.Day, min.Hour, min.Minute + 5, 0);
+		
+		if (oo.RSD < min)
+			oo.RSD = min;
+
+		CheckRFD();
+	}
+	private void CheckRFD()
+	{
+		if (oo.RFD < oo.RSD)
+			oo.RFD = oo.RSD.Value.AddMinutes(5);
+	}
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
 	private bool modeRO;
@@ -247,7 +274,7 @@
 			oo.AFDro = true;
 			oo.ChainRO = true;
 
-			if (my.Ytk > 2 )
+			if (my.Ytk > 2)
 				oo.ReqRO = true;
 
 			oo.ReqId = my.Id;
@@ -280,8 +307,8 @@
 				oo.ReqAd = my.Ad;
 				oo.ReqRO = true;
 			}
-			oo.RSD = null;
-			oo.RFD = null;
+			oo.RSD = DateTime.Today.AddDays(1);
+			oo.RFD = DateTime.Today.AddDays(2);
 			oo.ASD = null;
 			oo.AFD = null;
 			oo.ASDro = true;
@@ -311,8 +338,8 @@
 				oo.ReqRO = true;
 				oo.ASDro = true;
 				oo.AFDro = true;
+				oo.ChainRO = true;
 			}
-			oo.ChainRO = true;
 
 		}
 	}
@@ -336,17 +363,6 @@
 		oo.ChainRO = false;
 	}
 
-
-	private void CheckRf(ref string? rf)
-	{
-		rf = rf.toASCII();
-		
-		// if (!string.IsNullOrEmpty(rf))
-		// {
-		// 	string? rfx = rf;
-		// 	rf = rfx.toASCII();
-		// }
-	}
 	private void CheckReq()
 	{
 		if (uud!.TryGetValue(oo.ReqAd, out var nid))
@@ -544,5 +560,4 @@
 		public int Id;
 		public string Ad;
 	}
-
-				}
+}

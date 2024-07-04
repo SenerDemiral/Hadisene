@@ -29,7 +29,7 @@
 				<div class="msg-itm" data-loc="@rec.Loc" @key="rec.OMId">
 					<div class="usr">
 						<div>@rec.UUAd</div>
-						<div>@rec.InsTS.ToLongTimeString()</div>
+						<div class="zmn" prvt="@rec.Prvt">@rec.InsTS.ToLongTimeString()</div>
 					</div>
 					@if (rec.Typ == "I")
 					{
@@ -46,32 +46,30 @@
 		</div>
 		<div class="msg-inp">
 			<button onclick="document.getElementById('scroll-area').scrollTop = 0">
-				<span class="material-symbols-outlined">
-					north
-				</span>
+				<span class="material-symbols-outlined">north</span>
 			</button>
 
 			<button onclick="document.getElementById('scroll-area').scrollTop = 99999">
-				<span class="material-symbols-outlined">
-					south
-				</span>
+				<span class="material-symbols-outlined">south</span>
 			</button>
 
 
 			<label for="photo" style="cursor:pointer; display: inline-flex; align-items: center; padding-inline: inherit;">
-				<span class="material-symbols-outlined">
-					add_a_photo
-				</span>
+				<span class="material-symbols-outlined">add_a_photo</span>
 				<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
 			</label>
 
 			<InputTextArea @bind-Value="msg" rows="2" placeholder="Mesaj yazın." />
 
 			<button @onclick="InsertTextRec">
-				<span class="material-symbols-outlined" style="color: limegreen;">
-					send
-				</span>
+				<span class="material-symbols-outlined" style="color: limegreen;">send</span>
 			</button>
+			@if (my.Ytk < 4)
+			{
+				<button @onclick="InsertPrivateTextRec">
+					<span class="material-symbols-outlined" style="color: firebrick;">lock</span>
+				</button>
+			}
 		</div>
 	</div>
 }
@@ -84,6 +82,7 @@
 	private List<OM>? omList;
 	public string? msg;
 	private bool disposing;
+	private bool isPrivate;
 	private string? ordUsrs;
 
 	public void ShowImage(OM rec)
@@ -116,7 +115,7 @@
 					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
 					var OMId = InsertImageRec(e);
 					var dirName = $@"{env.WebRootPath}\uploads\F{my.FrmId}";
-					Directory.CreateDirectory(dirName);	// if not exists
+					Directory.CreateDirectory(dirName); // if not exists
 					var fileName = $@"{dirName}\M{OMId}{Path.GetExtension(e.File.Name)}";
 
 					image.Save(fileName);
@@ -149,6 +148,13 @@
 		}
 	}
 
+	private async Task InsertPrivateTextRec()
+	{
+		isPrivate = true;
+		await InsertTextRec();
+		isPrivate = false;
+	}
+
 	private async Task InsertTextRec()
 	{
 		if (string.IsNullOrEmpty(msg))
@@ -156,7 +162,7 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_TXT",
-			new { a = my.Id, b = OOId, c = my.FrmId, f = msg },
+			new { a = my.Id, b = OOId, c = my.FrmId, f = msg, g = isPrivate ? 1 : 0 },
 			commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
@@ -221,19 +227,23 @@
 		{
 			using var conn = db.GetConnection();
 			var x = conn.QuerySingle<OM>("OM_SEL", new { a = my.Id, b = value.OMId }, commandType: CommandType.StoredProcedure);
-			omList!.Add(x);
 
-			await InvokeAsync(() =>
+			if (x.Prvt == 0 || my.Ytk < 4)
 			{
-				StateHasChanged();
-			});
+				omList!.Add(x);
 
-			await Task.Delay(value.MsgTyp == "I" ? 1000 : 100);
-			try
-			{
-				await js.InvokeVoidAsync("scrollBottom", "scroll-area");
+				await InvokeAsync(() =>
+				{
+					StateHasChanged();
+				});
+
+				await Task.Delay(value.MsgTyp == "I" ? 1000 : 100);
+				try
+				{
+					await js.InvokeVoidAsync("scrollBottom", "scroll-area");
+				}
+				catch (JSDisconnectedException) { }
 			}
-			catch (JSDisconnectedException) { }
 		}
 	}
 
@@ -251,6 +261,7 @@
 		public DateTime InsTS;
 		public string Typ;
 		public string Msg;
+		public int Prvt;
 		public string Loc;  // Left/Right
 	}
 }

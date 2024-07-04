@@ -14,15 +14,11 @@
 
 <div class="stk">
 	<button @onclick="Read" style="background-color: yellow;">
-		<span class="material-symbols-outlined">
-			refresh
-		</span>
+		<span class="material-symbols-outlined">refresh</span>
 	</button>
 	<div>@PgeHdr</div>
 	<button @onclick="AddNew" style="background-color: yellow;">
-		<span class="material-symbols-outlined">
-			add
-		</span>
+		<span class="material-symbols-outlined">add</span>
 	</button>
 
 	@* <button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
@@ -54,9 +50,9 @@
 				<p>@rec.Inf</p>
 			</div>
 
-			<div class="ooCard" data-Ytk="@my.Ytk" data-Act="@(rec.ActId == my.Id)"
+			<div class="ooCard" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
-				 data-IoC="@rec.IoC" data-SoF="@rec.SoF">
+				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId >
 				<div class="ooHdr">
 					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
 						<span>@((MarkupString)rec.UpdFlg)</span>
@@ -106,9 +102,9 @@
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
 					@{
-						// bool dsb = rec.ActId != my.UsrId && my.UsrYtk != 3;
-						bool dsb = !(rec.ActId == my.Id ||
-						(rec.OrdUsrSet.Contains(my.Id) && my.Ytk == 3));
+						// ActId = 0 Belirsiz olabilir, Bu servisteki Aktorlerden biri başlatabilir ve kendisi Act olur
+						// Act kendisiyse veya Kendi bir Actor ve OrdUsrlarından biri kendisi ise
+						bool dsb = !(rec.ActId == my.Id || (my.Ytk == 4 && rec.OrdUsrSet.Contains(my.Id)));
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -239,7 +235,7 @@
 
 	private void PinTgl(OO oo)
 	{
-		toastService.ShowInfo("Yeni Talep eklendi");
+		//toastService.ShowInfo("Yeni Talep eklendi");
 
 		try
 		{

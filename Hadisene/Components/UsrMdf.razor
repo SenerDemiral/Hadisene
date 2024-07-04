@@ -26,9 +26,10 @@
 						@if (rec.Ytk < 9)
 						{
 							<option value="1">[A] Admin</option>
-							<option value="2">[Y] ServisYtkl</option>
-							<option value="3">[G] Görevli</option>
-							<option value="4">[İ] İsteyen</option>
+							<option value="2">[Y] Sorumlu</option>
+							<option value="3">[D] Denetci</option>
+							<option value="4">[G] Görevli</option>
+							<option value="5">[İ] İsteyen</option>
 							<option value="8">[P] Pasif</option>
 							<option value="9">[∞] Ayrıldı</option>
 						}
@@ -52,7 +53,7 @@
 				<td>Pwd</td>
 				<td><input type="text" @bind="rec!.Pwd" /></td>
 			</tr>
-			@if (rec.Ytk > 1 && rec.Ytk < 4)
+			@if (rec.Ytk > 1 && rec.Ytk < 5)
 			{
 				<tr>
 					<td>Servisler</td>
@@ -96,7 +97,7 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
-			if (rec.Ytk > 1 && rec.Ytk < 4) // Yetkili ve Aktör Servis seçebilir
+			if (rec.Ytk > 1 && rec.Ytk < 5) // Yetkili ve Aktör Servis seçebilir
 			{
 				foreach (var r in us)
 				{
@@ -163,7 +164,7 @@
 	public sealed class UU
 	{
 		public int UUId;
-		public int Ytk = 3;
+		public int Ytk = 4;
 		public string? Ad;
 		public string? Tel;
 		public string? Mail;

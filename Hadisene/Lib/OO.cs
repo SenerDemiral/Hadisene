@@ -3,6 +3,8 @@
 public sealed class OO
 {
 	public int Idx;
+	public DateTime? InsTS;
+	public DateTime? Trh;
 	public DateTime? UpdTS;
 	public string? UpdFlg;
 
@@ -30,16 +32,18 @@ public sealed class OO
 	public string? ActAd;
 
 	// Color/Condition
-	public string CS = "";	// Start R/B/G
+	public string CS = "";  // Start R/B/G
 	public string CF = "";  // Finish R/B/G
-	
+
 	// Delay Star/Finish Hour (+:Gecikme, -:Erken)
 	public string? DSX;
 	public string? DFX;
 
-	public int Pin {
+	public int Pin
+	{
 		get => Pinned ? 1 : 0;
-		set {
+		set
+		{
 			Pinned = value == 1;
 		}
 	}
@@ -47,9 +51,9 @@ public sealed class OO
 	public int CId; // ChainId, Sıfırdan farklıysa Chained
 	public bool Chain;
 
-	public int MnVc;	// Msg Not Viewed Count (New) for this Usr
+	public int MnVc;    // Msg Not Viewed Count (New) for this Usr
 
-	public string IoC = "I";	// Footer Input or Confirm
+	public string IoC = "I";    // Footer Input or Confirm
 	public string SoF = "S";    // Footer Start or Finish
 
 	public bool StuROa = true;

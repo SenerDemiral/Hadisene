@@ -66,8 +66,8 @@
 	}
 
 	.zmn {
-		font-size: .5rem;
-		text-align: end;
+		/*font-size: .5rem;*/
+		/*text-align: end;*/
 	}
 	.msg {
 		max-height: 200px;
@@ -76,10 +76,21 @@
 	}
 }
 
+.zmn[prvt="1"]::after {
+	/*content: "🔒";*/
+	content: "lock";
+	font-family: 'Material Symbols Outlined';
+}
+
 .msg-bdy [data-loc="L"] {
 	align-self: start;
 	background-color: aliceblue;
 }
+
+	.msg-bdy [data-loc="L"] .usr {
+		justify-content: start;
+	}
+
 
 .msg-bdy [data-loc="R"] {
 	align-self: end;

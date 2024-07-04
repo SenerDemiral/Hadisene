@@ -2,7 +2,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (tt != null)
+@if (pp != null)
 {
 	<table style="width:200px;">
 		<caption>
@@ -17,8 +17,22 @@
 			</tr>
 			<tr>
 				<td>@Idf()</td>
-				<td><input type="text" @bind="tt!.Ad" /></td>
+				<td><input type="text" @bind="pp!.Ad" /></td>
 			</tr>
+			<tr>
+				<td>Aylık</td>
+				<td><input type="checkbox" @bind="pp!.isAYLIK" /></td>
+			</tr>
+			@if (pp.PPId != 0)
+			{
+				<tr>
+					<td>Silinecek</td>
+					<td>
+						<input type="checkbox" @bind=@pp.Del style="width:auto" />
+					</td>
+				</tr>
+			}
+
 		</tbody>
 	</table>
 }
@@ -26,7 +40,7 @@
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public int Id { get; set; }
-	private PP? tt;
+	private PP? pp;
 
 	public async Task Kaydet()
 	{
@@ -37,9 +51,11 @@
 					new
 					{
 						p1 = my.Id,
+						p0 = pp.Del ? 1 : 0,
 						p2 = my.FrmId,
 						p3 = Id,
-						p4 = tt!.Ad,
+						p4 = pp!.Ad,
+						p5 = pp.AYLIK,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -58,13 +74,13 @@
 		//Modal.Show<ModalConfirm>("deneme");
 		if (Id == 0)
 		{
-			tt = new();
+			pp = new();
 			return;
 		}
 		try
 		{
 			using var conn = db.GetConnection();
-			tt = conn.QuerySingle<PP>("select * from PP where PPId = @Id",
+			pp = conn.QuerySingle<PP>("select * from PP where PPId = @Id",
 					new { Id = Id },
 					commandType: CommandType.StoredProcedure);
 		}
@@ -83,7 +99,18 @@
 
 	public sealed class PP
 	{
-		public int TTId;
+		public int PPId;
 		public string? Ad;
+		public int AYLIK
+		{
+			get => isAYLIK ? 1 : 0;
+			set
+			{
+				isAYLIK = value == 1;
+			}
+		}
+		public bool isAYLIK = false;
+		public bool Del;
+
 	}
 }
