@@ -186,19 +186,18 @@
 .ooCard {
 	display: grid;
 	gap: 2px;
-	grid-template-rows: 36px repeat(5, 26px) 1fr 36px;
-	/*grid-template-rows: 36px 32px 32px 1fr repeat(6, 32px) 36px;*/
-	grid-template-columns: 2fr 2fr 1fr;
+	grid-template-rows: 36px repeat(5, 20px) 1fr 36px;
+	grid-template-columns: 3fr 3fr 1fr 1fr;
 	grid-template-areas:
-		"ooHdr ooHdr ooHdr"
-		"ooAct ooAct ooPin"
-		"ooTsk ooTsk ooCID"
-		"ooReq ooReq ooReq"
+		"ooHdr ooHdr ooHdr ooHdr"
+		"ooAct ooAct ooPin ooCID"
+		"ooTsk ooTsk ooTsk ooTsk"
+		"ooReq ooReq ooReq ooReq"
 		/*"ooSbj ooSbj ooSbj"*/
-		"ooRSD ooASD ooDSH"
-		"ooRFD ooAFD ooDFH"
-		"ooInf ooInf ooInf"
-		"ooFtr ooFtr ooFtr";
+		"ooRSD ooASD ooDSH ooDSH"
+		"ooRFD ooAFD ooDFH ooDFH"
+		"ooInf ooInf ooInf ooInf"
+		"ooFtr ooFtr ooFtr ooFtr";
 	background-color: azure;
 	color: #444;
 	outline: 1px solid gray;
@@ -223,7 +222,7 @@
 }
 .ooCID {
 	grid-area: ooCID;
-	justify-self: center;
+	justify-self: left;
 }
 
 button.ooPin {

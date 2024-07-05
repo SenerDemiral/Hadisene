@@ -119,6 +119,25 @@
 						</div>
 					</td>
 				</tr>
+				<tr class="hdr">
+					<td colspan="3">Ref 1&2</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="padding:0;">
+						<div class="lst">
+							<div>
+								<input type="text" maxlength="20" class="refs"
+									   @bind="Rf1"
+									   @bind:after="(() => Rf1 = Rf1.toASCIIqry())" />
+							</div>
+							<div>
+								<input type="text" maxlength="20" class="refs"
+									   @bind="Rf2"
+									   @bind:after="(() => Rf2 = Rf2.toASCIIqry())" />
+							</div>
+						</div>
+					</td>
+				</tr>
 				<tr>
 					<td class="fld-hdr">Güncelleme</td>
 					<td colspan="2">@UDB.LastUpd.ToShortTimeString()</td>
@@ -145,6 +164,8 @@
 	private int dnm = 0;
 	private List<int> DnmList = new();
 	private bool cbCSR, cbCSB, cbCSG, cbCFR, cbCFB, cbCFG, cbPin, cbOnV, cbMnV;
+	private string? Rf1;
+	private string? Rf2;
 
 	private void PosChanged()
 	{
@@ -177,6 +198,11 @@
 		Add2List(sl, UDB.sbjList, "SbjId=");
 		Add2List(sl, UDB.actList, "ActId=");
 		Add2List(sl, UDB.tskList, "TskId=");
+
+		if (!string.IsNullOrEmpty(Rf1))
+			sl.Add($"Rf1={Rf1}");
+		if (!string.IsNullOrEmpty(Rf2))
+			sl.Add($"Rf2={Rf2}");
 
 		string url;
 		if (sl.Count == 0)
@@ -306,15 +332,15 @@
 		}
 		public string? Sbjs
 		{
-			set	{ Add2List(value, sbjList); }
+			set { Add2List(value, sbjList); }
 		}
 		public string? Acts
 		{
-			set { Add2List(value, actList);	}
+			set { Add2List(value, actList); }
 		}
 		public string? Tsks
 		{
-			set	{ Add2List(value, tskList);	}
+			set { Add2List(value, tskList); }
 		}
 
 		public DateTime LastUpd;
