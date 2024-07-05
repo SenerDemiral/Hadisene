@@ -52,7 +52,7 @@
 
 			<div class="ooCard" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
-				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId >
+				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
 				<div class="ooHdr">
 					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
 						<span>@((MarkupString)rec.UpdFlg)</span>
@@ -342,20 +342,17 @@
 	{
 		if (value.FFId == my.FrmId)
 		{
-			if (key == "DO")
+			if (key == "DO")    // Order Arşivlendi (Deleted)
 			{
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
 				if (iof != -1)
 				{
-					ooList.RemoveAt(iof);	
-					await InvokeAsync(() =>
-					{
-						StateHasChanged();
-					});
+					ooList.RemoveAt(iof);
+					await InvokeAsync(StateHasChanged);
 					toastService.ShowInfo($"Talep Arşivlendi #{value.OOId.toSqid()}");
 				}
 			}
-			else if (key == "IO")
+			else if (key == "IO")   // Insert
 			{
 				// İlgili kaydı bul
 				using var conn = db.GetConnection();
@@ -364,15 +361,10 @@
 					commandType: CommandType.StoredProcedure);
 
 				ooList.Insert(0, x);
-
-				await InvokeAsync(() =>
-				{
-					StateHasChanged();
-				});
-
+				await InvokeAsync(StateHasChanged);
 				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
 			}
-			else 
+			else
 			{
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
 				//(value.CId == CId || value.OrdUsrSet.Contains(my.UsrId)))
@@ -382,29 +374,34 @@
 					{
 						// İlgili kaydı bul
 						using var conn = db.GetConnection();
-						var x = conn.QuerySingle<OO>("OO_QRY",
+						var x = conn.QuerySingleOrDefault<OO>("OO_QRY",
 							new { A = my.Id, B = qryStr, p3 = value.OOId },
 							commandType: CommandType.StoredProcedure);
 
-						ooList[iof] = x;
-
-						await InvokeAsync(() =>
+						// Değişen Ord artık bu kişiyi ilgilendirmiyorsa kayıt gelmez
+						if (x == null)
 						{
-							StateHasChanged();
-						});
+							ooList.RemoveAt(iof);
+							await InvokeAsync(StateHasChanged);
+							toastService.ShowInfo($"Talep çıkartıldı #{value.OOId.toSqid()}");
+						}
+						else
+						{
+							ooList[iof] = x;
+							await InvokeAsync(StateHasChanged);
 
-						if (value.UUId != my.Id)	// Gönderen ben değilsem
-							toastService.ShowInfo($"Talepte değişiklik #{value.OOId.toSqid()}");
+							// await InvokeAsync(() => {
+							// 	StateHasChanged();
+							// });
+
+							if (value.UUId != my.Id)    // Gönderen ben değilsem
+								toastService.ShowInfo($"Talepte değişiklik #{value.OOId.toSqid()}");
+						}
 					}
 					else if (key == "IM" && !MsgShowing)
 					{
 						ooList[iof].MnVc++;
-
-						await InvokeAsync(() =>
-						{
-							StateHasChanged();
-						});
-
+						await InvokeAsync(StateHasChanged);
 						toastService.ShowInfo($"Yeni Mesaj var #{value.OOId.toSqid()}");
 					}
 				}
