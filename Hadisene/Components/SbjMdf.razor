@@ -35,7 +35,9 @@
 					<div style="max-height:8lh;overflow:auto">
 						@foreach (var r in su)
 						{
-							<input type="checkbox" @bind="r.isMbr" />@r.UUAd
+							<div>
+								<input type="checkbox" @bind="r.isMbr" />@r.UUAd
+							</div>
 						}
 					</div>
 				</td>

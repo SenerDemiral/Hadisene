@@ -59,7 +59,7 @@
 				<InputFile type="file" id="photo" capture="user" accept="image/*" OnChange="Changed" hidden></InputFile>
 			</label>
 
-			<InputTextArea @bind-Value="msg" rows="2" placeholder="Mesaj yazın." />
+			<InputTextArea @bind-Value="msg" rows="2" style="flex:1" placeholder="Mesaj yazın." />
 
 			<button @onclick="InsertTextRec">
 				<span class="material-symbols-outlined" style="color: limegreen;">send</span>
@@ -67,7 +67,7 @@
 			@if (my.Ytk < 4)
 			{
 				<button @onclick="InsertPrivateTextRec">
-					<span class="material-symbols-outlined" style="color: firebrick;">lock</span>
+					<span class="material-symbols-outlined" style="color: firebrick;">send</span>
 				</button>
 			}
 		</div>
