@@ -72,6 +72,7 @@
 	{
 		if (selectedValue == "Login")
 		{
+			selVal = "";
 			await MyLogin();
 			cbUsrDashBoard = false;
 		}
@@ -103,7 +104,8 @@
 		else
 		{
 			selVal = selectedValue;
-			navigationManager.NavigateTo(selectedValue, replace: true);
+			navigationManager.NavigateTo(selectedValue);
+			// navigationManager.NavigateTo(selectedValue, replace: true);
 		}
 	}
 
@@ -222,6 +224,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		selVal = "";
 		await UsrEnter();
 	}
 

@@ -3,7 +3,7 @@
 	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
 	gap: 1.5rem;
-	min-width:360px;
+	min-width: 360px;
 	margin-bottom: .5rem;
 }
 
@@ -19,6 +19,11 @@
 	.ooCard[data-CS="G"] .ooBtnS {
 		display: none;
 	}
+
+.ooCard:is([data-CS="G"]):is([data-CF="G"]) .ooFtr {
+	background-color: red;
+	display: none;
+}
 
 .ooCard[data-CS="R"] {
 	--sColor: var(--r-color);
@@ -92,18 +97,21 @@
 	padding-right: 4px;
 	font-size: inherit;
 }
+
 .ooBtnF::before {
 	content: "stop_circle";
 	font-family: 'Material Symbols Outlined';
 	padding-right: 4px;
 	font-size: inherit;
 }
+
 .ooBtnOK::before {
 	content: "check_circle";
 	font-family: 'Material Symbols Outlined';
 	padding-right: 4px;
 	font-size: inherit;
 }
+
 .ooBtnCancel::before {
 	content: "cancel";
 	font-family: 'Material Symbols Outlined';
@@ -220,6 +228,7 @@
 	grid-area: ooPin;
 	justify-self: center;
 }
+
 .ooCID {
 	grid-area: ooCID;
 	justify-self: left;
@@ -255,6 +264,7 @@ button.ooCID:disabled {
 	cursor: not-allowed;
 	pointer-events: none;
 }
+
 	button.ooCID:disabled::after {
 		content: "link_off";
 		font-family: 'Material Symbols Outlined';
@@ -315,7 +325,7 @@ button.ooCID:disabled {
 
 .ooRSD {
 	grid-area: ooRSD;
-	font-size:.9rem;
+	font-size: .9rem;
 }
 
 	.ooRSD::before {

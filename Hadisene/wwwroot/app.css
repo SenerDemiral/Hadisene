@@ -409,6 +409,10 @@ th {
 	text-align: right;
 }
 
+.ta-l {
+	text-align: left;
+}
+
 tbody.zebra tr:nth-child(odd) {
 	background-color: #dddddd;
 }

@@ -1,0 +1,182 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@* @if (my.Ytk > 3)
+{
+	<h1>
+		<span class="material-symbols-outlined" style="font-size:4em;color:olive;">receipt_long</span>
+	</h1>
+}
+else
+ *@
+
+<div style="display:flex;height:100%;justify-content:center;align-items:center; margin-inline:auto;">
+
+	@if (os != null)
+	{
+		<table style="max-width:500px;">
+			<thead class="ta-c">
+				<tr>
+					<th rowspan="2">Durum Özeti</th>
+					<th colspan="3"><span class="material-symbols-outlined">play_circle</span></th>
+					<th rowspan="2" class="osT"><span class="material-symbols-outlined">functions</span></th>
+					<th colspan="3"><span class="material-symbols-outlined">stop_circle</span></th>
+				</tr>
+				<tr>
+					<th class="osR">
+						<span class="material-symbols-outlined">notifications_active</span>
+					</th>
+					<th class="osB">
+						<span class="material-symbols-outlined">hourglass_top</span>
+					</th>
+					<th class="osG">
+						<span class="material-symbols-outlined">task_alt</span>
+					</th>
+					<th class="osR">
+						<span class="material-symbols-outlined">notifications_active</span>
+					</th>
+					<th class="osB">
+						<span class="material-symbols-outlined">hourglass_top</span>
+					</th>
+					<th class="osG">
+						<span class="material-symbols-outlined">task_alt</span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (my.Ytk < 4)
+				{
+					<tr>
+						<th class="ta-l">Servis</th>
+						<th colspan="7" class="ta-c">Takip</th>
+					</tr>
+					@foreach (var r in os.FindAll(x => x.Grp == "-"))
+					{
+						<tr>
+							<td>@r.Sbj</td>
+							<td class="ta-c osR">@r.SR.ToS()</td>
+							<td class="ta-c osB">@r.SB.ToS()</td>
+							<td class="ta-c osG">@r.SG.ToS()</td>
+							<td class="ta-c osT">@r.Top.ToS()</td>
+							<td class="ta-c osR">@r.FR.ToS()</td>
+							<td class="ta-c osB">@r.FB.ToS()</td>
+							<td class="ta-c osR">@r.FG.ToS()</td>
+						</tr>
+					}
+					<br />
+				}
+				<tr>
+					<th class="ta-l">Görev</th>
+					<th colspan="7" class="ta-c">Görevlerim</th>
+				</tr>
+				@foreach (var r in os.FindAll(x => x.Grp == "A"))
+				{
+					<tr>
+						<td>@r.Tsk</td>
+						<td class="ta-c osR">@r.SR.ToS()</td>
+						<td class="ta-c osB">@r.SB.ToS()</td>
+						<td class="ta-c osG">@r.SG.ToS()</td>
+						<td class="ta-c osT">@r.Top.ToS()</td>
+						<td class="ta-c osR">@r.FR.ToS()</td>
+						<td class="ta-c osB">@r.FB.ToS()</td>
+						<td class="ta-c osR">@r.FG.ToS()</td>
+					</tr>
+				}
+				<br />
+				<tr>
+					<th class="ta-l">Görev</th>
+					<th colspan="7" class="ta-c">İstediklerim</th>
+				</tr>
+				@foreach (var r in os.FindAll(x => x.Grp == "R"))
+				{
+					<tr>
+						<td>@r.Tsk</td>
+						<td class="ta-c osR">@r.SR.ToS()</td>
+						<td class="ta-c osB">@r.SB.ToS()</td>
+						<td class="ta-c osG">@r.SG.ToS()</td>
+						<td class="ta-c osT">@r.Top.ToS()</td>
+						<td class="ta-c osR">@r.FR.ToS()</td>
+						<td class="ta-c osB">@r.FB.ToS()</td>
+						<td class="ta-c osR">@r.FG.ToS()</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+</div>
+
+<style>
+	th.osR {
+		background-color: brown;
+		color: white;
+	}
+
+	th.osB {
+		background-color: steelblue;
+		color: white;
+	}
+
+	th.osG {
+		background-color: green;
+		color: white;
+	}
+
+	.osT {
+		background-color: gainsboro;
+	}
+
+	td.osR {
+		color: brown;
+	}
+
+	td.osB {
+		color: steelblue
+	}
+
+	td.osG {
+		color: green;
+	}
+</style>
+
+@code {
+	private List<OS> os;
+	private string typ = "S";
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			os = (await conn.QueryAsync<OS>("OO_STAT",
+				new { a = my.Id, b = typ },
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+
+	}
+
+	public sealed class OS
+	{
+		public string? Grp;
+
+		public string? Sbj;
+		public string? Act;
+		public string? Tsk;
+		public string? Req;
+
+		public int Top;
+		public int SR;
+		public int SB;
+		public int SG;
+		public int FR;
+		public int FB;
+		public int FG;
+	}
+}

@@ -128,6 +128,11 @@ public static class Extensions
 		return sb.ToString();
 	}
 
+	public static string ToS(this int input) 
+	{
+		return input.ToString("#");
+	}
+
 	public static string? ToS(this DateTime? input)
 	{
 		if (!input.HasValue)
