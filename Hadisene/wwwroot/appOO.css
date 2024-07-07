@@ -133,11 +133,15 @@
 .ooCard .ooHdrTxt {
 	text-align: center;
 }
+	/*.ooCard .ooHdrTxt::after {
+		content: "cancel";
+		font-family: 'Material Symbols Outlined';
+	}*/
 
-.ooCard .box {
-	padding: 0 4px;
-	/*min-height: 32px;*/
-}
+	.ooCard .box {
+		padding: 0 4px;
+		/*min-height: 32px;*/
+	}
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
@@ -198,7 +202,9 @@
 .ooCard {
 	display: grid;
 	gap: 2px;
-	grid-template-rows: 36px repeat(4, 20px) 1fr 36px;
+	/*grid-template-rows: 36px repeat(4, 20px) 1fr 36px;*/
+	/*grid-template-rows: 36px repeat(2, 20px) 1fr 36px;*/
+	grid-template-rows: 40px repeat(2, 26px) 1fr 36px;
 	grid-template-columns: 3fr 3fr 1fr 1fr;
 	grid-template-areas:
 		"ooHdr ooHdr ooHdr ooHdr"
@@ -207,9 +213,10 @@
 		"ooTsk ooTsk ooPin ooCID"
 		"ooReq ooReq ooReq ooReq"
 		/*"ooSbj ooSbj ooSbj"*/
-		"ooRSD ooASD ooDSH ooDSH"
-		"ooRFD ooAFD ooDFH ooDFH"
-		"ooInf ooInf ooInf ooInf"
+		/*"ooRSD ooASD ooDSH ooDSH"*/
+		/*"ooRFD ooAFD ooDFH ooDFH"*/
+		/*"ooInf ooInf ooInf ooInf"*/
+		"ooTrh ooTrh ooTrh ooTrh"
 		"ooFtr ooFtr ooFtr ooFtr";
 	background-color: azure;
 	color: #444;
@@ -313,6 +320,11 @@ button.ooCID:disabled {
 		content: "görevli";
 	}
 
+.ooTrh {
+	grid-area: ooTrh;
+	font-size: .8rem;
+}
+
 .ooInf {
 	grid-area: ooInf;
 	/*background-color: snow;*/
@@ -330,7 +342,7 @@ button.ooCID:disabled {
 
 .ooRSD {
 	grid-area: ooRSD;
-	font-size: .9rem;
+	font-size: .8rem;
 }
 
 	.ooRSD::before {
@@ -339,7 +351,7 @@ button.ooCID:disabled {
 
 .ooASD {
 	grid-area: ooASD;
-	font-size: .9rem;
+	font-size: .8rem;
 }
 
 	.ooASD::before {
@@ -357,7 +369,7 @@ button.ooCID:disabled {
 
 .ooRFD {
 	grid-area: ooRFD;
-	font-size: .9rem;
+	font-size: .8rem;
 }
 
 	.ooRFD::before {
@@ -367,7 +379,7 @@ button.ooCID:disabled {
 
 .ooAFD {
 	grid-area: ooAFD;
-	font-size: .9rem;
+	font-size: .8rem;
 }
 
 	.ooAFD::before {

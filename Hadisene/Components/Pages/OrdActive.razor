@@ -53,17 +53,26 @@
 			<div class="ooCard" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
+
 				<div class="ooHdr">
 					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
 						<span>@((MarkupString)rec.UpdFlg)</span>
 						<span class="material-symbols-outlined">settings</span>
 						<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
 					</button>
+
 					<div class="ooHdrTxt">
-						@rec.SbjAd.Coalesce()
-						<br />
-						@rec.ActAd.Coalesce()
+						<button class="pop-btn"
+								popovertarget="mypopover-@rec.OOId"
+								popovertargetaction="toggle"
+								style="color: inherit;white-space: unset;">
+							@rec.SbjAd.Coalesce()
+							<br />
+							@rec.ActAd.Coalesce()
+							<span class="material-symbols-outlined" style="font-size:1rem;">info</span>
+						</button>
 					</div>
+
 					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
 						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
 						<span class="material-symbols-outlined">chat</span>
@@ -79,29 +88,55 @@
 
 				@* <div class="box ooSbj">@rec.SbjAd</div> *@
 				<div class="box ooTsk">@rec.TskAd</div>
-				<div class="box ooInf">
-					<button class="pop-btn"
-							popovertarget="mypopover-@rec.OOId"
-							popovertargetaction="toggle">
-						@if (!string.IsNullOrEmpty(rec.Rf1) || !string.IsNullOrEmpty(rec.Rf2))
-						{
-							<span style="font-size:.6rem">@rec.Rf1 &ensp;&ensp; @rec.Rf2</span>
 
-							<br />
-						}
-						<span>@rec.Inf</span>
-					</button>
-				</div>
+				@* <div class="box ooInf">
+		<button class="pop-btn"
+		popovertarget="mypopover-@rec.OOId"
+		popovertargetaction="toggle">
+		@if (!string.IsNullOrEmpty(rec.Rf1) || !string.IsNullOrEmpty(rec.Rf2))
+		{
+		<span style="font-size:.6rem">@rec.Rf1 &ensp;&ensp; @rec.Rf2</span>
+
+		<br />
+		}
+		<span>@rec.Inf</span>
+		</button>
+		</div> *@
 
 				@* <div class="box ooAct">@rec.ActAd</div> *@
 
-				<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
+				<div class="box ooTrh">
+					<table>
+						<tr style="font-size:.6rem;color: var(--l-color);font-family: monospace;">
+							<th>baş/bit</th>
+							<th>istek</th>
+							<th>gerçek</th>
+							<th>gecikme</th>
+						</tr>
+						<tr class="ooS">
+							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
+							<td>@rec.RSD.ToS()</td>
+							<td>@rec.ASD.ToS()</td>
+							<td class="ta-c">@((MarkupString)rec.DSX)</td>
+						</tr>
+						<tr class="ooF">
+							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
+							<td>@rec.RFD.ToS()</td>
+							<td>@rec.AFD.ToS()</td>
+							<td class="ta-c">@((MarkupString)rec.DFX)</td>
+						</tr>
+					</table>
+				</div>
+
+
+				@* <div class="box ooS ooRSD">@rec.RSD.ToS()</div>
 				<div class="box ooS ooASD">@rec.ASD.ToS()</div>
 				<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
 
 				<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
 				<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
-				<div class="box ooF ooDFH ooOzet">@rec.DFX</div>
+				<div class="box ooF ooDFH ooOzet">@rec.DFX</div> *@
+
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
