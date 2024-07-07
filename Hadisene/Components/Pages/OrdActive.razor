@@ -59,7 +59,11 @@
 						<span class="material-symbols-outlined">settings</span>
 						<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
 					</button>
-					<div class="ooHdrTxt">@rec.SbjAd</div>
+					<div class="ooHdrTxt">
+						@rec.SbjAd.Coalesce()
+						<br />
+						@rec.ActAd.Coalesce()
+					</div>
 					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
 						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
 						<span class="material-symbols-outlined">chat</span>
@@ -89,7 +93,7 @@
 					</button>
 				</div>
 
-				<div class="box ooAct">@rec.ActAd</div>
+				@* <div class="box ooAct">@rec.ActAd</div> *@
 
 				<div class="box ooS ooRSD">@rec.RSD.ToS()</div>
 				<div class="box ooS ooASD">@rec.ASD.ToS()</div>

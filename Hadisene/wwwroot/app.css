@@ -581,6 +581,6 @@ tbody.zebra tr:nth-child(odd) {
 	}
 
 	.ooCard {
-		grid-template-rows: 36px repeat(5, 26px) 1fr 36px !important;
+		grid-template-rows: 40px repeat(4, 26px) 1fr 36px !important;
 	}
 }

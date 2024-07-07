@@ -130,6 +130,10 @@
 	/*height: 36px;*/
 }
 
+.ooCard .ooHdrTxt {
+	text-align: center;
+}
+
 .ooCard .box {
 	padding: 0 4px;
 	/*min-height: 32px;*/
@@ -194,12 +198,13 @@
 .ooCard {
 	display: grid;
 	gap: 2px;
-	grid-template-rows: 36px repeat(5, 20px) 1fr 36px;
+	grid-template-rows: 36px repeat(4, 20px) 1fr 36px;
 	grid-template-columns: 3fr 3fr 1fr 1fr;
 	grid-template-areas:
 		"ooHdr ooHdr ooHdr ooHdr"
-		"ooAct ooAct ooPin ooCID"
-		"ooTsk ooTsk ooTsk ooTsk"
+		/*"ooAct ooAct ooPin ooCID"*/
+		/*"ooTsk ooTsk ooTsk ooTsk"*/
+		"ooTsk ooTsk ooPin ooCID"
 		"ooReq ooReq ooReq ooReq"
 		/*"ooSbj ooSbj ooSbj"*/
 		"ooRSD ooASD ooDSH ooDSH"

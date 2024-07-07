@@ -80,16 +80,6 @@
 					   @bind:event="onchange"
 					   @bind:after="CheckReq" />
 			</div>
-			<div class="oeBox oeSbj">
-				<input type="text"
-					   maxlength="30"
-					   size="30"
-					   list="SSL"
-					   disabled="@oo.SbjRO"
-					   @bind="oo.SbjAd"
-					   @bind:event="onchange"
-					   @bind:after="CheckSbj" />
-			</div>
 
 			<div class="oeBox oeTsk">
 				<input type="text"
@@ -100,6 +90,17 @@
 					   @bind="oo.TskAd"
 					   @bind:event="onchange"
 					   @bind:after="CheckTsk" />
+			</div>
+
+			<div class="oeBox oeSbj">
+				<input type="text"
+					   maxlength="30"
+					   size="30"
+					   list="SSL"
+					   disabled="@oo.SbjRO"
+					   @bind="oo.SbjAd"
+					   @bind:event="onchange"
+					   @bind:after="CheckSbj" />
 			</div>
 
 			<div class="oeBox oeAct">

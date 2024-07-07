@@ -23,6 +23,12 @@ public static class Extensions
 		return sqids.Decode(inp).Single();
 	}
 	// Use Extensions.ChangeToUpper(ref INP);
+
+	public static string Coalesce(this string? inp)
+	{
+		return inp ?? "??";
+	}
+
 	public static void ChangeToUpper(ref string? inp)
 	{
 		inp = inp.ToUpper();
@@ -40,7 +46,7 @@ public static class Extensions
 
 		char d;
 		StringBuilder sb = new(32);
-		
+
 		foreach (char c in inp)
 		{
 			d = c switch
@@ -61,9 +67,9 @@ public static class Extensions
 				',' => '.',
 				';' => ':',
 
-				'=' => ' ',	// query de kullanıyor, burda izin verme
-				'_' => ' ',	// like single char
-				'%' => ' ',	// like string
+				'=' => ' ', // query de kullanıyor, burda izin verme
+				'_' => ' ', // like single char
+				'%' => ' ', // like string
 
 				'"' => ' ',
 				'`' => ' ',
@@ -78,7 +84,7 @@ public static class Extensions
 			}
 		}
 		return sb.ToString();
-	
+
 		//Encoding ascii = Encoding.ASCII;
 		//byte[] encodedBytes = ascii.GetBytes(rfs);
 		//rf = ascii.GetString(encodedBytes);
@@ -128,7 +134,7 @@ public static class Extensions
 		return sb.ToString();
 	}
 
-	public static string ToS(this int input) 
+	public static string ToS(this int input)
 	{
 		return input.ToString("#");
 	}
