@@ -13,11 +13,13 @@
 <div class="top">
 	@if (my.Id > 0)
 	{
-		<div><InputCheckbox @bind-Value="cbUsrDashBoard" /> @my.Ad @my.YtkAd</div>
+		<div>
+			@my.Ad @my.YtkAd <InputCheckbox @bind-Value="cbUsrDashBoard" />
+		</div>
 	}
 	else
 	{
-		<div>@my.Ad</div>
+		<div>Giriş yapın</div>
 	}
 
 	<InputSelect TValue="string"
@@ -27,13 +29,14 @@
 		<option value="">🏠 HOME</option>
 		@if (my.Id != 0)
 		{
+			<option value="OrdStat">📈 Özet</option>
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
 			@if (my.Ytk == 1)
 			{
 				<optgroup label="Tanımlar">
+					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
 					<option value="SbjQry">⚓ Servis</option>
 					<option value="TskQry">📝 Görev</option>
-					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
 					<option value="PtrQry">⛓️ Şablon</option>
 
 				</optgroup>
@@ -193,7 +196,9 @@
 					//await UsrEnter();
 
 					await Notifier.Invoke("UsrLogIn", new NotifyArgs { UsrTkn = usrTkn });
-					navigationManager.NavigateTo("");
+					//navigationManager.NavigateTo("");
+					await MenuChange("OrdStat");
+
 				}
 			}
 			catch (Exception ex)
@@ -224,8 +229,9 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		selVal = "";
+		// selVal = "OrdStat";
 		await UsrEnter();
+		await MenuChange("OrdStat");
 	}
 
 	protected async Task UsrEnter()

@@ -25,6 +25,9 @@
 						</button>
 					</td>
 					<td>@rec.Ad</td>
+					<td>
+						<input type="checkbox" checked=@rec.isPsf onclick="return false" style="width:auto" />
+					</td>
 				</tr>
 			}
 		</tbody>
@@ -82,6 +85,9 @@
 	{
 		public int TTId;
 		public string? Ad;
+		public int Psf;
+		public bool isPsf => Psf == 1 ? true : false;
+
 	}
 }
 

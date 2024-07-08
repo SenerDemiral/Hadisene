@@ -2,6 +2,7 @@
 @inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
+@page "/ordStat"
 
 @* @if (my.Ytk > 3)
 {
@@ -14,7 +15,7 @@ else
 
 <div style="display:grid;max-height:var(--bdy-h);justify-content:center;overflow:auto;min-width: fit-content;">
 
-	@if (os != null)
+	@if (os != null && my.Id > 0)
 	{
 		<table>
 			<thead class="ta-c">
@@ -51,7 +52,7 @@ else
 				{
 					<tr>
 						<th class="ta-l">Servis</th>
-						<th colspan="7" class="ta-c">Takip</th>
+						<th colspan="7" class="ta-c" style="background-color: cornsilk;">Takip</th>
 					</tr>
 					@foreach (var r in os.FindAll(x => x.Grp == "-"))
 					{
@@ -70,7 +71,7 @@ else
 				}
 				<tr>
 					<th class="ta-l">Görev</th>
-					<th colspan="7" class="ta-c">Görevlerim</th>
+					<th colspan="7" class="ta-c" style="background-color: azure;">Görevlerim</th>
 				</tr>
 				@foreach (var r in os.FindAll(x => x.Grp == "A"))
 				{
@@ -88,7 +89,7 @@ else
 				<br />
 				<tr>
 					<th class="ta-l">Görev</th>
-					<th colspan="7" class="ta-c">İstediklerim</th>
+					<th colspan="7" class="ta-c" style="background-color: seashell;">İstediklerim</th>
 				</tr>
 				@foreach (var r in os.FindAll(x => x.Grp == "R"))
 				{

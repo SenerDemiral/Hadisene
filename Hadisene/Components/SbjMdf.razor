@@ -19,10 +19,14 @@
 				<td>@Idf()</td>
 				<td><input type="text" maxlength="30" @bind="ss!.Ad" /></td>
 			</tr>
+			<tr>
+				<td>Pasif</td>
+				<td><input type="checkbox" @bind="ss.isPsf" style="width:auto" /></td>
+			</tr>
 			@if (ss.SSId != 0)
 			{
 				<tr>
-					<td>Kullanılmadıysa Silinecek </td>
+					<td>Kullanılmadıysa Sil </td>
 					<td>
 						<input type="checkbox" @bind="ss.Del" style="width:auto" />
 					</td>
@@ -66,6 +70,7 @@
 						p2 = my.FrmId,
 						p3 = SSId,
 						p4 = ss!.Ad,
+						p5 = ss.Psf,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -132,6 +137,15 @@
 		public int SSId;
 		public bool Del;
 		public string? Ad;
+		public int Psf;
+		public bool isPsf
+		{
+			get => Psf == 1;
+			set
+			{
+				Psf = value ? 1 : 0;
+			}
+		}
 	}
 
 	public sealed class SU

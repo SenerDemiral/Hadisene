@@ -19,6 +19,10 @@
 				<td>@Idf()</td>
 				<td><input type="text" maxlength="30" @bind="tt!.Ad" /></td>
 			</tr>
+			<tr>
+				<td>Pasif</td>
+				<td><input type="checkbox" @bind="tt.isPsf" style="width:auto" /></td>
+			</tr>
 		</tbody>
 	</table>
 }
@@ -40,6 +44,7 @@
 						p2 = my.FrmId,
 						p3 = Id,
 						p4 = tt!.Ad,
+						p5 = tt.Psf
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -85,5 +90,15 @@
 	{
 		public int TTId;
 		public string? Ad;
+		public int Psf;
+		public bool isPsf
+		{
+			get => Psf == 1;
+			set
+			{
+				Psf = value ? 1 : 0;
+			}
+		}
+
 	}
 }
