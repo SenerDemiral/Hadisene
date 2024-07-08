@@ -4,7 +4,7 @@
 
 @if (rec != null && us != null)
 {
-	<table style="width:200px;">
+	<table style="min-width:360px;">
 		<caption>
 			<button @onclick="Kaydet">
 				<span class="material-symbols-outlined">check</span>Kaydet
@@ -17,12 +17,12 @@
 			</tr>
 			<tr>
 				<td>Ad</td>
-				<td><input type="text" @bind="rec!.Ad" /></td>
+				<td><input type="text" maxlength="30" @bind="rec!.Ad" /></td>
 			</tr>
 			<tr>
 				<td>YetkiSvy</td>
 				<td>
-					<select @bind="rec!.Ytk">
+					<select @bind="rec!.Ytk" style="width:100%;">
 						@if (rec.Ytk < 9)
 						{
 							<option value="1">[A] Admin</option>
@@ -43,15 +43,15 @@
 			</tr>
 			<tr>
 				<td>Tel</td>
-				<td><input type="text" @bind="rec!.Tel" /></td>
+				<td><input type="text" maxlength="20" @bind="rec!.Tel" /></td>
 			</tr>
 			<tr>
 				<td>Mail</td>
-				<td><input type="text" @bind="rec!.Mail" /></td>
+				<td><input type="text" maxlength="50" @bind="rec!.Mail" /></td>
 			</tr>
 			<tr>
 				<td>Pwd</td>
-				<td><input type="text" @bind="rec!.Pwd" /></td>
+				<td><input type="text" maxlength="20" @bind="rec!.Pwd" /></td>
 			</tr>
 			@if (rec.Ytk > 1 && rec.Ytk < 5)
 			{

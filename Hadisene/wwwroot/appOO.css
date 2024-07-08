@@ -127,33 +127,24 @@
 	background: linear-gradient(90deg, var(--sColor) 10%, 50%, var(--fColor) 90%);
 	color: white;
 	padding: 0 4px;
-	/*height: 36px;*/
 }
 
 .ooCard .ooHdrTxt {
 	text-align: center;
 }
-	/*.ooCard .ooHdrTxt::after {
-		content: "cancel";
-		font-family: 'Material Symbols Outlined';
-	}*/
-
 	.ooCard .box {
 		padding: 0 4px;
-		/*min-height: 32px;*/
 	}
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
 	background-color: gainsboro;
 	color: black;
-	/*font-size: 1rem;*/
 	padding: 0 4px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 2rem;
-	/*height: 36px;*/
 }
 
 	.ooCard .ooFtr > * {
@@ -202,22 +193,12 @@
 .ooCard {
 	display: grid;
 	gap: 2px;
-	/*grid-template-rows: 36px repeat(4, 20px) 1fr 36px;*/
-	/*grid-template-rows: 36px repeat(2, 20px) 1fr 36px;*/
-	grid-template-rows: 40px repeat(2, 26px) 1fr 36px;
-	grid-template-columns: 3fr 3fr 1fr 1fr;
+	grid-template-rows: 44px 1fr 36px;
+	grid-template-columns: 1fr;
 	grid-template-areas:
-		"ooHdr ooHdr ooHdr ooHdr"
-		/*"ooAct ooAct ooPin ooCID"*/
-		/*"ooTsk ooTsk ooTsk ooTsk"*/
-		"ooTsk ooTsk ooPin ooCID"
-		"ooReq ooReq ooReq ooReq"
-		/*"ooSbj ooSbj ooSbj"*/
-		/*"ooRSD ooASD ooDSH ooDSH"*/
-		/*"ooRFD ooAFD ooDFH ooDFH"*/
-		/*"ooInf ooInf ooInf ooInf"*/
-		"ooTrh ooTrh ooTrh ooTrh"
-		"ooFtr ooFtr ooFtr ooFtr";
+		"ooHdr"
+		"ooTbl"
+		"ooFtr";
 	background-color: azure;
 	color: #444;
 	outline: 1px solid gray;
@@ -257,19 +238,19 @@ button.ooPin {
 button[data-Pin="0"].ooPin::after {
 	content: "keep_off";
 	font-family: 'Material Symbols Outlined';
-	font-size: x-large;
+	/*font-size: x-large;*/
 }
 
 button[data-Pin="1"].ooPin::after {
 	content: "keep";
 	font-family: 'Material Symbols Outlined';
-	font-size: x-large;
+	/*font-size: x-large;*/
 }
 
 button.ooCID::after {
 	content: "link";
 	font-family: 'Material Symbols Outlined';
-	font-size: x-large;
+	/*font-size: x-large;*/
 }
 
 button.ooCID:disabled {
@@ -280,7 +261,7 @@ button.ooCID:disabled {
 	button.ooCID:disabled::after {
 		content: "link_off";
 		font-family: 'Material Symbols Outlined';
-		font-size: x-large;
+		/*font-size: x-large;*/
 	}
 
 .ooReq {
@@ -320,10 +301,15 @@ button.ooCID:disabled {
 		content: "görevli";
 	}
 
-.ooTrh {
-	grid-area: ooTrh;
+.ooTbl {
+	grid-area: ooTbl;
 	font-size: .8rem;
 }
+	.ooTrh th,
+	.ooTrh td
+	{
+		padding: 0 0 0 2px;
+	}
 
 .ooInf {
 	grid-area: ooInf;

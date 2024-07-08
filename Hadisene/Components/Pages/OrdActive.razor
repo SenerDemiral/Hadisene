@@ -20,12 +20,6 @@
 	<button @onclick="AddNew" style="background-color: yellow;">
 		<span class="material-symbols-outlined">add</span>
 	</button>
-
-	@* <button @onclick="@(async () => await js.InvokeVoidAsync("showDialogModal", "ooSrchDlg"))">
-	<span class="material-symbols-outlined">
-	search
-	</span>
-	</button> *@
 </div>
 
 <dialog id="ooSrchDlg">
@@ -78,38 +72,30 @@
 						<span class="material-symbols-outlined">chat</span>
 					</button>
 				</div>
-				<div class="box ooReq">@rec.ReqAd</div>
 
-				<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
-				<button class="ooCID"
-						disabled=@(rec.CId == 0)
-						@onclick="@(() => Chained(rec))"></button>
-
-
-				@* <div class="box ooSbj">@rec.SbjAd</div> *@
-				<div class="box ooTsk">@rec.TskAd</div>
-
-				@* <div class="box ooInf">
-		<button class="pop-btn"
-		popovertarget="mypopover-@rec.OOId"
-		popovertargetaction="toggle">
-		@if (!string.IsNullOrEmpty(rec.Rf1) || !string.IsNullOrEmpty(rec.Rf2))
-		{
-		<span style="font-size:.6rem">@rec.Rf1 &ensp;&ensp; @rec.Rf2</span>
-
-		<br />
-		}
-		<span>@rec.Inf</span>
-		</button>
-		</div> *@
-
-				@* <div class="box ooAct">@rec.ActAd</div> *@
-
-				<div class="box ooTrh">
+				<div class="box ooTbl">
 					<table>
+						<tr>
+							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:10%;">görev</th> *@
+							<th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">construction</span></th>
+							<td colspan="2" style="font-size:1rem;">@rec.TskAd</td>
+							<td class="ta-c" style="width:20%;">
+								<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+							</td>
+						</tr>
+						<tr>
+							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:3rem;">isteyen</th> *@
+							<th class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">hail</span></th>
+							<td colspan="2" style="font-size:1rem;">@rec.ReqAd</td>
+							<td class="ta-c">
+								<button class="ooCID"
+										disabled=@(rec.CId == 0)
+										@onclick="@(() => Chained(rec))"></button>
+							</td>
+						</tr>
 						<tr style="font-size:.6rem;color: var(--l-color);font-family: monospace;">
-							<th>baş/bit</th>
-							<th>istek</th>
+							<th></th>
+							<th style="width:35%;">istek</th>
 							<th>gerçek</th>
 							<th>gecikme</th>
 						</tr>
@@ -127,15 +113,6 @@
 						</tr>
 					</table>
 				</div>
-
-
-				@* <div class="box ooS ooRSD">@rec.RSD.ToS()</div>
-				<div class="box ooS ooASD">@rec.ASD.ToS()</div>
-				<div class="box ooS ooDSH ooOzet">@((MarkupString)rec.DSX)</div>
-
-				<div class="box ooF ooRFD">@rec.RFD.ToS()</div>
-				<div class="box ooF ooAFD">@rec.AFD.ToS()</div>
-				<div class="box ooF ooDFH ooOzet">@rec.DFX</div> *@
 
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>

@@ -12,11 +12,11 @@
 else
  *@
 
-<div style="display:flex;height:100%;justify-content:center;align-items:center; margin-inline:auto;">
+<div style="display:grid;max-height:var(--bdy-h);justify-content:center;overflow:auto;min-width: fit-content;">
 
 	@if (os != null)
 	{
-		<table style="max-width:500px;">
+		<table>
 			<thead class="ta-c">
 				<tr>
 					<th rowspan="2">Durum Özeti</th>

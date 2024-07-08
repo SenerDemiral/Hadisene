@@ -44,6 +44,9 @@ body {
 	--bdy-h: calc(100dvh - var(--top-h) - var(--btm-h) - calc(var(--mrg-h) + var(--brd-w)) * 2 );
 }
 
+input[type="text"] {
+	width: 100%;
+}
 
 *,
 *::before,
@@ -161,6 +164,7 @@ dialog[open]#ooSrchDlg {
 	padding: 8px;
 	box-shadow: 0px 0px 8px 8px #e8e8e8;
 	border: 1px solid rgb(0, 0, 0, 0.2);
+	z-index: 10;
 }
 
 	.dashboard table {
@@ -383,12 +387,8 @@ details[open] {
 
 /*****************************/
 table {
-	font-family: arial, sans-serif;
 	border-collapse: collapse;
 	width: 100%;
-	/*min-width: 360px;*/
-	max-height: 80vw;
-	overflow: auto;
 }
 
 td, th {
