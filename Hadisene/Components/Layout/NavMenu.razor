@@ -104,6 +104,12 @@
 		{
 			await js.InvokeVoidAsync("hardReload");
 		}
+		else if (selectedValue == "OrdStat")
+		{
+			selVal = selectedValue;
+			selectedValue = $"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}";
+			navigationManager.NavigateTo(selectedValue);
+		}
 		else
 		{
 			selVal = selectedValue;
@@ -215,6 +221,7 @@
 		using var conn = db.GetConnection();
 		conn.Execute("USR_LOGOUT", new { Tkn = usrTkn }, commandType: CommandType.StoredProcedure);
 
+		my.Tkn = "";
 		my.UEXId = 0;
 		my.Id = 0;
 		my.Ad = "Giriş Yapın";
@@ -229,9 +236,10 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		// selVal = "OrdStat";
+		selVal = "";
 		await UsrEnter();
-		await MenuChange("OrdStat");
+		if (my.Id > 0)
+			await MenuChange("OrdStat");
 	}
 
 	protected async Task UsrEnter()

@@ -1,8 +1,8 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
 @inject AppState my
 @inject IDbCon db
-@inject IModalService Modal
-@page "/ordStat"
+@* @inject IModalService Modal *@
+@page "/ordStat/{myTkn}/{myId:int}/{myYtk:int}"
 
 @* @if (my.Ytk > 3)
 {
@@ -13,11 +13,11 @@
 else
  *@
 
-<div style="display:grid;max-height:var(--bdy-h);justify-content:center;overflow:auto;min-width: fit-content;">
 
-	@if (os != null && my.Id > 0)
-	{
-		<table>
+@if (os?.Count > 0 && myId > 0)
+{
+	<div class="osCnt">
+		<table style="table-layout:fixed;width:auto;">
 			<thead class="ta-c">
 				<tr>
 					<th rowspan="2">Durum Özeti</th>
@@ -48,7 +48,7 @@ else
 				</tr>
 			</thead>
 			<tbody>
-				@if (my.Ytk < 4)
+				@if (myYtk < 4)
 				{
 					<tr>
 						<th class="ta-l">Servis</th>
@@ -67,10 +67,12 @@ else
 							<td class="ta-c osR">@r.FG.ToS()</td>
 						</tr>
 					}
-					<br />
+					<tr>
+						<td></td>
+					</tr>
 				}
 				<tr>
-					<th class="ta-l">Görev</th>
+					<th class="ta-l"></th>
 					<th colspan="7" class="ta-c" style="background-color: azure;">Görevlerim</th>
 				</tr>
 				@foreach (var r in os.FindAll(x => x.Grp == "A"))
@@ -86,9 +88,11 @@ else
 						<td class="ta-c osR">@r.FG.ToS()</td>
 					</tr>
 				}
-				<br />
 				<tr>
-					<th class="ta-l">Görev</th>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="ta-l"></th>
 					<th colspan="7" class="ta-c" style="background-color: seashell;">İstediklerim</th>
 				</tr>
 				@foreach (var r in os.FindAll(x => x.Grp == "R"))
@@ -106,10 +110,18 @@ else
 				}
 			</tbody>
 		</table>
-	}
-</div>
+	</div>
+}
 
-<style>
+@* <style>
+	.osCnt {
+		display: grid;
+		max-height: var(--bdy-h);
+		justify-content: center;
+		overflow: auto;
+		min-width: fit-content;
+	}
+
 	th.osR {
 		background-color: brown;
 		color: white;
@@ -141,27 +153,38 @@ else
 		color: green;
 	}
 </style>
-
+ *@
 @code {
+	[CascadingParameter] public HttpContext? context { get; set; }
+
+	[Parameter]
+	public string? myTkn { get; set; }
+	[Parameter]
+	public int myId { get; set; }
+	[Parameter]
+	public int myYtk { get; set; }
+
 	private List<OS> os;
 	private string typ = "S";
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
+		if (context?.Request.Cookies["hadisene"] == myTkn)
 		{
-			using var conn = db.GetConnection();
-			os = (await conn.QueryAsync<OS>("OO_STAT",
-				new { a = my.Id, b = typ },
-				commandType: CommandType.StoredProcedure)
-			).ToList();
+			try
+			{
+				using var conn = db.GetConnection();
+				os = (await conn.QueryAsync<OS>("OO_STAT",
+					new { a = myId, b = typ },
+					commandType: CommandType.StoredProcedure)
+				).ToList();
+			}
+			catch (Exception ex)
+			{
+				var hata = ex.Message.Split("\r\n")[1];
+				// Modal.Show<ModalConfirm>(hata);
+			}
 		}
-		catch (Exception ex)
-		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalConfirm>(hata);
-		}
-
 	}
 
 	public sealed class OS
