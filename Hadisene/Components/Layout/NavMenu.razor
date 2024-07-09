@@ -10,6 +10,9 @@
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
 @* MainLayout da tanımlı *@
 
+<audio id="sound1" src="/mixkit-cartoon-whistling-738-zip.wav" />
+<audio id="sound2" src="/mixkit-signal-alert-771-zip.wav" />
+
 <div class="top">
 	@if (my.Id > 0)
 	{
@@ -290,12 +293,23 @@
 				StateHasChanged();
 			});
 		}
-		if (key == "UsrLogOut" && value.UsrTkn == usrTkn)
+		else if (key == "UsrLogOut" && value.UsrTkn == usrTkn)
 		{
 			await InvokeAsync(() =>
 			{
 				StateHasChanged();
 			});
+		}
+		else if (key == "IO" && value.FFId == my.FrmId)
+		{
+			if (value.OrdUsrSet.Contains(my.Id) && my.Id != value.UUId && (my.Ytk == 2 || my.Ytk == 4))
+			{
+				try
+				{
+					await js.InvokeVoidAsync("playSound01", "sound1");
+				}
+				catch (JSDisconnectedException) { }
+			}
 		}
 	}
 

@@ -241,6 +241,7 @@
 				try
 				{
 					await js.InvokeVoidAsync("scrollBottom", "scroll-area");
+					await js.InvokeVoidAsync("playSound01", "sound");
 				}
 				catch (JSDisconnectedException) { }
 			}

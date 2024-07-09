@@ -20,7 +20,7 @@ else
 		<table style="table-layout:fixed;width:auto;">
 			<thead class="ta-c">
 				<tr>
-					<th rowspan="2">Durum Özeti</th>
+					<th rowspan="2" style="min-width:120px;">Durum Özeti</th>
 					<th colspan="3"><span class="material-symbols-outlined">play_circle</span></th>
 					<th></th>
 					<th colspan="3"><span class="material-symbols-outlined">stop_circle</span></th>
@@ -71,6 +71,7 @@ else
 						<td></td>
 					</tr>
 				}
+
 				<tr>
 					<th class="ta-l"></th>
 					<th colspan="7" class="ta-c" style="background-color: azure;">Görevlerim</th>
@@ -91,6 +92,30 @@ else
 				<tr>
 					<td></td>
 				</tr>
+
+				@if (my.Ytk == 4)
+				{
+					<tr>
+						<th class="ta-l"></th>
+						<th colspan="7" class="ta-c" style="background-color: azure;">DolaylıGörevlerim</th>
+					</tr>
+					@foreach (var r in os.FindAll(x => x.Grp == "B"))
+					{
+						<tr>
+							<td>@r.Tsk</td>
+							<td class="ta-c osR">@r.SR.ToS()</td>
+							<td class="ta-c osB">@r.SB.ToS()</td>
+							<td class="ta-c osG">@r.SG.ToS()</td>
+							<td class="ta-c osT">@r.Top.ToS()</td>
+							<td class="ta-c osR">@r.FR.ToS()</td>
+							<td class="ta-c osB">@r.FB.ToS()</td>
+							<td class="ta-c osR">@r.FG.ToS()</td>
+						</tr>
+					}
+					<tr>
+						<td></td>
+					</tr>
+				}
 				<tr>
 					<th class="ta-l"></th>
 					<th colspan="7" class="ta-c" style="background-color: seashell;">İstediklerim</th>

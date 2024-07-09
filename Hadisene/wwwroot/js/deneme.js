@@ -22,3 +22,6 @@ function hardReload() {
 	location.reload(true);
 }
 
+function playSound01(elmntId) {
+	document.getElementById(elmntId).play();
+}

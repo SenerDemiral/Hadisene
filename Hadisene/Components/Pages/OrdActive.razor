@@ -379,6 +379,15 @@
 				ooList.Insert(0, x);
 				await InvokeAsync(StateHasChanged);
 				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
+
+				// if (my.Id != value.UUId)
+				// {
+				// 	try
+				// 	{
+				// 		await js.InvokeVoidAsync("playSound01", "sound");
+				// 	}
+				// 	catch (JSDisconnectedException) { }
+				// }
 			}
 			else
 			{
