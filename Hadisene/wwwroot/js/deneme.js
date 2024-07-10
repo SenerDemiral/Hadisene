@@ -22,6 +22,12 @@ function hardReload() {
 	location.reload(true);
 }
 
-function playSound01(elmntId) {
-	document.getElementById(elmntId).play();
+//const typeWriter = new Audio("https://www.freesound.org/data/previews/256/256458_4772965-lq.mp3");
+//const bip = new Audio("https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3");
+// https://developers.google.com/assistant/tools/sound-library/alarms
+//const bip = new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg");
+const bip = new Audio("https://actions.google.com/sounds/v1/cartoon/woodpecker.ogg");
+function playSound(elmntId) {
+	bip.play();
+	//document.getElementById(elmntId).play();
 }

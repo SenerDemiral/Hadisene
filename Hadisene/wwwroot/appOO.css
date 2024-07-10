@@ -289,7 +289,7 @@ button.ooCID:disabled {
 }
 
 	.ooTsk::before {
-		content: "görev";
+		content: "istek";
 	}
 
 .ooAct {
@@ -298,7 +298,7 @@ button.ooCID:disabled {
 }
 
 	.ooAct::before {
-		content: "görevli";
+		content: "kime";
 	}
 
 .ooTbl {

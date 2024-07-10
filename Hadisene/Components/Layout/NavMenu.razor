@@ -28,7 +28,7 @@
 	<InputSelect TValue="string"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
-				 ValueExpression="@(() => selVal)" >
+				 ValueExpression="@(() => selVal)">
 		<option value="">🏠 HOME</option>
 		@if (my.Id != 0)
 		{
@@ -39,7 +39,7 @@
 				<optgroup label="Tanımlar">
 					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
 					<option value="SbjQry">⚓ Servis</option>
-					<option value="TskQry">📝 Görev</option>
+					<option value="TskQry">📝 Talep</option>
 					<option value="PtrQry">⛓️ Şablon</option>
 
 				</optgroup>
@@ -110,8 +110,7 @@
 		else if (selectedValue == "OrdStat")
 		{
 			selVal = selectedValue;
-			selectedValue = $"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}";
-			navigationManager.NavigateTo(selectedValue);
+			navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");
 		}
 		else
 		{
@@ -302,13 +301,20 @@
 		}
 		else if (key == "IO" && value.FFId == my.FrmId)
 		{
-			if (value.OrdUsrSet.Contains(my.Id) && my.Id != value.UUId && (my.Ytk == 2 || my.Ytk == 4))
+			if (my.Id != value.UUId && my.Ytk.IsAny(2, 4) && value.OrdUsrSet.Contains(my.Id))
 			{
+				if (selVal == "OrdStat")
+					navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");
+
 				try
 				{
-					await js.InvokeVoidAsync("playSound01", "sound1");
+					await js.InvokeVoidAsync("playSound", "sound1");
 				}
-				catch (JSDisconnectedException) { }
+				catch (JSDisconnectedException)
+				{
+
+				}
+
 			}
 		}
 	}

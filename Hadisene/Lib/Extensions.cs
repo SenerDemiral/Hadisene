@@ -24,6 +24,19 @@ public static class Extensions
 	}
 	// Use Extensions.ChangeToUpper(ref INP);
 
+	public static bool IsAny<T>(this T self, params T[] items)
+	{
+		//foreach (var itm in items)
+		//	if (itm!.Equals(self)) return true;
+		//return false;
+
+		// veya
+		return items.Contains(self);
+
+		// if (ival.IsAny(1, 2, 3)) {}
+		// if (sval.IsAny("OR", "AND", "XOR")) { ... }
+	}
+
 	public static string Coalesce(this string? inp)
 	{
 		return inp ?? "??";

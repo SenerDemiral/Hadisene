@@ -151,7 +151,7 @@
 }
 
 	.oeReq::before {
-		content: "isteyen";
+		content: "🙋isteyen";
 	}
 
 .oeSbj {
@@ -159,7 +159,7 @@
 }
 
 	.oeSbj::before {
-		content: "servis";
+		content: "⚓ilgili servis";
 	}
 
 .oeTsk {
@@ -167,9 +167,18 @@
 }
 
 	.oeTsk::before {
-		content: "görev";
+		content: "📝talep";
 	}
 
+.oeAct {
+	grid-area: oeAct;
+}
+
+	.oeAct::before {
+		content: "🧍ilgili kişi";
+	}
+
+	
 .oeInf {
 	grid-area: oeInf;
 	background-color: snow;
@@ -182,14 +191,6 @@
 		content: "açıklama";
 	}
 
-.oeAct {
-	grid-area: oeAct;
-}
-
-	.oeAct::before {
-		content: "görevli";
-	}
-
 .oeRf1 {
 	grid-area: oeRf1;
 }
@@ -197,6 +198,7 @@
 	.oeRf1::before {
 		content: "Ref1";
 	}
+
 .oeRf2 {
 	grid-area: oeRf2;
 }
@@ -210,7 +212,7 @@
 }
 
 	.oeRSD::before {
-		content: "istek başlangıç";
+		content: "istenen başlangıç";
 	}
 
 .oeASD {
@@ -218,7 +220,7 @@
 }
 
 	.oeASD::before {
-		content: "gerçek başlangıç";
+		content: "gerçekleşen başlangıç";
 	}
 
 
@@ -237,7 +239,7 @@
 }
 
 	.oeRFD::before {
-		content: "istek bitiş";
+		content: "istenen bitiş";
 	}
 
 
@@ -246,7 +248,7 @@
 }
 
 	.oeAFD::before {
-		content: "gerçek bitiş";
+		content: "gerçekleşen bitiş";
 	}
 
 
