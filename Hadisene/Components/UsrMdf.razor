@@ -53,22 +53,38 @@
 				<td>Pwd</td>
 				<td><input type="text" maxlength="20" @bind="rec!.Pwd" /></td>
 			</tr>
-			@if (rec.Ytk > 1 && rec.Ytk < 5)
-			{
-				<tr>
-					<td>Servisler</td>
-					<td>
-						<div style="max-height:8lh;overflow:auto">
+
+			<tr>
+				<td colspan="2" style="padding:0;">
+					<div style="max-height:8lh;overflow:auto">
+						<table>
+							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
+								<th></th>
+								<th>Servis</th>
+								<th>-</th>
+								<th style="padding:2px 0">Sorumlu</th>
+								<th style="padding:2px 0">Denetci</th>
+							</tr>
 							@foreach (var r in us)
 							{
-								<div>
-									<input type="checkbox" @bind="r.isMbr" />@r.SSAd
-								</div>
+								<tr>
+									<td class="ta-c"><input type="checkbox" @bind="r.isMbr" /></td>
+									<td>@r.SSAd</td>
+									@{
+										var dsb = !r.isMbr;
+									}
+									<InputRadioGroup @bind-Value="r.Rol" Name="@r.SSId.ToString()">
+										<td class="ta-c"><InputRadio Value="0" disabled="@dsb" /></td>
+										<td class="ta-c"><InputRadio Value="2" disabled="@dsb" /></td>
+										<td class="ta-c"><InputRadio Value="3" disabled="@dsb" /></td>
+									</InputRadioGroup>
+								</tr>
 							}
-						</div>
-					</td>
-				</tr>
-			}
+						</table>
+					</div>
+				</td>
+			</tr>
+
 		</tbody>
 	</table>
 }
@@ -78,6 +94,7 @@
 	[Parameter] public int UUId { get; set; }
 	private UU? rec;
 	private List<US>? us;
+	private int rol;
 
 	public async Task Kaydet()
 	{
@@ -109,7 +126,8 @@
 							p2 = my.FrmId,
 							p3 = r.SSId,
 							p4 = r.SUId,
-							p5 = r.Mbr
+							p5 = r.Mbr,
+							p6 = r.Rol,
 						},
 						commandType: CommandType.StoredProcedure);
 				}
@@ -147,6 +165,7 @@
 						p2 = my.FrmId
 					},
 					commandType: CommandType.StoredProcedure).ToList();
+			us = us.OrderByDescending(x => x.Mbr).ThenBy(y => y.SSAd).ToList();
 
 		}
 		catch (Exception ex)
@@ -176,6 +195,7 @@
 		public int SUId;
 		public int SSId;
 		public string? SSAd;
+		public int Rol;
 		public int Mbr;
 		public bool isMbr
 		{

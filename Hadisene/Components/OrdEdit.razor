@@ -508,7 +508,7 @@
 		else
 		{
 			oo = conn.QuerySingle<OO>("OO_SEL",
-			new { Id = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+			new { p1 = my.Id, p2 = OOId},
 			commandType: CommandType.StoredProcedure);
 
 			ooo = oo.ShallowCopy();

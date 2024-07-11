@@ -83,7 +83,8 @@
 						p2 = my.FrmId,
 						p3 = newId,
 						p4 = r.SUId,
-						p5 = r.Mbr
+						p5 = r.Mbr,
+						p6 = r.Rol
 					},
 					commandType: CommandType.StoredProcedure);
 			}
@@ -153,6 +154,7 @@
 		public int SUId;
 		public int UUId;
 		public string? UUAd;
+		public int Rol;
 		public int Mbr;
 		public bool isMbr
 		{

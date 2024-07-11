@@ -48,6 +48,27 @@ public sealed class OO
 		}
 	}
 	public bool Pinned = false;
+
+	public int is_Edt
+	{
+		get => isEdt ? 1 : 0;
+		set
+		{
+			isEdt = value == 1;
+		}
+	}
+	public bool isEdt = false;
+
+	public int is_Act
+	{
+		get => isAct ? 1 : 0;
+		set
+		{
+			isAct = value == 1;
+		}
+	}
+	public bool isAct = false;
+
 	public int CId; // ChainId, Sıfırdan farklıysa Chained
 	public bool Chain;
 
