@@ -6,6 +6,7 @@
 @implements IAsyncDisposable
 @inject NavigationManager navigationManager
 @inject IJSRuntime js
+@inject IToastService toastService
 
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
 @* MainLayout da tanımlı *@
@@ -301,10 +302,12 @@
 		}
 		else if (key == "IO" && value.FFId == my.FrmId)
 		{
-			if (my.Id != value.UUId && my.Ytk.IsAny(2, 4) && value.OrdUsrSet.Contains(my.Id))
+			if (my.Id != value.UUId && value.OrdUsrSet.Contains(my.Id))
 			{
-				if (selVal == "OrdStat")
-					navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");
+				// 	if (selVal == "OrdStat")
+				// 		navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");
+
+				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
 
 				try
 				{
@@ -314,7 +317,6 @@
 				{
 
 				}
-
 			}
 		}
 	}

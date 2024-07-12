@@ -1,0 +1,53 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>Talep görülme zamanları</caption>
+		@* <tr>
+			<th>kişi</th>
+			<th>zaman</th>
+		</tr> *@
+		@foreach (var r in tbl)
+		{
+			<tr>
+				<td>@r.UUAd</td>
+				<td>@r.OVTS.ToS()</td>
+			</tr>
+
+		}
+	</table>
+}
+
+@code {
+	[Parameter]
+	public int OOId { get; set; } = 0;
+	private List<OU> tbl;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<OU>("OU_OVTS_QRY",
+				new { a = my.Id, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	public sealed class OU
+	{
+		public int UUId;
+		public string? UUAd;
+		public DateTime? OVTS;
+	}
+}

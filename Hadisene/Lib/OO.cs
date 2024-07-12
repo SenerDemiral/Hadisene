@@ -39,6 +39,7 @@ public sealed class OO
 	public string? DSX;
 	public string? DFX;
 
+	public bool noInf => Inf is null && Rf1 is null && Rf2 is null; 
 	public int Pin
 	{
 		get => Pinned ? 1 : 0;

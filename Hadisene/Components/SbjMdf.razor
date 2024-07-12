@@ -34,15 +34,29 @@
 			}
 
 			<tr>
-				<td>Kullanıcılar</td>
-				<td>
+				<td colspan="2" style="padding:0;">
 					<div style="max-height:8lh;overflow:auto">
-						@foreach (var r in su)
-						{
-							<div>
-								<input type="checkbox" @bind="r.isMbr" />@r.UUAd
-							</div>
-						}
+						<table>
+							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
+								<th></th>
+								<th>Kullanıcı</th>
+								<th>-</th>
+								<th style="padding:2px 0">Sorumlu</th>
+								<th style="padding:2px 0">Denetci</th>
+							</tr>
+							@foreach (var r in su)
+							{
+								<tr>
+									<td class="ta-c"><input type="checkbox" @bind="r.isMbr" /></td>
+									<td>@r.UUAd</td>
+									<InputRadioGroup @bind-Value="r.Rol" Name="@r.UUId.ToString()">
+										<td class="ta-c"><InputRadio Value="0" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="2" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="3" disabled="@(!r.isMbr)" /></td>
+									</InputRadioGroup>
+								</tr>
+							}
+						</table>
 					</div>
 				</td>
 			</tr>
@@ -120,6 +134,9 @@
 					p2 = my.FrmId
 				},
 				commandType: CommandType.StoredProcedure).ToList();
+
+			su = su.OrderByDescending(x => x.Mbr).ThenBy(y => y.UUAd).ToList();
+
 		}
 		catch (Exception ex)
 		{

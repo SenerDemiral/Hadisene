@@ -1,4 +1,16 @@
-﻿.ooCnt {
+﻿.fld-icn-lbl {
+	padding-inline: 0;
+	text-align: center;
+	font-size: 20px;
+	vertical-align: inherit;
+}
+
+.fld-icn-btn {
+	font-size: 20px;
+	vertical-align: inherit;
+}
+
+.ooCnt {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
@@ -132,9 +144,10 @@
 .ooCard .ooHdrTxt {
 	text-align: center;
 }
-	.ooCard .box {
-		padding: 0 4px;
-	}
+.ooCard .box {
+	/*padding: 0 4px;*/
+	padding: 0;
+}
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
@@ -192,7 +205,7 @@
 
 .ooCard {
 	display: grid;
-	gap: 2px;
+	/*gap: 2px;*/
 	grid-template-rows: 44px 1fr 36px;
 	grid-template-columns: 1fr;
 	grid-template-areas:

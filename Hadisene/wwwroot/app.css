@@ -54,6 +54,10 @@ input[type="text"] {
 	box-sizing: inherit;
 }
 
+.btnInf:disabled {
+	opacity: .5;
+}
+
 .refs {
 	font-family: monospace;
 	font-size: 1rem;
@@ -237,7 +241,7 @@ button {
 	/*padding: 2px 12px;*/
 	transition: all .14s ease-out;
 	background-color: white;
-	height: 28px;
+	/*height: 28px;*/
 }
 
 	button:hover {

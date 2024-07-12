@@ -37,16 +37,17 @@
 						<span class="material-symbols-outlined">add</span>
 						<InputRadio Value="Mode.New" disabled="@modeRO" />
 					</div>
-					@* @foreach (var mode in Enum.GetValues<Mode>())
-				{
-				<div>
-				<label>
-				<InputRadio Value="mode" disabled="@modeRO" />
-				@ModeT[(int)mode]
-				</label>
-				</div>
-				} *@
 				</InputRadioGroup>
+
+				@* @foreach (var mode in Enum.GetValues<Mode>())
+			{
+			<div>
+			<label>
+			<InputRadio Value="mode" disabled="@modeRO" />
+			@ModeT[(int)mode]
+			</label>
+			</div>
+			} *@
 			</div>
 		</div>
 
@@ -66,10 +67,12 @@
 					</InputRadioGroup>
 				</div>
 			</div>
+
 			<div class="oeChn">
 				<span class="material-symbols-outlined">link</span>
 				<input type="checkbox" @bind=@oo.Chain disabled="@oo.ChainRO" style="width:auto" />
 			</div>
+
 			<div class="oeBox oeReq">
 				<input type="text"
 					   maxlength="30"
@@ -225,7 +228,7 @@
 			min = (DateTime)oo.InsTS;
 
 		min = new DateTime(min.Year, min.Month, min.Day, min.Hour, min.Minute + 5, 0);
-		
+
 		if (oo.RSD < min)
 			oo.RSD = min;
 
@@ -273,11 +276,9 @@
 			oo.AFDro = true;
 			oo.ChainRO = true;
 
-			if (my.Ytk > 2)
-				oo.ReqRO = true;
-
 			oo.ReqId = my.Id;
 			oo.ReqAd = my.Ad;
+
 			if (ttd?.Count == 1)
 			{
 				oo.TskId = ttd.Values.ElementAt(0);
@@ -300,12 +301,9 @@
 
 			oo.OOId = 0;    // Insert
 
-			if (my.Ytk > 2)
-			{
-				oo.ReqId = my.Id;
-				oo.ReqAd = my.Ad;
-				oo.ReqRO = true;
-			}
+			oo.ReqId = my.Id;
+			oo.ReqAd = my.Ad;
+
 			oo.RSD = DateTime.Today.AddDays(1);
 			oo.RFD = DateTime.Today.AddDays(2);
 			oo.ASD = null;
@@ -321,12 +319,13 @@
 			// Ytk = 1/2 ise
 			// Usr = Req ve ASD = null ise
 
-			if (my.Ytk <= 2) // Admn, Ytk
+			if (my.Ytk <= 4) // 1:Admn, 3:Dntc
 			{
 				SaveDsbl = false;
 				InitROfalse();
 			}
-			else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+			//else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+			else if (oo.isEdt)	// DB'den
 			{
 				SaveDsbl = false;
 				InitROfalse();
@@ -334,7 +333,6 @@
 				oo.StuROa = true;
 				oo.StuROx = false;    // Iptal edebilmeli
 				oo.StuROz = true;
-				oo.ReqRO = true;
 				oo.ASDro = true;
 				oo.AFDro = true;
 				oo.ChainRO = true;
@@ -351,7 +349,7 @@
 		oo.InfRO = false;
 		oo.Rf1RO = false;
 		oo.Rf2RO = false;
-		oo.ReqRO = false;
+		// oo.ReqRO = false; Değişmez
 		oo.SbjRO = false;
 		oo.TskRO = false;
 		oo.ActRO = false;
@@ -468,6 +466,7 @@
 					CId = oo.CId,
 					OrdUsrs = ordUsrs
 				});
+
 			await ModalIns.CloseAsync(ModalResult.Ok());
 		}
 		catch (Exception ex)
@@ -508,7 +507,7 @@
 		else
 		{
 			oo = conn.QuerySingle<OO>("OO_SEL",
-			new { p1 = my.Id, p2 = OOId},
+			new { p1 = my.Id, p2 = OOId },
 			commandType: CommandType.StoredProcedure);
 
 			ooo = oo.ShallowCopy();
@@ -533,10 +532,10 @@
 
 	public async Task OnNotify(string key, NotifyArgs value)
 	{
-		await InvokeAsync(() =>
-		{
-			StateHasChanged();
-		});
+		// await InvokeAsync(() =>
+		// {
+		// 	StateHasChanged();
+		// });
 	}
 
 	public void Dispose()

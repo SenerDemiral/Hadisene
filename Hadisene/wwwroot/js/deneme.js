@@ -17,6 +17,9 @@ function showDialogModal(elmntId) {
 function closeDialog(elmntId) {
 	document.getElementById(elmntId).close();
 }
+function showPopover(elmntId) {
+	document.getElementById(elmntId).showPopover();
+}
 
 function hardReload() {
 	location.reload(true);

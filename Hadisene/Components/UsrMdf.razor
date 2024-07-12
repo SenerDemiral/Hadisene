@@ -20,16 +20,14 @@
 				<td><input type="text" maxlength="30" @bind="rec!.Ad" /></td>
 			</tr>
 			<tr>
-				<td>YetkiSvy</td>
+				<td>Yetkisi</td>
 				<td>
 					<select @bind="rec!.Ytk" style="width:100%;">
 						@if (rec.Ytk < 9)
 						{
 							<option value="1">[A] Admin</option>
-							<option value="2">[Y] Sorumlu</option>
 							<option value="3">[D] Denetci</option>
-							<option value="4">[G] Görevli</option>
-							<option value="5">[İ] İsteyen</option>
+							<option value="4">[K] Kullanıcı</option>
 							<option value="8">[P] Pasif</option>
 							<option value="9">[∞] Ayrıldı</option>
 						}
@@ -70,13 +68,10 @@
 								<tr>
 									<td class="ta-c"><input type="checkbox" @bind="r.isMbr" /></td>
 									<td>@r.SSAd</td>
-									@{
-										var dsb = !r.isMbr;
-									}
 									<InputRadioGroup @bind-Value="r.Rol" Name="@r.SSId.ToString()">
-										<td class="ta-c"><InputRadio Value="0" disabled="@dsb" /></td>
-										<td class="ta-c"><InputRadio Value="2" disabled="@dsb" /></td>
-										<td class="ta-c"><InputRadio Value="3" disabled="@dsb" /></td>
+										<td class="ta-c"><InputRadio Value="0" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="2" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="3" disabled="@(!r.isMbr)" /></td>
 									</InputRadioGroup>
 								</tr>
 							}
@@ -94,7 +89,6 @@
 	[Parameter] public int UUId { get; set; }
 	private UU? rec;
 	private List<US>? us;
-	private int rol;
 
 	public async Task Kaydet()
 	{
@@ -115,22 +109,19 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
-			if (rec.Ytk > 1 && rec.Ytk < 5) // Yetkili ve Aktör Servis seçebilir
+			foreach (var r in us)
 			{
-				foreach (var r in us)
-				{
-					_ = conn.Execute("US_MDF",
-						new
-						{
-							p1 = newId,
-							p2 = my.FrmId,
-							p3 = r.SSId,
-							p4 = r.SUId,
-							p5 = r.Mbr,
-							p6 = r.Rol,
-						},
-						commandType: CommandType.StoredProcedure);
-				}
+				_ = conn.Execute("US_MDF",
+					new
+					{
+						p1 = newId,
+						p2 = my.FrmId,
+						p3 = r.SSId,
+						p4 = r.SUId,
+						p5 = r.Mbr,
+						p6 = r.Rol,
+					},
+					commandType: CommandType.StoredProcedure);
 			}
 		}
 		catch (Exception ex)
@@ -165,8 +156,8 @@
 						p2 = my.FrmId
 					},
 					commandType: CommandType.StoredProcedure).ToList();
-			us = us.OrderByDescending(x => x.Mbr).ThenBy(y => y.SSAd).ToList();
 
+			us = us.OrderByDescending(x => x.Mbr).ThenBy(y => y.SSAd).ToList();
 		}
 		catch (Exception ex)
 		{

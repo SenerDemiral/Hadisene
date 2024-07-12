@@ -11,11 +11,9 @@ public sealed class AppState
 	public int Ytk = 0;  // 1:Admn, 2:Sorumlu, 3:Denetci, 4:Actor/Görevli, 4:Requester/İsteyen, 8:Pasif, 9:Ayrıldı
 	public string YtkAd => Ytk switch
 	{
-		1 => "[Admn]",
-		2 => "[Sorumlu]",
-		3 => "[Denetci]",
-		4 => "[Görevli]",
-		5 => "[İsteyen]",
+		1 => "[A]",
+		3 => "[D]",
+		4 => "[K]",
 		8 => "[Pasif]",
 		9 => "[Ayrıldı]",
 		_ => "[Yetkisiz]"

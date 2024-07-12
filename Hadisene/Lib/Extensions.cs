@@ -159,13 +159,15 @@ public static class Extensions
 
 		DateTime dt = input.Value;
 		string result;
+		
+		//result = $"Bugün/{dt.ToString("ddd")}";
 
 		if (DateTime.Today == dt.Date)
-			result = $"Bugün/{dt.ToString("ddd")}";
+			result = "Bugün";
 		else if (DateTime.Today.AddDays(-1) == dt.Date)
-			result = $"Dün/{dt.ToString("ddd")}";
+			result = "Dün";
 		else if (DateTime.Today.AddDays(1) == dt.Date)
-			result = $"Yarın/{dt.ToString("ddd")}";
+			result = "Yarın";
 		else
 		{
 			if (dt.Year == DateTime.Today.Year)

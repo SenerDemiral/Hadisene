@@ -151,7 +151,7 @@
 }
 
 	.oeReq::before {
-		content: "🙋isteyen";
+		content: "🙋isteyen/gönderen";
 	}
 
 .oeSbj {
@@ -159,7 +159,7 @@
 }
 
 	.oeSbj::before {
-		content: "⚓ilgili servis";
+		content: "⚓bölüm/servis/birim";
 	}
 
 .oeTsk {
@@ -167,7 +167,7 @@
 }
 
 	.oeTsk::before {
-		content: "📝talep";
+		content: "📝konu/talep";
 	}
 
 .oeAct {
@@ -175,7 +175,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍ilgili kişi";
+		content: "🧍gönderilen/görevli";
 	}
 
 	
@@ -212,7 +212,7 @@
 }
 
 	.oeRSD::before {
-		content: "istenen başlangıç";
+		content: "planlanan başlangıç";
 	}
 
 .oeASD {
@@ -230,7 +230,7 @@
 }
 
 	.oeDSH::before {
-		content: "± gecikme";
+		content: "± sapma";
 	}
 
 
@@ -239,7 +239,7 @@
 }
 
 	.oeRFD::before {
-		content: "istenen bitiş";
+		content: "planlanan bitiş";
 	}
 
 
@@ -258,7 +258,7 @@
 }
 
 	.oeDFH::before {
-		content: "± gecikme";
+		content: "± sapma";
 	}
 
 

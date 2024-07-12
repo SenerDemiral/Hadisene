@@ -56,15 +56,9 @@
 					</button>
 
 					<div class="ooHdrTxt">
-						<button class="pop-btn"
-								popovertarget="mypopover-@rec.OOId"
-								popovertargetaction="toggle"
-								style="color: inherit;white-space: unset;">
-							@rec.SbjAd.Coalesce()
-							<br />
-							@rec.ActAd.Coalesce()
-							<span class="material-symbols-outlined" style="font-size:1rem;">info</span>
-						</button>
+						@rec.SbjAd.Coalesce()
+						<br />
+						@rec.ActAd.Coalesce()
 					</div>
 
 					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
@@ -77,36 +71,57 @@
 					<table>
 						<tr>
 							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:10%;">görev</th> *@
-							<th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">contract_edit</span></th>
+							@* <th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">contract_edit</span></th> *@
+
+							<td class="fld-icn-lbl">
+								<button class="btnInf" disabled="@rec.noInf"
+									@onclick="@(() => ShowInf(rec))">
+									<span class="material-symbols-outlined fld-icn-btn">contract_edit</span>
+								</button>
+							</td>
 							<td colspan="2" style="font-size:1rem;">@rec.TskAd</td>
-							<td class="ta-c" style="width:20%;">
-								<button class="ooPin" data-Pin="@rec.Pin" @onclick="@(() => PinTgl(rec))"></button>
+
+							<td class="fld-icn-lbl">
+								<button class="ooPin"
+										data-Pin="@rec.Pin"
+										@onclick="@(() => PinTgl(rec))">
+								</button>
 							</td>
 						</tr>
 						<tr>
 							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:3rem;">isteyen</th> *@
-							<th class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">hail</span></th>
+
+							@* <th class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">south_east</span></th> *@
+							<th class="fld-icn-lbl">
+								<button class="ooBtnEdt"
+										@onclick="@(() => ShowOVTS(rec))">
+									<span class="material-symbols-outlined fld-icn-btn">call_made</span>
+								</button>
+
+							</th>
+
 							<td colspan="2" style="font-size:1rem;">@rec.ReqAd</td>
-							<td class="ta-c">
+
+							<td class="fld-icn-lbl">
 								<button class="ooCID"
 										disabled=@(rec.CId == 0)
 										@onclick="@(() => Chained(rec))"></button>
 							</td>
 						</tr>
 						<tr style="font-size:.6rem;color: var(--l-color);font-family: monospace;">
-							<th></th>
-							<th style="width:35%;">istenen</th>
+							<th class="fld-icn-lbl"></th>
+							<th>planlanan</th>
 							<th>gerçekleşen</th>
-							<th>gecikme</th>
+							<th>± sapma</th>
 						</tr>
 						<tr class="ooS">
-							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
+							<td class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
 							<td>@rec.RSD.ToS()</td>
 							<td>@rec.ASD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DSX)</td>
 						</tr>
 						<tr class="ooF">
-							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
+							<td class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
 							<td>@rec.RFD.ToS()</td>
 							<td>@rec.AFD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DFX)</td>
@@ -178,6 +193,31 @@
 				});
 	}
 
+	private async Task ShowOVTS(OO oo)
+	{
+		ModalParameters mp = new();
+		mp.Add("OOId", oo.OOId);
+
+		Modal.Show<OrdVTS>("OVTS", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Large,
+					Position = ModalPosition.Middle
+				});
+
+		OrdViewUpd(oo);
+	}
+
+	private async Task ShowInf(OO oo)
+	{
+		try
+		{
+			await js.InvokeVoidAsync("showPopover", $"mypopover-{oo.OOId}");
+		}
+		catch (JSDisconnectedException) { }
+		OrdViewUpd(oo);
+	}
 	private async Task ShowEdit(OO oo)
 	{
 		ModalParameters mp = new();
@@ -197,6 +237,8 @@
 		{
 			//await Read();
 		}
+
+		OrdViewUpd(oo);
 	}
 
 	private async Task ShowMsg(OO oo)
@@ -224,6 +266,8 @@
 
 		var r = await x.Result;
 		MsgShowing = false;
+
+		OrdViewUpd(oo);
 	}
 
 	private async Task Chained(OO oo)
@@ -245,8 +289,26 @@
 
 
 			//await Read();
+			OrdViewUpd(oo);
+
 			navigationManager.NavigateTo($"/ordactive/{oo.CId}/all");
 		}
+	}
+
+	private void OrdViewUpd(OO oo)
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var x = conn.ExecuteScalar("OU_OVTS_UPD", new { a = my.Id, b = oo.OOId });
+			oo.UpdFlg = "";
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+
 	}
 
 	private void PinTgl(OO oo)
@@ -264,16 +326,22 @@
 			var hata = ex.Message.Split("\r\n")[1];
 			Modal.Show<ModalConfirm>(hata);
 		}
+
+		OrdViewUpd(oo);
 	}
 	private void Baslat(OO oo)
 	{
 		oo.IoC = "C";
 		oo.SoF = "S";
+
+		OrdViewUpd(oo);
 	}
 	private void Bitir(OO oo)
 	{
 		oo.IoC = "C";
 		oo.SoF = "F";
+
+		OrdViewUpd(oo);
 	}
 	private async Task Ok(OO oo)
 	{
@@ -377,8 +445,10 @@
 					commandType: CommandType.StoredProcedure);
 
 				ooList.Insert(0, x);
+
 				await InvokeAsync(StateHasChanged);
-				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
+
+				// toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
 
 				// if (my.Id != value.UUId)
 				// {
