@@ -17,10 +17,11 @@ else
 @if (os?.Count > 0 && myId > 0)
 {
 	<div class="osCnt">
-		<table style="table-layout:fixed;width:auto;">
+		@* <table style="table-layout:fixed;width:auto;"> *@
+		<table style="width:max-content;">
 			<thead class="ta-c">
 				<tr>
-					<th rowspan="2" style="min-width:120px;">Durum Özeti</th>
+					<th rowspan="2">Durum Özeti</th>
 					<th colspan="3"><span class="material-symbols-outlined">play_circle</span></th>
 					<th></th>
 					<th colspan="3"><span class="material-symbols-outlined">stop_circle</span></th>
