@@ -5,16 +5,24 @@
 @if (tbl != null)
 {
 	<table>
-		<caption>Talep görülme zamanları</caption>
+		<caption style="background-color:cadetblue;color:white;font-family:monospace;min-width:max-content;padding:4px;">[@OOId.toSqid()] son aktivite zamanları</caption>
 		@* <tr>
-			<th>kişi</th>
-			<th>zaman</th>
-		</tr> *@
+	<th>kişi</th>
+	<th>zaman</th>
+	</tr> *@
 		@foreach (var r in tbl)
 		{
 			<tr>
-				<td>@r.UUAd</td>
-				<td>@r.OVTS.ToS()</td>
+				@if (r.UUId == 0)
+				{
+					<td class="ta-r">@r.UUAd</td>
+					<td style="background-color:aquamarine">@r.OVTS.ToS(true)</td>
+				}
+				else
+				{
+					<td>@r.UUAd</td>
+					<td>@r.OVTS.ToS(true)</td>
+				}
 			</tr>
 
 		}
@@ -31,9 +39,8 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			tbl = (await conn.QueryAsync<OU>("OU_OVTS_QRY",
-				new { a = my.Id, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure)
+			tbl = (await conn.QueryAsync<OU>("select * from OU_OVTS_QRY(@A,@B) order by OVTS",
+				new { A = my.Id, B = OOId })
 			).ToList();
 
 		}

@@ -13,7 +13,7 @@
 <PageTitle>AktifTalepler</PageTitle>
 
 <div class="stk">
-	<button @onclick="Read" style="background-color: yellow;">
+	<button @onclick="Refresh" style="background-color: yellow;">
 		<span class="material-symbols-outlined">refresh</span>
 	</button>
 	<div>@PgeHdr</div>
@@ -73,15 +73,15 @@
 							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:10%;">görev</th> *@
 							@* <th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">contract_edit</span></th> *@
 
-							<td class="fld-icn-lbl">
+							<td class="ta-c">
 								<button class="btnInf" disabled="@rec.noInf"
 									@onclick="@(() => ShowInf(rec))">
-									<span class="material-symbols-outlined fld-icn-btn">contract_edit</span>
+									<span class="material-symbols-outlined icn-btn-icn">contract_edit</span>
 								</button>
 							</td>
 							<td colspan="2" style="font-size:1rem;">@rec.TskAd</td>
 
-							<td class="fld-icn-lbl">
+							<td class="ta-c">
 								<button class="ooPin"
 										data-Pin="@rec.Pin"
 										@onclick="@(() => PinTgl(rec))">
@@ -92,36 +92,36 @@
 							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:3rem;">isteyen</th> *@
 
 							@* <th class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">south_east</span></th> *@
-							<th class="fld-icn-lbl">
+							<th class="ta-c">
 								<button class="ooBtnEdt"
 										@onclick="@(() => ShowOVTS(rec))">
-									<span class="material-symbols-outlined fld-icn-btn">call_made</span>
+									<span class="material-symbols-outlined  icn-btn-icn">call_made</span>
 								</button>
 
 							</th>
 
 							<td colspan="2" style="font-size:1rem;">@rec.ReqAd</td>
 
-							<td class="fld-icn-lbl">
+							<td class="ta-c">
 								<button class="ooCID"
 										disabled=@(rec.CId == 0)
 										@onclick="@(() => Chained(rec))"></button>
 							</td>
 						</tr>
 						<tr style="font-size:.6rem;color: var(--l-color);font-family: monospace;">
-							<th class="fld-icn-lbl"></th>
+							<th class="ta-c"></th>
 							<th>planlanan</th>
 							<th>gerçekleşen</th>
 							<th>± sapma</th>
 						</tr>
 						<tr class="ooS">
-							<td class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
+							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
 							<td>@rec.RSD.ToS()</td>
 							<td>@rec.ASD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DSX)</td>
 						</tr>
 						<tr class="ooF">
-							<td class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
+							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
 							<td>@rec.RFD.ToS()</td>
 							<td>@rec.AFD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DFX)</td>
@@ -398,6 +398,11 @@
 		Notifier.Notify += OnNotify;
 
 		await Read();
+	}
+	private async Task Refresh()
+	{
+		await Read();
+		StateHasChanged();
 	}
 
 	private async Task Read()

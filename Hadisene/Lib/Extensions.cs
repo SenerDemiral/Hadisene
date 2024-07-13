@@ -152,14 +152,15 @@ public static class Extensions
 		return input.ToString("#");
 	}
 
-	public static string? ToS(this DateTime? input)
+	public static string? ToS(this DateTime? input, bool hasEmoji = false)
 	{
 		if (!input.HasValue)
-			return "";   // "⚠️";
-
+		{
+			return hasEmoji ? "⚠️" : "";
+		}
 		DateTime dt = input.Value;
 		string result;
-		
+
 		//result = $"Bugün/{dt.ToString("ddd")}";
 
 		if (DateTime.Today == dt.Date)

@@ -5,10 +5,18 @@
 	vertical-align: inherit;
 }
 
+.icn-btn-icn {
+	padding-inline: 0;
+	text-align: center;
+	font-size: 20px;
+}
+
 .fld-icn-btn {
 	font-size: 20px;
 	vertical-align: inherit;
 }
+
+
 
 .ooCnt {
 	display: grid;
@@ -241,25 +249,22 @@
 }
 
 button.ooPin {
-	/*font-size: 1rem;*/
-	/*height: 2rem;*/
-	/*margin-top: auto;*/
-	/*width: fit-content;*/
-	/*text-align: center;*/
+	font-size: 20px;
 }
 
 button[data-Pin="0"].ooPin::after {
 	content: "keep_off";
 	font-family: 'Material Symbols Outlined';
-	/*font-size: x-large;*/
 }
 
 button[data-Pin="1"].ooPin::after {
 	content: "keep";
 	font-family: 'Material Symbols Outlined';
-	/*font-size: x-large;*/
 }
 
+button.ooCID {
+	font-size: 20px;
+}
 button.ooCID::after {
 	content: "link";
 	font-family: 'Material Symbols Outlined';
@@ -274,7 +279,6 @@ button.ooCID:disabled {
 	button.ooCID:disabled::after {
 		content: "link_off";
 		font-family: 'Material Symbols Outlined';
-		/*font-size: x-large;*/
 	}
 
 .ooReq {
@@ -318,11 +322,16 @@ button.ooCID:disabled {
 	grid-area: ooTbl;
 	font-size: .8rem;
 }
-	.ooTrh th,
-	.ooTrh td
+	.ooTbl th,
+	.ooTbl td
 	{
-		padding: 0 0 0 2px;
+		padding: 2px 0;
 	}
+
+.ooTrh th,
+.ooTrh td {
+	padding: 0 0 0 2px;
+}
 
 .ooInf {
 	grid-area: ooInf;

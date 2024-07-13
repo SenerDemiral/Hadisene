@@ -151,15 +151,7 @@
 }
 
 	.oeReq::before {
-		content: "🙋isteyen/gönderen";
-	}
-
-.oeSbj {
-	grid-area: oeSbj;
-}
-
-	.oeSbj::before {
-		content: "⚓bölüm/servis/birim";
+		content: "🙋gönderen kişi";
 	}
 
 .oeTsk {
@@ -167,7 +159,15 @@
 }
 
 	.oeTsk::before {
-		content: "📝konu/talep";
+		content: "📝konu";
+	}
+
+.oeSbj {
+	grid-area: oeSbj;
+}
+
+	.oeSbj::before {
+		content: "⚓gönderilen birim";
 	}
 
 .oeAct {
@@ -175,7 +175,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍gönderilen/görevli";
+		content: "🧍gönderilen birimdeki kişi";
 	}
 
 	
@@ -196,7 +196,7 @@
 }
 
 	.oeRf1::before {
-		content: "Ref1";
+		content: "ref1";
 	}
 
 .oeRf2 {
@@ -204,7 +204,7 @@
 }
 
 	.oeRf2::before {
-		content: "Ref2";
+		content: "ref2";
 	}
 
 .oeRSD {
