@@ -205,7 +205,8 @@
 
 					await Notifier.Invoke("UsrLogIn", new NotifyArgs { UsrTkn = usrTkn });
 					//navigationManager.NavigateTo("");
-					await MenuChange("OrdStat");
+					//await MenuChange("OrdStat");
+					await MenuChange("");
 
 				}
 			}
@@ -241,7 +242,7 @@
 		selVal = "";
 		await UsrEnter();
 		if (my.Id > 0)
-			await MenuChange("OrdStat");
+			await MenuChange("");
 	}
 
 	protected async Task UsrEnter()

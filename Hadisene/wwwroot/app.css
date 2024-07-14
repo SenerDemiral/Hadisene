@@ -9,7 +9,8 @@
 	font-family: 'Material Symbols Outlined';
 	font-weight: normal;
 	font-style: normal;
-	font-size: 24px;
+	/*font-size: 24px;*/
+	font-size: 1rem;
 	/*line-height: 1;*/
 	letter-spacing: normal;
 	text-transform: none;
@@ -187,7 +188,7 @@ dialog[open]#ooSrchDlg {
 	.dashboard table,
 	.dashboard th,
 	.dashboard td {
-		border: 1px solid black;
+		border: 1px solid skyblue;
 		border-collapse: collapse;
 	}
 
@@ -254,79 +255,6 @@ button {
 	}
 
 
-.menu {
-	position: relative;
-	display: inline-block;
-	.menu-btn
-
-{
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	cursor: pointer;
-	display: flex;
-}
-
-&:hover .menu-btn {
-	background-color: #3e8e41;
-}
-
-.menu-content {
-	/*display: none;*/
-	position: absolute;
-	left: 0;
-	background-color: #f9f9f9;
-	min-width: 120px;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-	z-index: 1;
-	a
-
-{
-	color: black;
-	text-decoration: none;
-	display: block;
-	padding: 6px 8px;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	&:hover
-
-{
-	background-color: #f1f1f1;
-}
-
-}
-
-div {
-	padding: 6px 8px;
-	color: black;
-}
-
-}
-}
-
-.menu-content[data-show="0"] {
-	display: none;
-}
-
-.menu-content[data-show="1"] {
-	display: block;
-}
-
-/*button:active {
-display: block;
-    background-color: red;
-    color: white;
-}*/
-/*
-.menu:hover .menu-content {
-    display: block;
-}
-.menu:focus-visible .menu-content {
-    display: block;
-}
-*/
-
 
 .ooBtnEdt .material-symbols-outlined,
 .ooBtnMsj .material-symbols-outlined {
@@ -369,25 +297,6 @@ display: block;
 
 
 
-
-details {
-	/*padding: 0.5em 0.5em 0;*/
-	/*position: sticky;*/
-	position: relative;
-}
-
-summary {
-	font-weight: bold;
-	margin: -0.5rem -0.5rem 0;
-	padding: 0.5rem;
-}
-
-details[open] {
-	padding: 0.5rem;
-	background-color: beige;
-	border: 1px solid #aaa;
-	border-radius: 4px;
-}
 
 /*****************************/
 table {
@@ -534,8 +443,8 @@ tbody.zebra tr:nth-child(odd) {
 			margin: 8px auto;
 			display: flex;
 			align-items: center;
-			gap: 4rem;
-			background-color: yellow;
+			gap: 1rem;
+			background-color: whitesmoke;
 			z-index:10;
 		}
 
@@ -597,14 +506,7 @@ tbody.zebra tr:nth-child(odd) {
 /****************************/
 
 .osCnt {
-	/*display: grid;*/
-	/*max-height: var(--bdy-h);*/
-	/*justify-content: center;*/
-	/*overflow: auto;*/
-	/*min-width: fit-content;*/
-
 	max-width: min-content;
-	/*max-width: 500px;*/
 	margin-inline: auto;
 }
 
@@ -613,33 +515,95 @@ tbody.zebra tr:nth-child(odd) {
 		word-wrap: break-word;
 	}
 
-th.osR {
+.osCnt th.osR {
 	background-color: brown;
 	color: white;
 }
 
-th.osB {
+.osCnt th.osB {
 	background-color: steelblue;
 	color: white;
 }
 
-th.osG {
+.osCnt th.osG {
 	background-color: green;
 	color: white;
 }
 
-.osT {
-	background-color: gainsboro;
-}
+	.osCnt .osT {
+		background-color: gainsboro;
+	}
 
-td.osR {
+.osCnt td.osR {
 	color: brown;
 }
 
-td.osB {
+.osCnt td.osB {
 	color: steelblue
 }
 
-td.osG {
+.osCnt td.osG {
 	color: green;
 }
+
+/*************************/
+
+details {
+	/*padding: 0.5em 0.5em 0;*/
+	/*position: sticky;*/
+	position: relative;
+}
+
+summary {
+	font-weight: bold;
+	margin: -0.5rem -0.5rem 0;
+	padding: 0.5rem;
+}
+
+details[open] {
+	padding: 0.5rem;
+	background-color: beige;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+}
+
+/************************/
+.btnGrp {
+	display: inline-flex;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 100%;
+	/*padding-inline: 4px;*/
+}
+
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+
+	/* Tooltip text */
+	.tooltip .tooltiptext {
+		visibility: hidden;
+		width: max-content;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		padding: 4px;
+		border-radius: 2px;
+		position: absolute;
+		z-index: 50;
+		bottom: calc(100% + 2px);
+		left: 0;
+	}
+
+	/* Show the tooltip text when you mouse over the tooltip container */
+	.tooltip:hover .tooltiptext {
+		visibility: visible;
+	}
+
+/*
+Usage
+	<div class="tooltip">Hover over me
+  <span class="tooltiptext">Tooltip text</span>
+</div>
+*/

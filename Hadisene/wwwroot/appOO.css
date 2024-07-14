@@ -1,22 +1,6 @@
-﻿.fld-icn-lbl {
-	padding-inline: 0;
-	text-align: center;
-	font-size: 20px;
-	vertical-align: inherit;
+﻿.ooBtnEdt, .ooBtnMsj {
+	height: 2rem;
 }
-
-.icn-btn-icn {
-	padding-inline: 0;
-	text-align: center;
-	font-size: 20px;
-}
-
-.fld-icn-btn {
-	font-size: 20px;
-	vertical-align: inherit;
-}
-
-
 
 .ooCnt {
 	display: grid;
@@ -26,6 +10,33 @@
 	min-width: 360px;
 	margin-bottom: .5rem;
 }
+
+.ooCard {
+	display: grid;
+	/*gap: 2px;*/
+	grid-template-rows: 44px 1fr 32px;
+	grid-template-columns: 1fr;
+	grid-template-areas:
+		"ooHdr"
+		"ooTbl"
+		"ooFtr";
+	background-color: azure;
+	color: #444;
+	outline: 1px solid gray;
+	border-radius: 2px;
+	box-shadow: 4px 4px 8px gray;
+}
+
+	.ooCard > ::before {
+		display: block;
+		color: var(--l-color);
+		font-family: monospace;
+		font-size: 0.6rem;
+		/*border-bottom: thin solid;*/
+		/*line-height: 1;*/
+		/*background-color: white;*/
+		/*opacity: .4;*/
+	}
 
 /* ColorStart */
 .ooCard[data-CS="G"] {
@@ -37,13 +48,13 @@
 	}
 
 	.ooCard[data-CS="G"] .ooBtnS {
-		display: none;
+		/*display: none;*/
+		visibility:hidden;
 	}
 
-.ooCard:is([data-CS="G"]):is([data-CF="G"]) .ooFtr {
-	background-color: red;
-	display: none;
-}
+/*.ooCard:is([data-CS="G"]):is([data-CF="G"]) .ooFtr {
+	background-color: var(--g-color);
+}*/
 
 .ooCard[data-CS="R"] {
 	--sColor: var(--r-color);
@@ -71,7 +82,8 @@
 	}
 
 	.ooCard[data-CF="G"] .ooBtnF {
-		display: none;
+		/*display: none;*/
+		visibility: hidden;
 	}
 
 .ooCard[data-CF="R"] {
@@ -90,14 +102,18 @@
 		color: var(--fColor)
 	}
 
-/*.ooTxtS,*/
+.ooId {
+	font-weight: 900;
+	font-family: monospace;
+	font-size: 1rem;
+}
+
 .ooBtnS,
 .ooBtnOK,
 .ooBtnCancel {
 	color: var(--sColor);
 }
 
-/*.ooTxtF,*/
 .ooBtnF,
 .ooBtnOK,
 .ooBtnCancel {
@@ -151,7 +167,13 @@
 
 .ooCard .ooHdrTxt {
 	text-align: center;
+	width: 100%;
 }
+	.ooCard .ooHdrTxt .ooSbj {
+		border-bottom: 1px solid;
+		border-image: linear-gradient(to right, var(--sColor), white 50%, var(--fColor)) 1;
+	}
+
 .ooCard .box {
 	/*padding: 0 4px;*/
 	padding: 0;
@@ -211,46 +233,6 @@
 	display: none;
 }
 
-.ooCard {
-	display: grid;
-	/*gap: 2px;*/
-	grid-template-rows: 44px 1fr 36px;
-	grid-template-columns: 1fr;
-	grid-template-areas:
-		"ooHdr"
-		"ooTbl"
-		"ooFtr";
-	background-color: azure;
-	color: #444;
-	outline: 1px solid gray;
-	border-radius: 2px;
-	box-shadow: 4px 4px 8px gray;
-}
-
-	.ooCard > ::before {
-		display: block;
-		color: var(--l-color);
-		font-family: monospace;
-		font-size: 0.6rem;
-		/*border-bottom: thin solid;*/
-		/*line-height: 1;*/
-		/*background-color: white;*/
-		/*opacity: .4;*/
-	}
-
-.ooPin {
-	grid-area: ooPin;
-	justify-self: center;
-}
-
-.ooCID {
-	grid-area: ooCID;
-	justify-self: left;
-}
-
-button.ooPin {
-	font-size: 20px;
-}
 
 button[data-Pin="0"].ooPin::after {
 	content: "keep_off";
@@ -262,9 +244,6 @@ button[data-Pin="1"].ooPin::after {
 	font-family: 'Material Symbols Outlined';
 }
 
-button.ooCID {
-	font-size: 20px;
-}
 button.ooCID::after {
 	content: "link";
 	font-family: 'Material Symbols Outlined';
@@ -279,43 +258,6 @@ button.ooCID:disabled {
 	button.ooCID:disabled::after {
 		content: "link_off";
 		font-family: 'Material Symbols Outlined';
-	}
-
-.ooReq {
-	grid-area: ooReq;
-}
-
-	.ooReq::before {
-		content: "isteyen";
-	}
-
-.ooSbj {
-	grid-area: ooSbj;
-}
-
-	.ooSbj::before {
-		content: "servis";
-	}
-
-/*.ooCard:has(:not(.ooSbj)) > .ooSbj {
-	display: none;
-}*/
-.ooTsk {
-	grid-area: ooTsk;
-	font-weight: 500;
-}
-
-	.ooTsk::before {
-		content: "istek";
-	}
-
-.ooAct {
-	grid-area: ooAct;
-	font-weight: 700;
-}
-
-	.ooAct::before {
-		content: "kime";
 	}
 
 .ooTbl {
@@ -347,6 +289,16 @@ button.ooCID:disabled {
 	.ooInf::before {
 		content: "açıklama";
 	}
+
+.ooTsk {
+	font-size: 1rem;
+	padding-left: 4px !important;
+}
+
+.ooReq {
+	font-size: 1rem;
+	padding-left: 4px !important;
+}
 
 .ooRSD {
 	grid-area: ooRSD;

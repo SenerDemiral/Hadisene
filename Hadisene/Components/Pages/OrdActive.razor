@@ -49,65 +49,107 @@
 				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
 
 				<div class="ooHdr">
-					<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
-						<span>@((MarkupString)rec.UpdFlg)</span>
-						<span class="material-symbols-outlined">settings</span>
-						<span class="ooBtnEdtId">@rec.OOId.toSqid()</span>
-					</button>
-
-					<div class="ooHdrTxt">
-						@rec.SbjAd.Coalesce()
-						<br />
-						@rec.ActAd.Coalesce()
+					<div class="tooltip">
+						<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
+							<span>@((MarkupString)rec.UpdFlg)</span>
+							<span class="material-symbols-outlined">settings</span>
+							@* <div class="ooBtnEdtId">&nbsp;&bull;@rec.OOId.toSqid()</div> *@
+						</button>
+						<span class="tooltiptext">edit</span>
 					</div>
 
-					<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
-						<span class="ooBtnMsjCnt">@rec.MnVcF</span>
-						<span class="material-symbols-outlined">chat</span>
-					</button>
+					<div class="ooHdrTxt">
+						<div class="ooSbj">
+							@rec.SbjAd.Coalesce()
+						</div>
+						<div class="ooAct">
+							@rec.ActAd.Coalesce()
+						</div>
+					</div>
+
+					<div class="tooltip">
+						<button class="ooBtnMsj" @onclick="@(() => ShowMsg(rec))">
+							<span class="ooBtnMsjCnt">@rec.MnVcF</span>
+							<span class="material-symbols-outlined">chat</span>
+						</button>
+						<span class="tooltiptext">chat</span>
+					</div>
 				</div>
 
 				<div class="box ooTbl">
 					<table>
 						<tr>
+							<td colspan="4">
+								<div class="btnGrp">
+									<div class="tooltip">
+										<div class="ooId">#@rec.OOId.toSqid()</div>
+										<span class="tooltiptext">talep id</span>
+									</div>
+
+									<div class="tooltip">
+										<button class="ooBtnInf" disabled="@rec.noInf"
+												@onclick="@(() => ShowInf(rec))">
+											<span class="material-symbols-outlined">info</span>
+										</button>
+										<span class="tooltiptext">açıklama</span>
+									</div>
+
+									<div class="tooltip">
+										<button class="ooBtnOVTS"
+												@onclick="@(() => ShowOVTS(rec))">
+											<span class="material-symbols-outlined">visibility</span>
+										</button>
+										<span class="tooltiptext">görülme zamanları</span>
+									</div>
+
+									<div class="tooltip">
+										<button class="ooOk"
+												@onclick="@(() => OrdViewUpd(rec))">
+											<span class="material-symbols-outlined">check</span>
+										</button>
+										<span class="tooltiptext">gördüm</span>
+									</div>
+
+									<div class="tooltip">
+										<button class="ooPin"
+												data-Pin="@rec.Pin"
+												@onclick="@(() => PinTgl(rec))">
+										</button>
+										<span class="tooltiptext">pin</span>
+									</div>
+
+									<div class="tooltip">
+										<button class="ooCID"
+												disabled=@(rec.CId == 0)
+												@onclick="@(() => Chained(rec))">
+										</button>
+										<span class="tooltiptext">link</span>
+									</div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
 							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:10%;">görev</th> *@
 							@* <th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">contract_edit</span></th> *@
-
 							<td class="ta-c">
-								<button class="btnInf" disabled="@rec.noInf"
-									@onclick="@(() => ShowInf(rec))">
-									<span class="material-symbols-outlined icn-btn-icn">contract_edit</span>
-								</button>
+								<div class="tooltip">
+									<span class="material-symbols-outlined">subject</span>
+									<span class="tooltiptext">konu</span>
+								</div>
 							</td>
-							<td colspan="2" style="font-size:1rem;">@rec.TskAd</td>
-
-							<td class="ta-c">
-								<button class="ooPin"
-										data-Pin="@rec.Pin"
-										@onclick="@(() => PinTgl(rec))">
-								</button>
-							</td>
+							<td colspan="3" class="ooTsk">@rec.TskAd</td>
 						</tr>
 						<tr>
-							@* <th style="font-size:.6rem;color: var(--l-color);font-family: monospace;width:3rem;">isteyen</th> *@
-
-							@* <th class="fld-icn-lbl"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">south_east</span></th> *@
-							<th class="ta-c">
-								<button class="ooBtnEdt"
-										@onclick="@(() => ShowOVTS(rec))">
-									<span class="material-symbols-outlined  icn-btn-icn">call_made</span>
-								</button>
-
-							</th>
-
-							<td colspan="2" style="font-size:1rem;">@rec.ReqAd</td>
-
 							<td class="ta-c">
-								<button class="ooCID"
-										disabled=@(rec.CId == 0)
-										@onclick="@(() => Chained(rec))"></button>
+								<div class="tooltip">
+									<span class="material-symbols-outlined">call_made</span>
+									<span class="tooltiptext">isteyen</span>
+								</div>
 							</td>
+							<td colspan="3" class="ooReq">@rec.ReqAd</td>
 						</tr>
+
 						<tr style="font-size:.6rem;color: var(--l-color);font-family: monospace;">
 							<th class="ta-c"></th>
 							<th>planlanan</th>
@@ -115,13 +157,23 @@
 							<th>± sapma</th>
 						</tr>
 						<tr class="ooS">
-							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span></td>
+							<td class="ta-c">
+								<div class="tooltip">
+									<span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">play_circle</span>
+									<span class="tooltiptext">başlangıç</span>
+								</div>
+							</td>
 							<td>@rec.RSD.ToS()</td>
 							<td>@rec.ASD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DSX)</td>
 						</tr>
 						<tr class="ooF">
-							<td class="ta-c"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span></td>
+							<td class="ta-c">
+								<div class="tooltip">
+									<span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">stop_circle</span>
+									<span class="tooltiptext">bitiş</span>
+								</div>
+							</td>
 							<td>@rec.RFD.ToS()</td>
 							<td>@rec.AFD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DFX)</td>
@@ -334,14 +386,12 @@
 		oo.IoC = "C";
 		oo.SoF = "S";
 
-		OrdViewUpd(oo);
 	}
 	private void Bitir(OO oo)
 	{
 		oo.IoC = "C";
 		oo.SoF = "F";
 
-		OrdViewUpd(oo);
 	}
 	private async Task Ok(OO oo)
 	{
@@ -373,6 +423,9 @@
 			var hata = ex.Message.Split("\r\n")[1];
 			Modal.Show<ModalConfirm>(hata);
 		}
+
+		OrdViewUpd(oo);
+
 	}
 	private void Cancel(OO oo)
 	{

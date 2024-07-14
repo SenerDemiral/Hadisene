@@ -39,7 +39,7 @@ public static class Extensions
 
 	public static string Coalesce(this string? inp)
 	{
-		return inp ?? "??";
+		return inp ?? "∙∙∙";
 	}
 
 	public static void ChangeToUpper(ref string? inp)
@@ -163,23 +163,28 @@ public static class Extensions
 
 		//result = $"Bugün/{dt.ToString("ddd")}";
 
-		if (DateTime.Today == dt.Date)
-			result = "Bugün";
-		else if (DateTime.Today.AddDays(-1) == dt.Date)
-			result = "Dün";
-		else if (DateTime.Today.AddDays(1) == dt.Date)
-			result = "Yarın";
+		//if (DateTime.Today == dt.Date)
+		//	result = "Bugün";
+		//else if (DateTime.Today.AddDays(-1) == dt.Date)
+		//	result = "Dün";
+		//else if (DateTime.Today.AddDays(1) == dt.Date)
+		//	result = "Yarın";
+		//else
+		//{
+		//	if (dt.Year == DateTime.Today.Year)
+		//		result = dt.ToString("dd.MMM.ddd");
+		//	else
+		//		result = dt.ToString("dd.MM.yy");
+		//}
+		//if (dt.TimeOfDay != TimeSpan.Zero)
+		//{
+		//	result = result + " " + dt.ToString("HH:mm");
+		//}
+
+		if (dt.Year == DateTime.Today.Year)
+			result = dt.ToString("dd.MMM.ddd HH:mm");
 		else
-		{
-			if (dt.Year == DateTime.Today.Year)
-				result = dt.ToString("dd.MMM.ddd");
-			else
-				result = dt.ToString("dd.MM.yy");
-		}
-		if (dt.TimeOfDay != TimeSpan.Zero)
-		{
-			result = result + " " + dt.ToString("HH:mm");
-		}
+			result = dt.ToString("dd.MM.yy HH:mm");
 
 		return result;
 
