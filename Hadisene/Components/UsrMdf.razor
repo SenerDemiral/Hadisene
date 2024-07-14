@@ -12,15 +12,15 @@
 		</caption>
 		<tbody>
 			<tr>
-				<th>Id#</th>
+				<th>id#</th>
 				<th>@Idf()</th>
 			</tr>
 			<tr>
-				<td>Ad</td>
+				<td>isim</td>
 				<td><input type="text" maxlength="30" @bind="rec!.Ad" /></td>
 			</tr>
 			<tr>
-				<td>Yetkisi</td>
+				<td>yetki</td>
 				<td>
 					<select @bind="rec!.Ytk" style="width:100%;">
 						@if (rec.Ytk < 9)
@@ -40,15 +40,15 @@
 
 			</tr>
 			<tr>
-				<td>Tel</td>
+				<td>tel</td>
 				<td><input type="text" maxlength="20" @bind="rec!.Tel" /></td>
 			</tr>
 			<tr>
-				<td>Mail</td>
+				<td>mail</td>
 				<td><input type="text" maxlength="50" @bind="rec!.Mail" /></td>
 			</tr>
 			<tr>
-				<td>Pwd</td>
+				<td>pwd</td>
 				<td><input type="text" maxlength="20" @bind="rec!.Pwd" /></td>
 			</tr>
 

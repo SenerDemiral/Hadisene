@@ -12,21 +12,21 @@
 		</caption>
 		<tbody>
 			<tr>
-				<th>Id#</th>
-				<th>Ad</th>
+				<th>id#</th>
+				<th>ad</th>
 			</tr>
 			<tr>
 				<td>@Idf()</td>
 				<td><input type="text" maxlength="30" @bind="ss!.Ad" /></td>
 			</tr>
 			<tr>
-				<td>Pasif</td>
+				<td>pasif</td>
 				<td><input type="checkbox" @bind="ss.isPsf" style="width:auto" /></td>
 			</tr>
 			@if (ss.SSId != 0)
 			{
 				<tr>
-					<td>Kullanılmadıysa Sil </td>
+					<td>sil (kullanılmadıysa) </td>
 					<td>
 						<input type="checkbox" @bind="ss.Del" style="width:auto" />
 					</td>
