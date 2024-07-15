@@ -59,11 +59,11 @@
 					</div>
 
 					<div class="ooHdrTxt">
-						<div class="ooSbj">
-							@rec.SbjAd.Coalesce()
+						<div class="l-1">
+							@rec.TskAd.Coalesce()
 						</div>
-						<div class="ooAct">
-							@rec.ActAd.Coalesce()
+						<div>
+							@rec.SbjAd.Coalesce()
 						</div>
 					</div>
 
@@ -134,17 +134,17 @@
 							@* <th class="ta-c" style="width:10%;"><span class="material-symbols-outlined" style="font-size:20px;vertical-align: inherit;">contract_edit</span></th> *@
 							<td class="ta-c">
 								<div class="tooltip">
-									<span class="material-symbols-outlined">subject</span>
-									<span class="tooltiptext">konu</span>
+									<span class="material-symbols-outlined">east</span>
+									<span class="tooltiptext">kime</span>
 								</div>
 							</td>
-							<td colspan="3" class="ooTsk">@rec.TskAd</td>
+							<td colspan="3" class="ooTsk">@rec.ActAd</td>
 						</tr>
 						<tr>
 							<td class="ta-c">
 								<div class="tooltip">
 									<span class="material-symbols-outlined">call_made</span>
-									<span class="tooltiptext">isteyen</span>
+									<span class="tooltiptext">kimden</span>
 								</div>
 							</td>
 							<td colspan="3" class="ooReq">@rec.ReqAd</td>
@@ -163,8 +163,8 @@
 									<span class="tooltiptext">başlangıç</span>
 								</div>
 							</td>
-							<td>@rec.RSD.ToS()</td>
-							<td>@rec.ASD.ToS()</td>
+							<td class="ta-c">@rec.RSD.ToS()</td>
+							<td class="ta-c">@rec.ASD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DSX)</td>
 						</tr>
 						<tr class="ooF">
@@ -174,8 +174,8 @@
 									<span class="tooltiptext">bitiş</span>
 								</div>
 							</td>
-							<td>@rec.RFD.ToS()</td>
-							<td>@rec.AFD.ToS()</td>
+							<td class="ta-c">@rec.RFD.ToS()</td>
+							<td class="ta-c">@rec.AFD.ToS()</td>
 							<td class="ta-c">@((MarkupString)rec.DFX)</td>
 						</tr>
 					</table>

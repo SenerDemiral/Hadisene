@@ -151,7 +151,7 @@
 }
 
 	.oeReq::before {
-		content: "🙋gönderen kişi";
+		content: "🙋kimden";
 	}
 
 .oeTsk {
@@ -175,7 +175,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍gönderilen birimdeki kişi";
+		content: "🧍kime";
 	}
 
 	

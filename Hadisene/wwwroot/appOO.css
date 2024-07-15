@@ -7,7 +7,7 @@
 	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
 	gap: 1.5rem;
-	min-width: 360px;
+	min-width: 340px;
 	margin-bottom: .5rem;
 }
 
@@ -168,8 +168,10 @@
 .ooCard .ooHdrTxt {
 	text-align: center;
 	width: 100%;
+	display: inline-flex;
+	flex-direction: column;
 }
-	.ooCard .ooHdrTxt .ooSbj {
+	.ooCard .ooHdrTxt .l-1 {
 		border-bottom: 1px solid;
 		border-image: linear-gradient(to right, var(--sColor), white 50%, var(--fColor)) 1;
 	}
@@ -261,7 +263,6 @@ button.ooCID:disabled {
 	}
 
 .ooTbl {
-	grid-area: ooTbl;
 	font-size: .8rem;
 }
 	.ooTbl th,
@@ -276,7 +277,6 @@ button.ooCID:disabled {
 }
 
 .ooInf {
-	grid-area: ooInf;
 	/*background-color: snow;*/
 	/*overflow: auto;*/
 	overflow: clip;
@@ -301,25 +301,22 @@ button.ooCID:disabled {
 }
 
 .ooRSD {
-	grid-area: ooRSD;
 	font-size: .8rem;
 }
 
 	.ooRSD::before {
-		content: "istek başlangıç";
+		content: "planlanan başlangıç";
 	}
 
 .ooASD {
-	grid-area: ooASD;
 	font-size: .8rem;
 }
 
 	.ooASD::before {
-		content: "gerçek başlangıç";
+		content: "gerçekleşen başlangıç";
 	}
 
 .ooDSH {
-	grid-area: ooDSH;
 	text-align: center;
 }
 
@@ -328,26 +325,23 @@ button.ooCID:disabled {
 	}
 
 .ooRFD {
-	grid-area: ooRFD;
 	font-size: .8rem;
 }
 
 	.ooRFD::before {
-		content: "istek bitiş";
+		content: "planlanan bitiş";
 	}
 
 
 .ooAFD {
-	grid-area: ooAFD;
 	font-size: .8rem;
 }
 
 	.ooAFD::before {
-		content: "gerçek bitiş";
+		content: "gerçekleşen bitiş";
 	}
 
 .ooDFH {
-	grid-area: ooDFH;
 	text-align: center;
 }
 
@@ -364,7 +358,7 @@ button.ooCID:disabled {
 }
 
 input[type="radio"] {
-	width: auto !important;
+	width: 1rem !important;
 	margin: 0;
 }
 
