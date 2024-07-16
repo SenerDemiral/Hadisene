@@ -1,0 +1,130 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (mm != null)
+{
+	<table style="width:200px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">check</span>Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>id#</th>
+				<th>ad</th>
+			</tr>
+			<tr>
+				<td>@Idf()</td>
+				<td><input type="text" @bind="mm!.Ad" /></td>
+			</tr>
+			<tr>
+				<td>link</td>
+				<td><input type="checkbox" @bind="mm!.isChn" /></td>
+			</tr>
+			<tr>
+				<td>aylık</td>
+				<td><input type="checkbox" @bind="mm!.isAYLIK" /></td>
+			</tr>
+			@if (mm.MMId != 0)
+			{
+				<tr>
+					<td>silinecek</td>
+					<td>
+						<input type="checkbox" @bind=@mm.Del style="width:auto" />
+					</td>
+				</tr>
+			}
+
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int MMId { get; set; }
+	private MM? mm;
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("MM_MDF",
+					new
+					{
+						p1 = my.Id,
+						p0 = mm.Del ? 1 : 0,
+						p2 = my.FrmId,
+						p3 = MMId,
+						p4 = mm!.Ad,
+						p5 = mm.CHN,
+						p6 = mm.AYLIK,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		//Modal.Show<ModalConfirm>("deneme");
+		if (MMId == 0)
+		{
+			mm = new();
+			return;
+		}
+		try
+		{
+			using var conn = db.GetConnection();
+			mm = conn.QuerySingle<MM>("select * from MM where MMId = @Id",
+					new { Id = MMId },
+					commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+
+	private string Idf()
+	{
+		return MMId == 0 ? "yeni" : MMId.ToString();
+	}
+
+	public sealed class MM
+	{
+		public int MMId;
+		public string? Ad;
+		public int CHN
+		{
+			get => isChn ? 1 : 0;
+			set
+			{
+				isChn = value == 1;
+			}
+		}
+		public bool isChn = false;
+		public int AYLIK
+		{
+			get => isAYLIK ? 1 : 0;
+			set
+			{
+				isAYLIK = value == 1;
+			}
+		}
+		public bool isAYLIK = false;
+		public bool Del;
+
+	}
+}

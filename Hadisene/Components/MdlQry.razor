@@ -1,0 +1,141 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>
+			<button @onclick="@(() => ShowMdf(0))">
+				<span class="material-symbols-outlined">add</span>Talep Şablonları
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>edit</th>
+				<th>ad</th>
+				<th>link</th>
+				<th>aylık</th>
+				<th class="ta-c">talepler</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>
+						<button @onclick="@(() => ShowMdf(rec.MMId))">
+							<span class="material-symbols-outlined">edit</span>@rec.MMId
+						</button>
+					</td>
+					<td>@rec.Ad</td>
+					<td><input type="checkbox" disabled @bind="@rec.isChn" /></td>
+					<td><input type="checkbox" disabled @bind="@rec.isAYLIK" /></td>
+					<td class="ta-c">
+						<button @onclick="@(() => ShowDty(rec.MMId))">
+							<span class="material-symbols-outlined">settings_b_roll</span>
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<MM> tbl;
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Medium,
+			Position = ModalPosition.Middle
+		};
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("MMId", id);
+
+		var x = Modal.Show<MdlMdf>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.Large,
+					Position = ModalPosition.Middle
+				});
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	public async Task ShowDty(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("MMId", id);
+
+		var x = Modal.Show<MdlOrdQry>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.ExtraLarge,
+					Position = ModalPosition.Middle
+				});
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<MM>("MM_QRY",
+				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+
+	public sealed class MM
+	{
+		public int MMId;
+		public string? Ad;
+		public int CHN
+		{
+			get => isChn ? 1 : 0;
+			set
+			{
+				isChn = value == 1;
+			}
+		}
+		public bool isChn = false;
+
+		public int AYLIK
+		{
+			get => isAYLIK ? 1 : 0;
+			set
+			{
+				isAYLIK = value == 1;
+			}
+		}
+		public bool isAYLIK = false;
+
+	}
+}
+

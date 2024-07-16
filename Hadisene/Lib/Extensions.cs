@@ -16,7 +16,9 @@ public static class Extensions
 	});
 	public static string toSqid(this int inp)
 	{
-		return sqids.Encode(inp);
+		if (inp == 0) return "";
+
+		return "#" + sqids.Encode(inp);
 	}
 	public static int frSqid(this string inp)
 	{

@@ -1,0 +1,153 @@
+﻿@using System.Globalization
+@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<div style="max-height:80vh;overflow:auto;">
+		<table>
+			<caption>
+				<button @onclick="@(() => ShowMdf(0))">
+					<span class="material-symbols-outlined">add</span>ŞablonTalepleri
+				</button>
+				<button @onclick="@(() => ShowP2O())">
+					<span class="material-symbols-outlined">contract</span>Bu Talepleri ekle
+				</button>
+			</caption>
+			<tbody>
+				<tr>
+					<th>edit</th>
+					<th>konu</th>
+					<th>birim</th>
+					<th>kime</th>
+					<th>+Gün</th>
+					<th>plnBaş</th>
+					<th>süre</th>
+
+				</tr>
+				@foreach (var rec in tbl)
+				{
+					<tr>
+						<td>
+							<button @onclick="@(() => ShowMdf(rec.MOId))">
+								<span class="material-symbols-outlined">edit</span>@rec.MOId
+							</button>
+						</td>
+						<td>@rec.TskAd</td>
+						<td>@rec.SbjAd</td>
+						<td>@rec.ActAd</td>
+						<td class="ta-c">@rec.aGun</td>
+						<td class="ta-c">@rec.RST.ToString("HH:mm")</td>
+						<td class="ta-c">@rec.RPH</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+@code {
+	private List<MO> tbl;
+	[Parameter] public int MMId { get; set; }
+
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Large,
+			Position = ModalPosition.Middle
+		};
+
+
+	private void SortSbj()
+	{
+		//tbl.Sort((x, y) => String.Compare(x.SbjAd, y.SbjAd, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+
+		tbl = tbl.OrderBy(x => x.SbjAd).ThenBy(y => y.aGun).ToList();
+	}
+	private void SortTsk()
+	{
+		tbl = tbl.OrderBy(x => x.TskAd).ThenBy(y => y.aGun).ToList();
+	}
+	private void SortAct()
+	{
+		tbl = tbl.OrderBy(x => x.ActAd).ThenBy(y => y.aGun).ToList();
+	}
+	private void SortRSD()
+	{
+		tbl = tbl.OrderBy(x => x.aGun).ToList();
+	}
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("MMId", MMId);
+		mp.Add("MOId", id);
+
+		var x = Modal.Show<MdlOrdMdf>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	public async Task ShowP2O()
+	{
+		ModalParameters mp = new();
+		mp.Add("MMId", MMId);
+
+		var x = Modal.Show<Mdl2Ord>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<MO>("MO_QRY",
+				new { a = my.Id, b = MMId }, commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+
+	public sealed class MO
+	{
+		public int MOId;
+		public int SbjId;
+		public int TskId;
+		public int ActId;
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+
+		public int aGun;		//Iki Talep arasındaki gün sayısı
+		public DateTime RST;		
+		public int RPH;         //RequestPeriodHour
+		//public TimeOnly RST;	//RequestStartTime
+
+
+		public string? Rf1;
+		public string? Rf2;
+		public string? Inf;
+	}
+}
+

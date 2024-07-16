@@ -1,0 +1,306 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (mo != null)
+{
+	<table style="width:200px;font-size:.8rem">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">check</span>Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<td>id#</td>
+				<th>@Idf()</th>
+			</tr>
+			<tr>
+				<td>konu</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="TTL"
+						   @bind="mo.TskAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckTsk" />
+				</td>
+			</tr>
+			<tr>
+				<td>birim</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="mo.SbjAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckSbj" />
+				</td>
+			</tr>
+			<tr>
+				<td>kime</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SAL"
+						   @bind="mo.ActAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">kaç gün sonra başlayacak</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="number" style="width:56px" min="0" @bind-value="@mo.iaGun" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">planlanan başlangıç zamanı</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="time" @bind-value="@mo.RSD" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">planlanan süre (saat)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="number" style="width:56px" min="0" @bind-value="@mo.iRPH" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="mo.Inf"
+								   rows="2"
+								   style="min-width:280px; resize: both;" />
+				</td>
+			</tr>
+			@if (mo.MOId != 0)
+			{
+				<tr>
+					<td>silinecek</td>
+					<td>
+						<input type="checkbox" @bind=@mo.Del disabled=@(mo.MOId == 0) style="width:auto" />
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<datalist id="SSL">
+		@foreach (var r in ssd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="SAL">
+		@foreach (var r in sad!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int MMId { get; set; }
+	[Parameter] public int MOId { get; set; }
+	private MO? mo, omo;
+	private Dictionary<string, int>? ssd, ttd, sad;
+
+	private void CheckSbj()
+	{
+		if (ssd!.TryGetValue(mo.SbjAd, out var nid))
+		{
+			mo.SbjId = nid;
+			SbjActLU(nid);
+
+			if (!String.IsNullOrEmpty(mo.ActAd) && sad!.TryGetValue(mo.ActAd, out var nid2))
+			{
+				mo.ActId = nid2;
+			}
+			else
+			{
+				mo.ActId = 0;
+				mo.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			mo.SbjAd = omo.SbjAd;
+	}
+	private void CheckTsk()
+	{
+		if (ttd!.TryGetValue(mo.TskAd, out var nid))
+		{
+			mo.TskId = nid;
+		}
+		else
+			mo.TskAd = omo.TskAd;
+	}
+	private void CheckAct()
+	{
+		if (sad!.TryGetValue(mo.ActAd, out var nid))
+		{
+			mo.ActId = nid;
+		}
+		else
+			mo.ActAd = omo.ActAd;
+	}
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("MO_MDF",
+					new
+					{
+						p0 = my.Id,
+						p1 = mo.Del ? 1 : 0,
+						p2 = MOId,
+						p3 = MMId,
+						p4 = mo.aGun,
+						p5 = mo.RSD,
+						p6 = mo.RPH,
+						p7 = mo.SbjId,
+						p8 = mo.TskId,
+						p9 = mo.ActId,
+						pa = mo.Inf,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		using var conn = db.GetConnection();
+
+		if (MOId == 0)
+		{
+			mo = new();
+			omo = new();
+		}
+		else
+		{
+			try
+			{
+				mo = conn.QuerySingle<MO>("MO_SEL",
+						new { MOId = MOId },
+						commandType: CommandType.StoredProcedure);
+
+				omo = mo.ShallowCopy();
+
+			}
+			catch (Exception ex)
+			{
+				var hata = ex.Message.Split("\r\n")[1];
+				Modal.Show<ModalConfirm>(hata);
+			}
+		}
+		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Sbj Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+	}
+	private void SbjActLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+
+	private string Idf()
+	{
+		return MOId == 0 ? "yeni" : MOId.ToString();
+	}
+
+	public sealed class MO
+	{
+		public int MOId;
+		public int SbjId;
+		public int TskId;
+		public int ActId;
+		public string? SbjAd;
+		public string? TskAd;
+		public string? ActAd;
+
+		public int aGun;        //kaç gün sonra başlayacak +Gun
+		public DateTime RSD;    //Tarihin zmn kısmı RequestStartTime
+		public int RPH;         //RequestPeriodHour
+
+		public int iaGun 
+		{
+			get => aGun; 
+			set
+			{
+				aGun = Math.Abs(value);
+			}
+		}
+		public int iRPH
+		{
+			get => RPH;
+			set
+			{
+				RPH = Math.Abs(value);
+			}
+		}
+
+		public string? Rf1;
+		public string? Rf2;
+		public string? Inf;
+
+		public bool Del;
+
+		public MO ShallowCopy()
+		{
+			return (MO)this.MemberwiseClone();
+		}
+	}
+	public sealed class SS
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class UU
+	{
+		public int Id;
+		public string Ad;
+	}
+
+
+}

@@ -41,6 +41,7 @@
 					<option value="SbjQry">⚓ Birim</option>
 					<option value="TskQry">📝 Konu</option>
 					<option value="PtrQry">⛓️ Şablon</option>
+					<option value="MdlQry">⛓️ TalepŞablon</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -102,6 +103,10 @@
 		else if (selectedValue == "PtrQry")
 		{
 			await ShowPtrQry();
+		}
+		else if (selectedValue == "MdlQry")
+		{
+			await ShowMdlQry();
 		}
 		else if (selectedValue == "Refresh")
 		{
@@ -167,6 +172,19 @@
 		// mp.Add("OOId", oo.OOId);
 
 		Modal.Show<PtrQry>("Şablonlar", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+					Position = ModalPosition.Middle
+				});
+	}
+	private async Task ShowMdlQry()
+	{
+		ModalParameters mp = new();
+		// mp.Add("OOId", oo.OOId);
+
+		Modal.Show<MdlQry>("Model", mp,
 			new ModalOptions
 				{
 					HideHeader = true,

@@ -82,7 +82,7 @@
 							<td colspan="4">
 								<div class="btnGrp">
 									<div class="tooltip">
-										<div class="ooId">#@rec.OOId.toSqid()</div>
+										<div class="ooId">@rec.OOId.toSqid()</div>
 										<span class="tooltiptext">talep id</span>
 									</div>
 
@@ -118,12 +118,19 @@
 										<span class="tooltiptext">pin</span>
 									</div>
 
-									<div class="tooltip">
-										<button class="ooCID"
-												disabled=@(rec.CId == 0)
-												@onclick="@(() => Chained(rec))">
-										</button>
-										<span class="tooltiptext">link</span>
+									<div style="display:inline-flex;align-items:center;">
+										<div class="tooltip">
+											<button class="ooCID"
+													disabled=@(rec.CId == 0)
+													@onclick="@(() => Chained(rec))">
+											</button>
+											<span class="tooltiptext">link</span>
+										</div>
+
+										<div class="tooltip">
+											<div>@rec.CId.toSqid()</div>
+											<span class="tooltiptext">link id</span>
+										</div>
 									</div>
 								</div>
 							</td>
