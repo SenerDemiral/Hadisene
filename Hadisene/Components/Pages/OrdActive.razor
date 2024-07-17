@@ -194,7 +194,8 @@
 					@{
 						// ActId = 0 Belirsiz olabilir, Bu servisteki Aktorlerden biri başlatabilir ve kendisi Act olur
 						// Act kendisiyse veya Kendi bir Actor ve OrdUsrlarından biri kendisi ise
-						bool dsb = !(rec.ActId == my.Id || (my.Ytk == 4 && rec.OrdUsrSet.Contains(my.Id)));
+						// bool dsb = !(rec.ActId == my.Id || (my.Ytk == 4 && rec.OrdUsrSet.Contains(my.Id)));
+						bool dsb = !(rec.ActId == my.Id || (rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3));
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
@@ -302,7 +303,8 @@
 
 	private async Task ShowMsg(OO oo)
 	{
-		if (!oo.OrdUsrSet.Contains(my.Id))
+		// if (!oo.OrdUsrSet.Contains(my.Id))
+		if (!oo.OrdUsrMap.ContainsKey(my.Id))
 		{
 			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
 			return;
@@ -513,6 +515,8 @@
 
 				await InvokeAsync(StateHasChanged);
 
+				// toast NavMenu de
+
 				// toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
 
 				// if (my.Id != value.UUId)
@@ -543,7 +547,7 @@
 						{
 							ooList.RemoveAt(iof);
 							await InvokeAsync(StateHasChanged);
-							toastService.ShowInfo($"Talep çıkartıldı #{value.OOId.toSqid()}");
+							toastService.ShowInfo($"Talep çıkartıldı {value.OOId.toSqid()}");
 						}
 						else
 						{
@@ -555,14 +559,14 @@
 							// });
 
 							if (value.UUId != my.Id)    // Gönderen ben değilsem
-								toastService.ShowInfo($"Talepte değişiklik #{value.OOId.toSqid()}");
+								toastService.ShowInfo($"Talepte değişiklik {value.OOId.toSqid()}");
 						}
 					}
 					else if (key == "IM" && !MsgShowing)
 					{
 						ooList[iof].MnVc++;
 						await InvokeAsync(StateHasChanged);
-						toastService.ShowInfo($"Yeni Mesaj var #{value.OOId.toSqid()}");
+						toastService.ShowInfo($"Yeni Mesaj var {value.OOId.toSqid()}");
 					}
 				}
 			}

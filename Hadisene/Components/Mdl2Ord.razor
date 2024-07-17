@@ -1,5 +1,122 @@
-﻿<h3>Mdl2Ord</h3>
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+<table style="width:200px;">
+	<caption>
+		<button @onclick="Kaydet">
+			<span class="material-symbols-outlined">check</span>Yap
+		</button>
+	</caption>
+	<tbody>
+		<tr>
+			<th>id#</th>
+			<th>@Idf()</th>
+		</tr>
+		<tr>
+			<td>planlanan başlangıç</td>
+			<td><input type="date" @bind="SD" /></td>
+		</tr>
+		<tr>
+			<td>açıklama</td>
+			<td>
+				<InputTextArea @bind-Value="Inf"
+							   rows="2"
+							   style="min-width:280px; resize: both;" />
+			</td>
+		</tr>
+		<tr>
+			<td>ref1</td>
+			<td>
+				<input type="text"
+					   class="refs"
+					   maxlength="20"
+					   @bind:event="oninput" @bind="Rf1" />
+				</td>
+		</tr>
+		<tr>
+			<td>ref2</td>
+			<td>
+				<input type="text"
+					   class="refs"
+					   maxlength="20"
+					   @bind:event="oninput" @bind="Rf2" />
+			</td>
+		</tr>
+	</tbody>
+
+</table>
 
 @code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int MMId { get; set; }
+
+	private DateTime? SD; // = DateTime.Today.AddDay(1);
+	private bool Chnd;
+	private string? Inf;
+
+	// @bind="Rf2" @bind:event="oninput" @bind:after="(() => Rf2 = Rf2.toASCII())"
+	private string? _Rf1;
+	private string? _Rf2;
+	private string? Rf1
+	{
+		get => _Rf1.toASCII();
+		set
+		{
+			_Rf1 = value;
+		}
+	}
+	private string? Rf2
+	{
+		get => _Rf2.toASCII();
+		set
+		{
+			_Rf2 = value;
+		}
+	}
+
+	// @bind:event="oninput" @bind:get="Rf1" @bind:set="OnInput" />
+	// private void OnInput(string value)
+	// {
+	// 	Rf1 = value.toASCII();
+	// }
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("MM2OO",
+					new
+					{
+						p1 = my.Id,
+						p2 = MMId,
+						p3 = SD,
+						p4 = Inf,
+						p5 = Rf1,
+						p6 = Rf2,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+
+	}
+
+
+	private string Idf()
+	{
+		return MMId == 0 ? "yeni" : MMId.ToString();
+	}
 
 }

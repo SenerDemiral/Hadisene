@@ -40,8 +40,8 @@
 					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
 					<option value="SbjQry">⚓ Birim</option>
 					<option value="TskQry">📝 Konu</option>
-					<option value="PtrQry">⛓️ Şablon</option>
-					<option value="MdlQry">⛓️ TalepŞablon</option>
+					@* <option value="PtrQry">⛓️ Şablon</option> *@
+					<option value="MdlQry">🖇️ TalepŞablon</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -320,7 +320,7 @@
 		}
 		else if (key == "IO" && value.FFId == my.FrmId)
 		{
-			if (my.Id != value.UUId && value.OrdUsrSet.Contains(my.Id))
+			if (my.Id != value.UUId && value.OrdUsrMap.ContainsKey(my.Id))
 			{
 				// 	if (selVal == "OrdStat")
 				// 		navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");

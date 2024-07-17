@@ -35,22 +35,22 @@ public sealed class NotifyArgs
 	public int CId;
 	public string? MsgTyp;
     public string? Info;
-    public string? OrdUsrs { 
-		set {
+	public string? OrdUsrs
+	{
+		set
+		{
 			var sa = value?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 			if (sa != null)
 			{
 				foreach (var s in sa)
 				{
-					if (int.TryParse(s, out int r))
-					{
-						OrdUsrSet.Add(r);
-					}
+					var xa = s.Split(':', StringSplitOptions.RemoveEmptyEntries);
+					var k = int.Parse(xa[0]);
+					var v = int.Parse(xa[1]);
+					OrdUsrMap.Add(k, v);
 				}
 			}
-		} 
+		}
 	}
-
-	//public int[] OrdUsrs = [];
-    public HashSet<int> OrdUsrSet = new();
+	public Dictionary<int, int> OrdUsrMap = new();
 }

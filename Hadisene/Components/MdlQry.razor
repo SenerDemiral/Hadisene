@@ -16,6 +16,7 @@
 				<th>ad</th>
 				<th>link</th>
 				<th>aylık</th>
+				<th>kimin</th>
 				<th class="ta-c">talepler</th>
 			</tr>
 			@foreach (var rec in tbl)
@@ -29,6 +30,7 @@
 					<td>@rec.Ad</td>
 					<td><input type="checkbox" disabled @bind="@rec.isChn" /></td>
 					<td><input type="checkbox" disabled @bind="@rec.isAYLIK" /></td>
+					<td>@rec.UUAd</td>
 					<td class="ta-c">
 						<button @onclick="@(() => ShowDty(rec.MMId))">
 							<span class="material-symbols-outlined">settings_b_roll</span>
@@ -116,6 +118,8 @@
 	{
 		public int MMId;
 		public string? Ad;
+		public int UUId;
+		public string? UUAd;
 		public int CHN
 		{
 			get => isChn ? 1 : 0;

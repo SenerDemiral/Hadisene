@@ -101,7 +101,7 @@ public sealed class OO
 		return (OO)this.MemberwiseClone();
 	}
 
-	public string? OrdUsrs
+	public string? OrdUsrs 
 	{
 		set
 		{
@@ -110,13 +110,13 @@ public sealed class OO
 			{
 				foreach (var s in sa)
 				{
-					if (int.TryParse(s, out int r))
-					{
-						OrdUsrSet.Add(r);
-					}
+					var xa = s.Split(':', StringSplitOptions.RemoveEmptyEntries);
+					var k = int.Parse(xa[0]);
+					var v = int.Parse(xa[1]);
+					OrdUsrMap.Add(k, v);
 				}
 			}
 		}
 	}
-	public HashSet<int> OrdUsrSet = new();
+	public Dictionary<int,int> OrdUsrMap = new();
 }
