@@ -35,7 +35,7 @@ public sealed class OO
 	public string CS = "";  // Start R/B/G
 	public string CF = "";  // Finish R/B/G
 
-	// Delay Star/Finish Hour (+:Gecikme, -:Erken)
+	// Delay/Sapma Star/Finish Hour (+:Gecikme, -:Erken)
 	public string? DSX;
 	public string? DFX;
 

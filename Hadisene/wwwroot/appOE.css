@@ -151,7 +151,7 @@
 }
 
 	.oeReq::before {
-		content: "🙋kimden";
+		content: "🙋gönderen (talebi yapan / kimden)";
 	}
 
 .oeTsk {
@@ -175,7 +175,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍kime";
+		content: "🧍gönderilen (kime)";
 	}
 
 	

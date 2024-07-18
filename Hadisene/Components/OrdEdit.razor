@@ -38,16 +38,6 @@
 						<InputRadio Value="Mode.New" disabled="@modeRO" />
 					</div>
 				</InputRadioGroup>
-
-				@* @foreach (var mode in Enum.GetValues<Mode>())
-			{
-			<div>
-			<label>
-			<InputRadio Value="mode" disabled="@modeRO" />
-			@ModeT[(int)mode]
-			</label>
-			</div>
-			} *@
 			</div>
 		</div>
 
@@ -237,7 +227,7 @@
 	private void CheckRFD()
 	{
 		if (oo.RFD < oo.RSD)
-			oo.RFD = oo.RSD.Value.AddMinutes(5);
+			oo.RFD = oo.RSD.Value.AddHours(1);
 	}
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
