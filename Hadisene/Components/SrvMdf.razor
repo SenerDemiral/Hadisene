@@ -38,7 +38,7 @@
 					<div style="max-height:8lh;overflow:auto">
 						<table>
 							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
-								<th></th>
+								<th><input type="checkbox" @bind="MergeAllUsr" style="width:auto" /></th>
 								<th>kullanıcı</th>
 								<th>-</th>
 								<th style="padding:2px 0">sorumlu</th>
@@ -70,38 +70,68 @@
 	private SS? ss;
 	private List<SU>? su;
 
+	private bool _MergeAllUsr;
+	private bool MergeAllUsr
+	{
+		get => _MergeAllUsr;
+		set
+		{
+			foreach (var r in su)
+			{
+				if (r.SUId == 0)
+					r.Mbr = value ? 1 : 0;
+			}
+			_MergeAllUsr = value;
+		}
+	}
+
+
 	public async Task Kaydet()
 	{
 		try
 		{
 			using var conn = db.GetConnection();
 
-			int newId = conn.ExecuteScalar<int>("SS_MDF",
+			// insert edildiğinde yeni SSId döner
+			int newSSId = conn.ExecuteScalar<int>("SS_MDF",
 					new
 					{
 						p1 = my.Id,
-						p0 = ss.Del ? 1 : 0,
-						p2 = my.FrmId,
-						p3 = SSId,
-						p4 = ss!.Ad,
-						p5 = ss.Psf,
+						p2 = ss.Del ? 1 : 0,
+						p3 = my.FrmId,
+						p4 = SSId,
+						p5 = ss.Ad,
+						p6 = ss.Psf,
 					},
 					commandType: CommandType.StoredProcedure);
 
+			// Userları ins/upd/del
 			foreach (var r in su)
 			{
 				_ = conn.Execute("US_MDF",
 					new
 					{
-						p1 = r.UUId,
+						p1 = r.SUId,
 						p2 = my.FrmId,
-						p3 = newId,
-						p4 = r.SUId,
+						p3 = newSSId,
+						p4 = r.UUId,
 						p5 = r.Mbr,
 						p6 = r.Rol
 					},
 					commandType: CommandType.StoredProcedure);
 			}
+
+			// if (MergeAllUsr)
+			// {
+			// 	_ = conn.Execute("SU_ALLUSR_INS",
+			// 		new
+			// 		{
+			// 			p1 = my.FrmId,
+			// 			p2 = newSSId,
+			// 		},
+			// 		commandType: CommandType.StoredProcedure);
+
+			// }
 		}
 		catch (Exception ex)
 		{
@@ -162,6 +192,15 @@
 			set
 			{
 				Psf = value ? 1 : 0;
+			}
+		}
+		public int Gnl;
+		public bool isGnl
+		{
+			get => Gnl == 1;
+			set
+			{
+				Gnl = value ? 1 : 0;
 			}
 		}
 	}

@@ -375,24 +375,25 @@
 			// Ytk = 1/2 ise
 			// Usr = Req ve ASD = null ise
 
-			if (my.Ytk <= 4) // 1:Admn, 3:Dntc
+			if (oo.isEdt) // 1:Admn, 3:Dntc
 			{
 				SaveDsbl = false;
 				InitROfalse();
-			}
-			//else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
-			else if (oo.isEdt)  // DB'den
-			{
-				SaveDsbl = false;
-				InitROfalse();
-
-				oo.StuROa = true;
-				oo.StuROx = false;    // Iptal edebilmeli
-				oo.StuROz = true;
-				oo.ASDro = true;
-				oo.AFDro = true;
 				oo.ChainRO = true;
 			}
+			//else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
+			// else if (oo.isEdt)  // DB'den
+			// {
+			// 	SaveDsbl = false;
+			// 	InitROfalse();
+
+			// 	oo.StuROa = true;
+			// 	oo.StuROx = false;    // Iptal edebilmeli
+			// 	oo.StuROz = true;
+			// 	oo.ASDro = true;
+			// 	oo.AFDro = true;
+			// 	oo.ChainRO = true;
+			// }
 
 		}
 	}

@@ -95,7 +95,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			var newId = conn.ExecuteScalar<int>("UU_MDF",
+			var newUUId = conn.ExecuteScalar<int>("UU_MDF",
 					new
 					{
 						p1 = my.Id,
@@ -109,15 +109,16 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
+			// Servisleri ins/upd/del
 			foreach (var r in us)
 			{
 				_ = conn.Execute("US_MDF",
 					new
 					{
-						p1 = newId,
+						p1 = r.SUId,
 						p2 = my.FrmId,
 						p3 = r.SSId,
-						p4 = r.SUId,
+						p4 = newUUId,
 						p5 = r.Mbr,
 						p6 = r.Rol,
 					},

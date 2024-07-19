@@ -195,7 +195,17 @@
 						// ActId = 0 Belirsiz olabilir, Bu servisteki Aktorlerden biri başlatabilir ve kendisi Act olur
 						// Act kendisiyse veya Kendi bir Actor ve OrdUsrlarından biri kendisi ise
 						// bool dsb = !(rec.ActId == my.Id || (my.Ytk == 4 && rec.OrdUsrSet.Contains(my.Id)));
-						bool dsb = !(rec.ActId == my.Id || (rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3));
+						bool dsb;
+						if (rec.ReqId == rec.ActId) // Ozel
+						{
+							dsb = true;
+							if (rec.ReqId == my.Id)
+								dsb = false;	
+						}
+						else
+						{
+							dsb = !(rec.ActId == my.Id || (rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3));
+						}
 					}
 					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
 					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
