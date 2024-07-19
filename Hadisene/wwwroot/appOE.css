@@ -1,4 +1,19 @@
-﻿.oeCard {
+﻿.trh {
+	display: inline-flex;
+	flex-direction: column;
+	width: 100%;
+	font-family: monospace;
+}
+
+	.trh .date {
+		flex: 1;
+	}
+
+	.trh .time {
+		flex: 1;
+	}
+
+.oeCard {
 	display: flex;
 	flex-direction: column;
 	/*gap: 4px;*/
@@ -66,7 +81,7 @@
 		"oeStu oeStu oeStu oeChn"
 		"oeReq oeReq oeReq oeReq"
 		"oeTsk oeTsk oeTsk oeTsk"
-		"oeSbj oeSbj oeSbj oeSbj"
+		"oeSrv oeSrv oeSrv oeSrv"
 		"oeAct oeAct oeAct oeAct"
 		"oeRSD oeRSD oeASD oeASD"
 		"oeRFD oeRFD oeAFD oeAFD"
@@ -162,11 +177,11 @@
 		content: "📝konu";
 	}
 
-.oeSbj {
-	grid-area: oeSbj;
+.oeSrv {
+	grid-area: oeSrv;
 }
 
-	.oeSbj::before {
+	.oeSrv::before {
 		content: "⚓gönderilen birim";
 	}
 
@@ -178,7 +193,7 @@
 		content: "🧍gönderilen (kime)";
 	}
 
-	
+
 .oeInf {
 	grid-area: oeInf;
 	background-color: snow;
@@ -299,12 +314,15 @@
 	.oeCard {
 		min-width: 500px;
 	}
+	.trh {
+		flex-direction: row;
+	}
 
 	/*.oeBdy {
 		grid-template-areas:
 			"oeStu oeChn"
 			"oeReq oeReq"
-			"oeSbj oeSbj"
+			"oeSrv oeSrv"
 			"oeTsk oeTsk"
 			"oeAct oeAct"
 			"oeRSD oeASD"

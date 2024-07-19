@@ -50,7 +50,7 @@
 		ModalParameters mp = new();
 		mp.Add("SSId", id);
 
-		var x = Modal.Show<SbjMdf>("", mp, options);
+		var x = Modal.Show<SrvMdf>("", mp, options);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

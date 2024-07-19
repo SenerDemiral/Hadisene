@@ -38,7 +38,7 @@
 			{
 				<optgroup label="Tanımlar">
 					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
-					<option value="SbjQry">⚓ Birim</option>
+					<option value="SrvQry">⚓ Birim</option>
 					<option value="TskQry">📝 Konu</option>
 					@* <option value="PtrQry">⛓️ Şablon</option> *@
 					<option value="MdlQry">🖇️ TalepŞablon</option>
@@ -88,9 +88,9 @@
 			await MyLogout();
 			cbUsrDashBoard = false;
 		}
-		else if (selectedValue == "SbjQry")
+		else if (selectedValue == "SrvQry")
 		{
-			await ShowSbjQry();
+			await ShowSrvQry();
 		}
 		else if (selectedValue == "TskQry")
 		{
@@ -153,12 +153,12 @@
 					Position = ModalPosition.Middle
 				});
 	}
-	private async Task ShowSbjQry()
+	private async Task ShowSrvQry()
 	{
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
 
-		Modal.Show<SbjQry>("Servisler", mp,
+		Modal.Show<SrvQry>("Servisler", mp,
 			new ModalOptions
 				{
 					HideHeader = true,

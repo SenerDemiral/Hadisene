@@ -49,7 +49,7 @@
 		{
 			<tr>
 				<td class="ta-r">@r.OOId</td>
-				<td>@r.SbjAd</td>
+				<td>@r.SrvAd</td>
 				<td>@r.TskAd</td>
 				<td>@r.ActAd</td>
 				<td>@r.ReqAd</td>
@@ -165,7 +165,7 @@
 			<td>Servis</td>
 			<td>
 				<div class="lst">
-					@foreach (var itm in sbjList)
+					@foreach (var itm in SrvList)
 					{
 						<div>
 							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
@@ -242,7 +242,7 @@
 	private OZS1 ozs1 = new();
 	public string? qryStr { get; set; } = "";
 	public List<SelList> reqList = new();
-	public List<SelList> sbjList = new();
+	public List<SelList> SrvList = new();
 	public List<SelList> actList = new();
 	public List<SelList> tskList = new();
 
@@ -259,7 +259,7 @@
 		List<string> sl = new();
 
 		Add2List(sl, reqList, "ReqId=");
-		Add2List(sl, sbjList, "SbjId=");
+		Add2List(sl, SrvList, "SrvId=");
 		Add2List(sl, actList, "ActId=");
 		Add2List(sl, tskList, "TskId=");
 
@@ -320,7 +320,7 @@
 			//ooList = ooList.OrderBy(x => x.Idx).ThenByDescending(y => y.UpdTS).ToList();
 
 			var LU = conn.QuerySingle<LookUp>("OZ_LU", new { FormFile = my.FrmId }, commandType: CommandType.StoredProcedure);
-			LookUpInit(LU.Sbjs, LU.Tsks, LU.Usrs);
+			LookUpInit(LU.Srvs, LU.Tsks, LU.Usrs);
 		}
 		catch (Exception ex)
 		{
@@ -337,7 +337,7 @@
 		public DateTime? RFD;
 		public DateTime? AFD;
 
-		public string? SbjAd;
+		public string? SrvAd;
 		public string? TskAd;
 		public string? ActAd;
 		public string? ReqAd;
@@ -371,16 +371,16 @@
 
 	public sealed class LookUp
 	{
-		public string Sbjs;
+		public string Srvs;
 		public string Tsks;
 		public string Usrs;
 	}
 
-	public void LookUpInit(string Sbjs, string Tsks, string Usrs)
+	public void LookUpInit(string Srvs, string Tsks, string Usrs)
 	{
-		foreach (var s in Sbjs.Split(",", StringSplitOptions.TrimEntries))
+		foreach (var s in Srvs.Split(",", StringSplitOptions.TrimEntries))
 		{
-			sbjList.Add(new SelList { Ad = s, Selected = false });
+			SrvList.Add(new SelList { Ad = s, Selected = false });
 		}
 		foreach (var s in Tsks.Split(",", StringSplitOptions.TrimEntries))
 		{

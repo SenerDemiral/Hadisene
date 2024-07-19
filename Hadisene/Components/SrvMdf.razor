@@ -12,11 +12,11 @@
 		</caption>
 		<tbody>
 			<tr>
-				<th>id#</th>
-				<th>ad</th>
+				<td>id#</td>
+				<td>@Idf()</td>
 			</tr>
 			<tr>
-				<td>@Idf()</td>
+				<td>ad</td>
 				<td><input type="text" maxlength="30" @bind="ss!.Ad" /></td>
 			</tr>
 			<tr>
@@ -147,7 +147,7 @@
 
 	private string Idf()
 	{
-		return SSId == 0 ? "yeni" : SSId.ToString();
+		return SSId == 0 ? "yeni" : SSId.ToString("### ### ###");
 	}
 
 	public sealed class SS

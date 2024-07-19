@@ -85,15 +85,15 @@
 					   @bind:after="CheckTsk" />
 			</div>
 
-			<div class="oeBox oeSbj">
+			<div class="oeBox oeSrv">
 				<input type="text"
 					   maxlength="30"
 					   size="30"
 					   list="SSL"
-					   disabled="@oo.SbjRO"
-					   @bind="oo.SbjAd"
+					   disabled="@oo.SrvRO"
+					   @bind="oo.SrvAd"
 					   @bind:event="onchange"
-					   @bind:after="CheckSbj" />
+					   @bind:after="CheckSrv" />
 			</div>
 
 			<div class="oeBox oeAct">
@@ -108,27 +108,69 @@
 			</div>
 
 			<div class="oeBox oeS oeRSD">
-				<input type="datetime-local"
-					   disabled="@oo.RSDro"
-					   @bind="@oo.RSD"
-					   @bind:after=CheckRSD />
+				<div class="trh">
+					<div class="date">
+						<input type="date"
+							   disabled="@oo.RSDro"
+							   @bind:get="@oo.RSD"
+							   @bind:set=CheckRSD />
+					</div>
+					<div class="time">
+						<input type="time"
+							   disabled="@oo.RSDro"
+							   @bind:get="@oo.RSD"
+							   @bind:set=CheckRSD />
+					</div>
+				</div>
 			</div>
-			<div class="oeBox oeS oeASD">
-				<input type="datetime-local"
-					   disabled="@oo.ASDro"
-					   @bind-value="@oo.ASD" />
+			<div class="oeBox oeF oeRFD">
+				<div class="trh">
+					<div class="date">
+						<input type="date"
+							   disabled="@oo.RFDro"
+							   @bind:get="@oo.RFD"
+							   @bind:set=CheckRFD />
+					</div>
+					<div class="time">
+						<input type="time"
+							   disabled="@oo.RFDro"
+							   @bind:get="@oo.RFD"
+							   @bind:set=CheckRFD />
+					</div>
+				</div>
 			</div>
 
-			<div class="oeBox oeF oeRFD">
-				<input type="datetime-local"
-					   disabled="@oo.RFDro"
-					   @bind="@oo.RFD"
-					   @bind:after=CheckRFD />
+			<div class="oeBox oeS oeASD">
+				<div class="trh">
+					<div class="date">
+						<input type="date"
+							   disabled="@oo.ASDro"
+							   @bind:get="@oo.ASD"
+							   @bind:set=CheckASD />
+					</div>
+					<div class="time">
+						<input type="time"
+							   disabled="@oo.ASDro"
+							   @bind:get="@oo.ASD"
+							   @bind:set=CheckASD />
+					</div>
+				</div>
 			</div>
 			<div class="oeBox oeF oeAFD">
-				<input type="datetime-local"
-					   disabled="@oo.AFDro"
-					   @bind-value="oo.AFD" />
+				<div class="trh">
+					<div class="date">
+						<input type="date"
+							   disabled="@oo.AFDro"
+							   @bind:get="@oo.AFD"
+							   @bind:set=CheckAFD />
+					</div>
+					<div class="time">
+						<input type="time"
+							   disabled="@oo.AFDro"
+							   @bind:get="@oo.AFD"
+							   @bind:set=CheckAFD />
+					</div>
+				</div>
 			</div>
 
 			<div class="oeBox oeRf1">
@@ -208,26 +250,50 @@
 	public Statu stu;
 	@* min="@(DateTime.Today.ToString("yyyy-MM-ddTHH:mm"))" *@
 
-	private void CheckRSD()
+	private void CheckRSD(DateTime? value)
 	{
-		DateTime min;
+		DateTime min = oo.InsTS == null ? DateTime.Now.AddMinutes(5) : (DateTime)oo.InsTS;
 
-		if (oo.InsTS == null)
-			min = DateTime.Now;
-		else
-			min = (DateTime)oo.InsTS;
-
-		min = new DateTime(min.Year, min.Month, min.Day, min.Hour, min.Minute + 5, 0);
-
-		if (oo.RSD < min)
+		if (value == null)
+			oo.RSD = null;
+		else if (value == null || value < min)
 			oo.RSD = min;
+		else
+			oo.RSD = value;
 
-		CheckRFD();
+		CheckRFD(oo.RFD);
 	}
-	private void CheckRFD()
+	private void CheckRFD(DateTime? value)
 	{
-		if (oo.RFD < oo.RSD)
+		if (oo.RSD == null)
+			oo.RFD = null;
+		else if (value == null || value < oo.RSD)
 			oo.RFD = oo.RSD.Value.AddHours(1);
+		else
+			oo.RFD = value;
+	}
+
+	private void CheckASD(DateTime? value)
+	{
+		DateTime min = oo.InsTS == null ? DateTime.Now.AddMinutes(5) : (DateTime)oo.InsTS;
+
+		if (value == null)
+			oo.ASD = null;
+		else if (value < min)
+			oo.ASD = min;
+		else
+			oo.ASD = value;
+
+		CheckAFD(oo.AFD);
+	}
+	private void CheckAFD(DateTime? value)
+	{
+		if (oo.ASD == null)
+			oo.AFD = null;
+		else if (value != null && value < oo.ASD)
+			oo.AFD = oo.ASD.Value.AddMinutes(1);
+		else
+			oo.AFD = value;
 	}
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
@@ -276,8 +342,8 @@
 			}
 			if (ssd?.Count == 1)
 			{
-				oo.SbjId = ssd.Values.ElementAt(0);
-				oo.SbjAd = ssd.Keys.ElementAt(0);
+				oo.SrvId = ssd.Values.ElementAt(0);
+				oo.SrvAd = ssd.Keys.ElementAt(0);
 			}
 			ooo = oo.ShallowCopy();
 		}
@@ -315,7 +381,7 @@
 				InitROfalse();
 			}
 			//else if (my.Id == oo.ReqId && oo.ASD == null)   // İsteyen ve Başlamamışsa
-			else if (oo.isEdt)	// DB'den
+			else if (oo.isEdt)  // DB'den
 			{
 				SaveDsbl = false;
 				InitROfalse();
@@ -340,7 +406,7 @@
 		oo.Rf1RO = false;
 		oo.Rf2RO = false;
 		// oo.ReqRO = false; Değişmez
-		oo.SbjRO = false;
+		oo.SrvRO = false;
 		oo.TskRO = false;
 		oo.ActRO = false;
 		oo.RSDro = false;
@@ -359,12 +425,12 @@
 		else
 			oo.ReqAd = ooo.ReqAd;
 	}
-	private void CheckSbj()
+	private void CheckSrv()
 	{
-		if (ssd!.TryGetValue(oo.SbjAd, out var nid))
+		if (ssd!.TryGetValue(oo.SrvAd, out var nid))
 		{
-			oo.SbjId = nid;
-			SbjActLU(nid);
+			oo.SrvId = nid;
+			SrvActLU(nid);
 
 			if (!String.IsNullOrEmpty(oo.ActAd) && sad!.TryGetValue(oo.ActAd, out var nid2))
 			{
@@ -378,7 +444,7 @@
 			//CheckAct();
 		}
 		else
-			oo.SbjAd = ooo.SbjAd;
+			oo.SrvAd = ooo.SrvAd;
 	}
 	private void CheckTsk()
 	{
@@ -430,7 +496,7 @@
 				p4 = my.FrmId,
 				p5 = oo.CId,
 				p6 = oo.ReqId,
-				p7 = oo.SbjId,
+				p7 = oo.SrvId,
 				p8 = oo.TskId,
 				p9 = oo.ActId,
 				pA = oo.RSD,
@@ -502,20 +568,20 @@
 
 			ooo = oo.ShallowCopy();
 		}
-		//Sbj Actors
-		SbjActLU(oo.SbjId);
+		//Srv Actors
+		SrvActLU(oo.SrvId);
 
 		//oo.StuRO = oo.Stu != "A" ? true : false;
 		stu = Statu.Aktif;
 	}
 
-	private void SbjActLU(int SSId)
+	private void SrvActLU(int SSId)
 	{
 		using var conn = db.GetConnection();
-		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		sad = conn.Query<UU>("SA_LU", new { SSId = oo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		// DB de sort ediliyor
-		//var list = conn.Query<UU>("SA_LU", new { SSId = oo.SbjId }, commandType: CommandType.StoredProcedure).ToList();
+		//var list = conn.Query<UU>("SA_LU", new { SSId = oo.SrvId }, commandType: CommandType.StoredProcedure).ToList();
 		//list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 		// sad = list.ToDictionary(k => k.Ad, e => e.Id);
 	}

@@ -12,8 +12,8 @@
 .req {
 	background-color: var(--req-bgc);
 }
-.sbj {
-	background-color: var(--sbj-bgc);
+.Srv {
+	background-color: var(--Srv-bgc);
 }
 .tsk {
 	background-color: var(--tsk-bgc);

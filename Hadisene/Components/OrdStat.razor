@@ -58,7 +58,7 @@ else
 					@foreach (var r in os.FindAll(x => x.Grp == "-"))
 					{
 						<tr>
-							<td>@r.Sbj</td>
+							<td>@r.Srv</td>
 							<td class="ta-c osR">@r.SR.ToS()</td>
 							<td class="ta-c osB">@r.SB.ToS()</td>
 							<td class="ta-c osG">@r.SG.ToS()</td>
@@ -217,7 +217,7 @@ else
 	{
 		public string? Grp;
 
-		public string? Sbj;
+		public string? Srv;
 		public string? Act;
 		public string? Tsk;
 		public string? Req;

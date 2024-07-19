@@ -19,7 +19,7 @@
 				<tr>
 					<th>Edit</th>
 					<th>
-						<button @onclick="@(() => SortSbj())">Servis</button>
+						<button @onclick="@(() => SortSrv())">Servis</button>
 					</th>
 					<th>
 						<button @onclick="@(() => SortTsk())">Görev</button>
@@ -41,7 +41,7 @@
 								<span class="material-symbols-outlined">edit</span>@rec.POId
 							</button>
 						</td>
-						<td>@rec.SbjAd</td>
+						<td>@rec.SrvAd</td>
 						<td>@rec.TskAd</td>
 						<td>@rec.ActAd</td>
 						<td>@rec.RSDf</td>
@@ -65,11 +65,11 @@
 		};
 
 
-	private void SortSbj()
+	private void SortSrv()
 	{
-		//tbl.Sort((x, y) => String.Compare(x.SbjAd, y.SbjAd, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
+		//tbl.Sort((x, y) => String.Compare(x.SrvAd, y.SrvAd, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 
-		tbl = tbl.OrderBy(x => x.SbjAd).ThenBy(y => y.RSD).ToList();
+		tbl = tbl.OrderBy(x => x.SrvAd).ThenBy(y => y.RSD).ToList();
 	}
 	private void SortTsk()
 	{
@@ -139,12 +139,12 @@
 	public sealed class PO
 	{
 		public int POId;
-		public int SbjId;
+		public int SrvId;
 		public int TskId;
 		public int ActId;
 		public DateTime RSD;
 		public DateTime RFD;
-		public string? SbjAd;
+		public string? SrvAd;
 		public string? TskAd;
 		public string? ActAd;
 

@@ -13,7 +13,7 @@ public sealed class OO
 	public int OOId;
 	public string? Stu = "A";
 	public int ReqId;
-	public int SbjId;
+	public int SrvId;
 	public int TskId;
 	public int ActId;
 
@@ -27,7 +27,7 @@ public sealed class OO
 	public DateTime? AFD;
 
 	public string? ReqAd;
-	public string? SbjAd;
+	public string? SrvAd;
 	public string? TskAd;
 	public string? ActAd;
 
@@ -83,7 +83,7 @@ public sealed class OO
 	public bool StuROz = true;
 	public bool InfRO = true;
 	public bool ReqRO = true;
-	public bool SbjRO = true;
+	public bool SrvRO = true;
 	public bool TskRO = true;
 	public bool ActRO = true;
 	public bool RSDro = true;

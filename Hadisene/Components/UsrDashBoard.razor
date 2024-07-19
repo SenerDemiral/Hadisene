@@ -87,13 +87,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="sbj hdr">
+				<tr class="Srv hdr">
 					<td colspan="3">birim</td>
 				</tr>
-				<tr class="sbj">
+				<tr class="Srv">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.sbjList)
+							@foreach (var itm in UDB.srvList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />
@@ -195,7 +195,7 @@
 			sl.Add("MnV=1");
 
 		Add2List(sl, UDB.reqList, "ReqId=");
-		Add2List(sl, UDB.sbjList, "SbjId=");
+		Add2List(sl, UDB.srvList, "SrvId=");
 		Add2List(sl, UDB.actList, "ActId=");
 		Add2List(sl, UDB.tskList, "TskId=");
 
@@ -322,7 +322,7 @@
 		public int MnV;
 
 		public List<SelList> reqList = new();
-		public List<SelList> sbjList = new();
+		public List<SelList> srvList = new();
 		public List<SelList> actList = new();
 		public List<SelList> tskList = new();
 
@@ -330,9 +330,9 @@
 		{
 			set { Add2List(value, reqList); }
 		}
-		public string? Sbjs
+		public string? Srvs
 		{
-			set { Add2List(value, sbjList); }
+			set { Add2List(value, srvList); }
 		}
 		public string? Acts
 		{

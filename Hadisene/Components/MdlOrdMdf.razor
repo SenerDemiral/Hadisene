@@ -34,9 +34,9 @@
 						   maxlength="30"
 						   size="30"
 						   list="SSL"
-						   @bind="mo.SbjAd"
+						   @bind="mo.SrvAd"
 						   @bind:event="onchange"
-						   @bind:after="CheckSbj" />
+						   @bind:after="CheckSrv" />
 				</td>
 			</tr>
 			<tr>
@@ -128,12 +128,12 @@
 	private MO? mo, omo;
 	private Dictionary<string, int>? ssd, ttd, sad;
 
-	private void CheckSbj()
+	private void CheckSrv()
 	{
-		if (ssd!.TryGetValue(mo.SbjAd, out var nid))
+		if (ssd!.TryGetValue(mo.SrvAd, out var nid))
 		{
-			mo.SbjId = nid;
-			SbjActLU(nid);
+			mo.SrvId = nid;
+			SrvActLU(nid);
 
 			if (!String.IsNullOrEmpty(mo.ActAd) && sad!.TryGetValue(mo.ActAd, out var nid2))
 			{
@@ -147,7 +147,7 @@
 			//CheckAct();
 		}
 		else
-			mo.SbjAd = omo.SbjAd;
+			mo.SrvAd = omo.SrvAd;
 	}
 	private void CheckTsk()
 	{
@@ -183,7 +183,7 @@
 						p4 = mo.aGun,
 						p5 = mo.RSD,
 						p6 = mo.RPH,
-						p7 = mo.SbjId,
+						p7 = mo.SrvId,
 						p8 = mo.TskId,
 						p9 = mo.ActId,
 						pa = mo.Inf,
@@ -228,14 +228,14 @@
 		}
 		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		//Sbj Actors
-		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Srv Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 	}
-	private void SbjActLU(int SSId)
+	private void SrvActLU(int SSId)
 	{
 		using var conn = db.GetConnection();
-		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 
@@ -247,10 +247,10 @@
 	public sealed class MO
 	{
 		public int MOId;
-		public int SbjId;
+		public int SrvId;
 		public int TskId;
 		public int ActId;
-		public string? SbjAd;
+		public string? SrvAd;
 		public string? TskAd;
 		public string? ActAd;
 

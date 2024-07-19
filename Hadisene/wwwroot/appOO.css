@@ -351,9 +351,9 @@ button.ooCID:disabled {
 
 .ooCard[data-Ytk="4"] .ooAct,
 .ooCard[data-Ytk="5"] .ooReq,
-.ooCard[data-Ytk="1"] .ooSbj,
-.ooCard[data-Ytk="2"] .ooSbj
-.ooCard[data-Ytk="3"] .ooSbj {
+.ooCard[data-Ytk="1"] .ooSrv,
+.ooCard[data-Ytk="2"] .ooSrv
+.ooCard[data-Ytk="3"] .ooSrv {
 	font-weight: 600;
 }
 
@@ -378,7 +378,7 @@ input[type="radio"] {
 		grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
 		grid-template-areas:
 			"ooReq ooTsk ooDSH ooDFH ooPin"
-			"ooSbj ooAct ooDSH ooDFH ooPin";
+			"ooSrv ooAct ooDSH ooDFH ooPin";
 		background-color: #fff;
 		color: #444;
 		outline: none;

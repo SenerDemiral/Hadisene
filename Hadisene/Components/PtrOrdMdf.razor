@@ -22,9 +22,9 @@
 						   maxlength="30"
 						   size="30"
 						   list="SSL"
-						   @bind="po.SbjAd"
+						   @bind="po.SrvAd"
 						   @bind:event="onchange"
-						   @bind:after="CheckSbj" />
+						   @bind:after="CheckSrv" />
 				</td>
 			</tr>
 			<tr>
@@ -111,12 +111,12 @@
 	private PO? po, opo;
 	private Dictionary<string, int>? ssd, ttd, sad;
 
-	private void CheckSbj()
+	private void CheckSrv()
 	{
-		if (ssd!.TryGetValue(po.SbjAd, out var nid))
+		if (ssd!.TryGetValue(po.SrvAd, out var nid))
 		{
-			po.SbjId = nid;
-			SbjActLU(nid);
+			po.SrvId = nid;
+			SrvActLU(nid);
 
 			if (!String.IsNullOrEmpty(po.ActAd) && sad!.TryGetValue(po.ActAd, out var nid2))
 			{
@@ -130,7 +130,7 @@
 			//CheckAct();
 		}
 		else
-			po.SbjAd = opo.SbjAd;
+			po.SrvAd = opo.SrvAd;
 	}
 	private void CheckTsk()
 	{
@@ -165,7 +165,7 @@
 						p3 = PPId,
 						p4 = po.RSD,
 						p5 = po.RFD,
-						p6 = po.SbjId,
+						p6 = po.SrvId,
 						p7 = po.TskId,
 						p8 = po.ActId,
 						p9 = po.Inf,
@@ -210,14 +210,14 @@
 		}
 		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		//Sbj Actors
-		sad = conn.Query<UU>("SA_LU", new { SSId = po.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Srv Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = po.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 	}
-	private void SbjActLU(int SSId)
+	private void SrvActLU(int SSId)
 	{
 		using var conn = db.GetConnection();
-		sad = conn.Query<UU>("SA_LU", new { SSId = po.SbjId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		sad = conn.Query<UU>("SA_LU", new { SSId = po.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 
@@ -229,13 +229,13 @@
 	public sealed class PO
 	{
 		public int POId;
-		public int SbjId;
+		public int SrvId;
 		public int TskId;
 		public int ActId;
 		public DateTime? RSD;
 		public DateTime? RFD;
 		public string? Inf;
-		public string? SbjAd;
+		public string? SrvAd;
 		public string? TskAd;
 		public string? ActAd;
 
