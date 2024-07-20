@@ -55,22 +55,6 @@
 					<td class="fld-hdr">Yeni Mesaj</td>
 					<td colspan="2">@UDB.MnV <InputCheckbox @bind-Value="cbMnV" /></td>
 				</tr>
-				<tr class="req hdr">
-					<td colspan="3">İsteyen</td>
-				</tr>
-				<tr class="req">
-					<td colspan="3" class="bdy">
-						<div class="lst">
-							@foreach (var itm in UDB.reqList)
-							{
-								<div>
-									<input type="checkbox" @bind-value="itm.Selected" />
-									@itm.Ad
-								</div>
-							}
-						</div>
-					</td>
-				</tr>
 				<tr class="tsk hdr">
 					<td colspan="3">konu</td>
 				</tr>
@@ -87,13 +71,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="Srv hdr">
-					<td colspan="3">birim</td>
+				<tr class="req hdr">
+					<td colspan="3">kimden</td>
 				</tr>
-				<tr class="Srv">
+				<tr class="req">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.srvList)
+							@foreach (var itm in UDB.reqList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />
@@ -104,12 +88,28 @@
 					</td>
 				</tr>
 				<tr class="act hdr">
-					<td colspan="3">ilgili</td>
+					<td colspan="3">kime</td>
 				</tr>
 				<tr class="act">
 					<td colspan="3" class="bdy">
 						<div class="lst">
 							@foreach (var itm in UDB.actList)
+							{
+								<div>
+									<input type="checkbox" @bind-value="itm.Selected" />
+									@itm.Ad
+								</div>
+							}
+						</div>
+					</td>
+				</tr>
+				<tr class="srv hdr">
+					<td colspan="3">birim</td>
+				</tr>
+				<tr class="Srv">
+					<td colspan="3" class="bdy">
+						<div class="lst">
+							@foreach (var itm in UDB.srvList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />

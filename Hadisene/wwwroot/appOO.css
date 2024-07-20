@@ -38,69 +38,69 @@
 		/*opacity: .4;*/
 	}
 
-/* ColorStart */
-.ooCard[data-CS="G"] {
-	--sColor: var(--g-color);
-}
-
-	.ooCard[data-CS="G"] .ooS {
-		color: var(--sColor)
+	/* ColorStart */
+	.ooCard[data-CS="G"] {
+		--sColor: var(--g-color);
 	}
 
-	.ooCard[data-CS="G"] .ooBtnS {
-		/*display: none;*/
-		visibility:hidden;
-	}
+		.ooCard[data-CS="G"] .ooS {
+			color: var(--sColor)
+		}
 
-/*.ooCard:is([data-CS="G"]):is([data-CF="G"]) .ooFtr {
+		.ooCard[data-CS="G"] .ooBtnS {
+			/*display: none;*/
+			visibility: hidden;
+		}
+
+	/*.ooCard:is([data-CS="G"]):is([data-CF="G"]) .ooFtr {
 	background-color: var(--g-color);
 }*/
 
-.ooCard[data-CS="R"] {
-	--sColor: var(--r-color);
-}
-
-	.ooCard[data-CS="R"] .ooS {
-		color: var(--sColor)
+	.ooCard[data-CS="R"] {
+		--sColor: var(--r-color);
 	}
 
-.ooCard[data-CS="B"] {
-	--sColor: var(--b-color);
-}
+		.ooCard[data-CS="R"] .ooS {
+			color: var(--sColor)
+		}
 
-	.ooCard[data-CS="B"] .ooS {
-		color: var(--sColor)
+	.ooCard[data-CS="B"] {
+		--sColor: var(--b-color);
 	}
 
-/* ColorFinsih */
-.ooCard[data-CF="G"] {
-	--fColor: var(--g-color);
-}
+		.ooCard[data-CS="B"] .ooS {
+			color: var(--sColor)
+		}
 
-	.ooCard[data-CF="G"] .ooF {
-		color: var(--fColor)
+	/* ColorFinsih */
+	.ooCard[data-CF="G"] {
+		--fColor: var(--g-color);
 	}
 
-	.ooCard[data-CF="G"] .ooBtnF {
-		/*display: none;*/
-		visibility: hidden;
+		.ooCard[data-CF="G"] .ooF {
+			color: var(--fColor)
+		}
+
+		.ooCard[data-CF="G"] .ooBtnF {
+			/*display: none;*/
+			visibility: hidden;
+		}
+
+	.ooCard[data-CF="R"] {
+		--fColor: var(--r-color);
 	}
 
-.ooCard[data-CF="R"] {
-	--fColor: var(--r-color);
-}
+		.ooCard[data-CF="R"] .ooF {
+			color: var(--fColor)
+		}
 
-	.ooCard[data-CF="R"] .ooF {
-		color: var(--fColor)
+	.ooCard[data-CF="B"] {
+		--fColor: var(--b-color);
 	}
 
-.ooCard[data-CF="B"] {
-	--fColor: var(--b-color);
-}
-
-	.ooCard[data-CF="B"] .ooF {
-		color: var(--fColor)
-	}
+		.ooCard[data-CF="B"] .ooF {
+			color: var(--fColor)
+		}
 
 .ooId {
 	font-weight: 900;
@@ -170,11 +170,18 @@
 	width: 100%;
 	display: inline-flex;
 	flex-direction: column;
+	font-family: monospace;
 }
-	.ooCard .ooHdrTxt .l-1 {
-		border-bottom: 1px solid;
-		border-image: linear-gradient(to right, var(--sColor), white 50%, var(--fColor)) 1;
-	}
+
+.ooTsk {
+	border-bottom: 1px solid;
+	border-image: linear-gradient(to right, var(--sColor), white 50%, var(--fColor)) 1;
+	/*font-variant: small-caps slashed-zero;*/
+}
+
+.ooSrv {
+	color: gold;
+}
 
 .ooCard .box {
 	/*padding: 0 4px;*/
@@ -265,9 +272,9 @@ button.ooCID:disabled {
 .ooTbl {
 	font-size: .8rem;
 }
+
 	.ooTbl th,
-	.ooTbl td
-	{
+	.ooTbl td {
 		padding: 2px 0;
 	}
 
@@ -290,14 +297,14 @@ button.ooCID:disabled {
 		content: "açıklama";
 	}
 
-.ooTsk {
+
+.ooAct, .ooReq {
 	font-size: 1rem;
 	padding-left: 4px !important;
 }
-
-.ooReq {
-	font-size: 1rem;
-	padding-left: 4px !important;
+.ooAct {
+	color: goldenrod;
+	font-weight: bold;
 }
 
 .ooRSD {
@@ -348,14 +355,6 @@ button.ooCID:disabled {
 	.ooDFH::before {
 		content: "± gecikme";
 	}
-
-.ooCard[data-Ytk="4"] .ooAct,
-.ooCard[data-Ytk="5"] .ooReq,
-.ooCard[data-Ytk="1"] .ooSrv,
-.ooCard[data-Ytk="2"] .ooSrv
-.ooCard[data-Ytk="3"] .ooSrv {
-	font-weight: 600;
-}
 
 input[type="radio"] {
 	width: 1rem !important;

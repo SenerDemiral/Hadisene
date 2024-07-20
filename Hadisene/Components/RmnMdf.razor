@@ -1,0 +1,232 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (rr != null)
+{
+	<table style="min-width:340px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">check</span>Periyodik Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<td>id#</td>
+				<td>@Idf()</td>
+			</tr>
+			<tr>
+				<td>ad</td>
+				<td><input type="text" maxlength="30" @bind="rr!.Ad" /></td>
+			</tr>
+			<tr>
+				<td>pasif</td>
+				<td><input type="checkbox" @bind="rr.isPsf" style="width:auto" /></td>
+			</tr>
+			<tr>
+				<td>period</td>
+				<td>
+					<select @bind="rr.Prd" style="width:100%;">
+						<option value="1">Yıllık</option>
+						<option value="2">Aylık</option>
+						<option value="3">Haftalık</option>
+						<option value="4">Günlük</option>
+						}
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2" style="font-size:.8rem">sonraki planlanan başlangıç</td>
+			</tr>
+			<tr>
+				<td>tarih</td>
+				<td>
+						<div class="trh">
+							<div class="date">
+								<input type="date"
+									   @bind:get="@rr.RSD"
+									   @bind:set=CheckRSD />
+							</div>
+							<div class="time">
+								<input type="time"
+									   @bind:get="@rr.RSD"
+									   @bind:set=CheckRSD />
+							</div>
+						</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2" style="font-size:.8rem">planlanan süre</td>
+			</tr>
+			<tr>
+				<td>saat</td>
+				<td><input type="number" min="1" @bind="rr.RPH" /></td>
+			</tr>
+
+			<tr>
+				<td colspan="2" style="font-size:.8rem">planlanandan ne kadar önce Talep eklensin</td>
+			</tr>
+			<tr>
+				<td>saat</td>
+				<td><input type="number" min="1" @bind="rr.ISH" /></td>
+			</tr>
+
+			<tr>
+				<td>konu</td>
+				<td>
+					<div>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="TTL"
+							   @bind="rr.TskAd"
+							   @bind:event="onchange"
+							   @bind:after="CheckTsk" />
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2" style="font-size:.8rem">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="rr.Inf"
+								   rows="2"
+								   style="min-width:100%; resize: both;" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int RRId { get; set; }
+	private RR? rr;
+	private Dictionary<string, int>? ttd;
+
+	private void CheckTsk()
+	{
+		if (ttd.TryGetValue(rr.TskAd, out var nid))
+		{
+			rr.TskId = nid;
+		}
+	}
+
+	private void CheckRSD(DateTime? value)
+	{
+		DateTime min = DateTime.Now; //.AddHours(1);
+
+		if (value == null)
+			rr.RSD = null;
+		else if (value < min)
+			rr.RSD = min;
+		else
+			rr.RSD = value;
+	}
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("RR_MDF",
+					new
+					{
+						p1 = my.Id,
+						p2 = my.FrmId,
+						p3 = RRId,
+						p4 = rr.UUId,
+						p5 = rr.Psf,
+						p6 = rr.Prd,
+						p7 = rr!.Ad,
+						p8 = rr.ISH,
+						p9 = rr.RSD,
+						pa = rr.RPH,
+						pb = rr.TskId,
+						pc = rr.Inf,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		//Modal.Show<ModalConfirm>("deneme");
+
+		using var conn = db.GetConnection();
+		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+		if (RRId == 0)
+		{
+			rr = new();
+			return;
+		}
+		try
+		{
+			rr = conn.QuerySingle<RR>("RR_SEL",
+					new { UsrId = my.Id, RRId = RRId },
+					commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+
+	private string Idf()
+	{
+		return RRId == 0 ? "yeni" : RRId.ToString("### ### ###");
+	}
+
+	public sealed class RR
+	{
+		public int RRId;
+		public string? Ad;
+		public int Psf;
+		public bool isPsf
+		{
+			get => Psf == 1;
+			set
+			{
+				Psf = value ? 1 : 0;
+			}
+		}
+		public int UUId;
+		public int Prd;
+		public int TskId;
+		public string? TskAd;
+		public int ISH;     // RSDden Kaç saat önce Talep yaratılacak
+		public int RPH;     // Planlanan süre
+		public DateTime? RSD;
+		public string? Inf;
+	}
+
+	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+	}
+
+}

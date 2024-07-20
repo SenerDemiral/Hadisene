@@ -166,7 +166,7 @@
 }
 
 	.oeReq::before {
-		content: "🙋gönderen (talebi yapan / kimden)";
+		content: "🙋gönderen (talep eden / kimden)";
 	}
 
 .oeTsk {
@@ -182,7 +182,7 @@
 }
 
 	.oeSrv::before {
-		content: "⚓gönderilen birim";
+		content: "⚓gönderilen birim (grup/bölüm/servis)";
 	}
 
 .oeAct {
@@ -190,7 +190,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍gönderilen (kime)";
+		content: "🧍gönderilen kişi (alıcı/kime/muhatap)";
 	}
 
 
@@ -245,7 +245,7 @@
 }
 
 	.oeDSH::before {
-		content: "± sapma";
+		content: "±sapma";
 	}
 
 
@@ -273,7 +273,7 @@
 }
 
 	.oeDFH::before {
-		content: "± sapma";
+		content: "±sapma";
 	}
 
 

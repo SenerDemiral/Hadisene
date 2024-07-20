@@ -18,10 +18,12 @@ builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredToast();
 
-builder.Services.AddScoped<IDbCon, DbCon>();
+builder.Services.AddSingleton<IDbCon, DbCon>();
 
 builder.Services.AddSingleton<NotifierService>();
 builder.Services.AddScoped<AppState>();
+
+builder.Services.AddHostedService<TimedHostedService>();
 
 //Deneme
 builder.Services.AddCascadingValue(s => CascadingValueSource.CreateNotifying(new User()));

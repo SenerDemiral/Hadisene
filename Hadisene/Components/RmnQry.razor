@@ -1,0 +1,103 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>
+			<button @onclick="@(() => ShowMdf(0))">
+				<span class="material-symbols-outlined">add</span>Periyodik
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>edit</th>
+				<th>psf</th>
+				<th>ad</th>
+				<th>period</th>
+				<th>başlangıç</th>
+				<th>konu</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>
+						<button @onclick="@(() => ShowMdf(rec.RRId))">
+							<span class="material-symbols-outlined">edit</span>
+							<span style="font-size:.6rem;">@rec.RRId</span>
+						</button>
+					</td>
+					<td>
+						<input type="checkbox" checked=@rec.isPsf onclick="return false" style="width:auto" />
+					</td>
+					<td>@rec.Ad</td>
+					<td>@rec.PrdAd</td>
+					<td>@rec.RSD.ToS()</td>
+					<td>@rec.TskAd</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<RR> tbl;
+
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Large,
+			ActivateFocusTrap = false,
+			Position = ModalPosition.Middle
+		};
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("RRId", id);
+
+		var x = Modal.Show<RmnMdf>("", mp, options);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<RR>("RR_QRY",
+				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+	public sealed class RR
+	{
+		public int RRId;
+		public int Psf;
+		public bool isPsf => Psf == 1 ? true : false;
+
+		public string? Ad;
+		public string? PrdAd;
+		public string? TskAd;
+		public DateTime? RSD;
+	}
+}

@@ -16,7 +16,7 @@
 	<button @onclick="Refresh" style="background-color: yellow;">
 		<span class="material-symbols-outlined">refresh</span>
 	</button>
-	<div>@PgeHdr</div>
+	<div style="font-variant: small-caps;">@PgeHdr</div>
 	<button @onclick="AddNew" style="background-color: yellow;">
 		<span class="material-symbols-outlined">add</span>
 	</button>
@@ -59,10 +59,10 @@
 					</div>
 
 					<div class="ooHdrTxt">
-						<div class="l-1">
+						<div class="ooTsk">
 							@rec.TskAd.Coalesce()
 						</div>
-						<div>
+						<div class="ooSrv">
 							@rec.SrvAd.Coalesce()
 						</div>
 					</div>
@@ -145,7 +145,7 @@
 									<span class="tooltiptext">kime</span>
 								</div>
 							</td>
-							<td colspan="3" class="ooTsk">@rec.ActAd</td>
+							<td colspan="3" class="ooAct">@rec.ActAd</td>
 						</tr>
 						<tr>
 							<td class="ta-c">
@@ -161,7 +161,7 @@
 							<th class="ta-c"></th>
 							<th>planlanan</th>
 							<th>gerçekleşen</th>
-							<th>± sapma</th>
+							<th>±sapma</th>
 						</tr>
 						<tr class="ooS">
 							<td class="ta-c">
