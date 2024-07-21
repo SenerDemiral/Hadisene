@@ -23,7 +23,7 @@ public class TimedHostedService : BackgroundService
 		// DoWork(); //Hemen yapmasına gerek yok
 
 		await DoWork();
-		using PeriodicTimer timer = new(TimeSpan.FromSeconds(10));
+		using PeriodicTimer timer = new(TimeSpan.FromHours(1));
 
 		try
 		{
@@ -41,9 +41,9 @@ public class TimedHostedService : BackgroundService
 	// Could also be a async method, that can be awaited in ExecuteAsync above
 	private async Task DoWork()
 	{
-		//int count = Interlocked.Increment(ref _executionCount);
+		int count = Interlocked.Increment(ref _executionCount);
 
-		_logger.LogInformation("Timed Hosted Service {RunTime}", DateTime.Now);
+		_logger.LogInformation("Timed Hosted Service {RunTime} NoC:{count}", DateTime.Now, count);
 
 		using var conn = db.GetConnection();
 		await conn.ExecuteAsync("RR2OO", param: null, commandType: CommandType.StoredProcedure);

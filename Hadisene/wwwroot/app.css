@@ -49,11 +49,31 @@ input[type="text"] {
 	width: 100%;
 }
 
+input[type="date"],
+input[type="time"] {
+	min-height: 24px;
+}
+
 *,
 *::before,
 *::after {
 	box-sizing: inherit;
 }
+
+
+.trh {
+	display: inline-flex;
+	flex-direction: column;
+	width: 100%;
+	font-family: monospace;
+}
+
+.date, 
+.time {
+	flex: 1;
+}
+
+
 
 .btnInf:disabled {
 	opacity: .5;
@@ -312,6 +332,7 @@ td, th {
 
 th {
 	text-align: center;
+	font-size: .8rem;
 }
 
 .ta-c {
@@ -328,6 +349,11 @@ th {
 
 tbody.zebra tr:nth-child(odd) {
 	background-color: #dddddd;
+}
+
+.lbl-top {
+	font-size: .8rem;
+	background-color: lightgray;
 }
 
 /*********************/
@@ -445,7 +471,7 @@ tbody.zebra tr:nth-child(odd) {
 			align-items: center;
 			gap: 1rem;
 			background-color: whitesmoke;
-			z-index:10;
+			z-index: 10;
 		}
 
 	.pge .top {
@@ -515,36 +541,36 @@ tbody.zebra tr:nth-child(odd) {
 		word-wrap: break-word;
 	}
 
-.osCnt th.osR {
-	background-color: brown;
-	color: white;
-}
+	.osCnt th.osR {
+		background-color: brown;
+		color: white;
+	}
 
-.osCnt th.osB {
-	background-color: steelblue;
-	color: white;
-}
+	.osCnt th.osB {
+		background-color: steelblue;
+		color: white;
+	}
 
-.osCnt th.osG {
-	background-color: green;
-	color: white;
-}
+	.osCnt th.osG {
+		background-color: green;
+		color: white;
+	}
 
 	.osCnt .osT {
 		background-color: gainsboro;
 	}
 
-.osCnt td.osR {
-	color: brown;
-}
+	.osCnt td.osR {
+		color: brown;
+	}
 
-.osCnt td.osB {
-	color: steelblue
-}
+	.osCnt td.osB {
+		color: steelblue
+	}
 
-.osCnt td.osG {
-	color: green;
-}
+	.osCnt td.osG {
+		color: green;
+	}
 
 /*************************/
 

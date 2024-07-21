@@ -250,27 +250,28 @@
 	public Statu stu;
 	@* min="@(DateTime.Today.ToString("yyyy-MM-ddTHH:mm"))" *@
 
-	private void CheckRSD(DateTime? value)
+	private void CheckRSD(DateTime? val)
 	{
-		DateTime min = oo.InsTS == null ? DateTime.Now.AddMinutes(5) : (DateTime)oo.InsTS;
+		// null olmaz
+		DateTime min = oo.InsTS == null ? DateTime.Now.AddMinutes(10) : (DateTime)oo.InsTS;
 
-		if (value == null)
-			oo.RSD = null;
-		else if (value == null || value < min)
-			oo.RSD = min;
+		// Time part
+		if (val.HasValue && oo!.RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
+			val = oo.RSD!.Value.Date.Add(val.Value.TimeOfDay);
+
+		if (val == null || val < min)
+			oo!.RSD = min;
 		else
-			oo.RSD = value;
+			oo!.RSD = val;
 
 		CheckRFD(oo.RFD);
 	}
-	private void CheckRFD(DateTime? value)
+	private void CheckRFD(DateTime? val)
 	{
-		if (oo.RSD == null)
-			oo.RFD = null;
-		else if (value == null || value < oo.RSD)
-			oo.RFD = oo.RSD.Value.AddHours(1);
+		if (val == null || val < oo.RSD)
+			oo!.RFD = oo.RSD!.Value.AddHours(1);
 		else
-			oo.RFD = value;
+			oo.RFD = val;
 	}
 
 	private void CheckASD(DateTime? value)

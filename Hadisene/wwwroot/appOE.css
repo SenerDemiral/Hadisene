@@ -1,19 +1,4 @@
-﻿.trh {
-	display: inline-flex;
-	flex-direction: column;
-	width: 100%;
-	font-family: monospace;
-}
-
-	.trh .date {
-		flex: 1;
-	}
-
-	.trh .time {
-		flex: 1;
-	}
-
-.oeCard {
+﻿.oeCard {
 	display: flex;
 	flex-direction: column;
 	/*gap: 4px;*/

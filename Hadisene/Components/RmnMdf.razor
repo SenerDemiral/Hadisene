@@ -37,28 +37,30 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" style="font-size:.8rem">sonraki planlanan başlangıç</td>
+				<td colspan="2" class="lbl-top">sonraki planlanan başlangıç</td>
 			</tr>
 			<tr>
 				<td>tarih</td>
 				<td>
-						<div class="trh">
-							<div class="date">
-								<input type="date"
-									   @bind:get="@rr.RSD"
-									   @bind:set=CheckRSD />
-							</div>
-							<div class="time">
-								<input type="time"
-									   @bind:get="@rr.RSD"
-									   @bind:set=CheckRSD />
-							</div>
+					<div class="trh">
+						<div class="date">
+							<input type="date"
+								   @bind:event="onchange"
+								   @bind:get="@rr.RSD"
+								   @bind:set="CheckRSD" />
 						</div>
+						<div class="time">
+							<input type="time"
+								   @bind:event="onchange"
+								   @bind:get="@rr.RSD"
+								   @bind:set="CheckRSD" />
+						</div>
+					</div>
 				</td>
 			</tr>
 
 			<tr>
-				<td colspan="2" style="font-size:.8rem">planlanan süre</td>
+				<td colspan="2" class="lbl-top">planlanan süre</td>
 			</tr>
 			<tr>
 				<td>saat</td>
@@ -66,7 +68,7 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" style="font-size:.8rem">planlanandan ne kadar önce Talep eklensin</td>
+				<td colspan="2" class="lbl-top">planlanandan ne kadar önce Talep eklensin</td>
 			</tr>
 			<tr>
 				<td>saat</td>
@@ -89,7 +91,7 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" style="font-size:.8rem">açıklama</td>
+				<td colspan="2" class="lbl-top">açıklama</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -97,6 +99,10 @@
 								   rows="2"
 								   style="min-width:100%; resize: both;" />
 				</td>
+			</tr>
+			<tr>
+				<td>sil</td>
+				<td><input type="checkbox" @bind="rr.isDel" style="width:auto" /></td>
 			</tr>
 		</tbody>
 	</table>
@@ -113,8 +119,9 @@
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public int RRId { get; set; }
-	private RR? rr;
+	private RR? rr = default;
 	private Dictionary<string, int>? ttd;
+	private bool isOK;
 
 	private void CheckTsk()
 	{
@@ -124,16 +131,18 @@
 		}
 	}
 
-	private void CheckRSD(DateTime? value)
+	private void CheckRSD(DateTime? val)
 	{
-		DateTime min = DateTime.Now; //.AddHours(1);
+		DateTime min = DateTime.Now.AddHours(1);
 
-		if (value == null)
-			rr.RSD = null;
-		else if (value < min)
-			rr.RSD = min;
+		// Time part
+		if (val.HasValue && rr!.RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
+			val = rr.RSD!.Value.Date.Add(val.Value.TimeOfDay);
+		
+		if (val == null || val < min)
+			rr!.RSD = min;
 		else
-			rr.RSD = value;
+			rr!.RSD = val;
 	}
 
 	public async Task Kaydet()
@@ -147,26 +156,25 @@
 						p1 = my.Id,
 						p2 = my.FrmId,
 						p3 = RRId,
-						p4 = rr.UUId,
-						p5 = rr.Psf,
-						p6 = rr.Prd,
-						p7 = rr!.Ad,
-						p8 = rr.ISH,
-						p9 = rr.RSD,
-						pa = rr.RPH,
-						pb = rr.TskId,
-						pc = rr.Inf,
+						p4 = rr.Psf,
+						p5 = rr.Prd,
+						p6 = rr!.Ad,
+						p7 = rr.ISH,
+						p8 = rr.RSD,
+						p9 = rr.RPH,
+						pq = rr.TskId,
+						pb = rr.Inf,
+						pc = rr.Del,
 					},
 					commandType: CommandType.StoredProcedure);
 
+			await ModalIns.CloseAsync(ModalResult.Ok());
 		}
 		catch (Exception ex)
 		{
 			var hata = ex.Message.Split("\r\n")[1];
 			Modal.Show<ModalWarning>(hata);
 		}
-
-		await ModalIns.CloseAsync(ModalResult.Ok());
 	}
 
 	protected override void OnInitialized()
@@ -186,6 +194,7 @@
 			rr = conn.QuerySingle<RR>("RR_SEL",
 					new { UsrId = my.Id, RRId = RRId },
 					commandType: CommandType.StoredProcedure);
+
 		}
 		catch (Exception ex)
 		{
@@ -214,13 +223,23 @@
 			}
 		}
 		public int UUId;
-		public int Prd;
+		public int Prd = 1; // Yıllık
 		public int TskId;
 		public string? TskAd;
-		public int ISH;     // RSDden Kaç saat önce Talep yaratılacak
-		public int RPH;     // Planlanan süre
-		public DateTime? RSD;
+		public int ISH = 1;     // RSDden Kaç saat önce Talep yaratılacak
+		public int RPH = 1;     // Planlanan süre
+		public DateTime? RSD = DateTime.Now.AddHours(1);
 		public string? Inf;
+
+		public int Del;
+		public bool isDel
+		{
+			get => Del == 1;
+			set
+			{
+				Del = value ? 1 : 0;
+			}
+		}
 	}
 
 	public sealed class TT
