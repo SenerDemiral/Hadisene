@@ -553,7 +553,7 @@
 	private void Read()
 	{
 		using var conn = db.GetConnection();
-		ssd = conn.Query<SS>("SS_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
@@ -567,9 +567,9 @@
 			oo = conn.QuerySingle<OO>("OO_SEL",
 			new { p1 = my.Id, p2 = OOId },
 			commandType: CommandType.StoredProcedure);
-
-			ooo = oo.ShallowCopy();
 		}
+		ooo = oo.ShallowCopy();
+		
 		//Srv Actors
 		SrvActLU(oo.SrvId);
 

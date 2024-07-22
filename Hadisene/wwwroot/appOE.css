@@ -167,7 +167,7 @@
 }
 
 	.oeSrv::before {
-		content: "⚓gönderilen birim (grup/bölüm/servis)";
+		content: "⚓gönderilen bölüm (grup/servis)";
 	}
 
 .oeAct {
@@ -230,7 +230,7 @@
 }
 
 	.oeDSH::before {
-		content: "±sapma";
+		content: "± sapma";
 	}
 
 
@@ -258,7 +258,7 @@
 }
 
 	.oeDFH::before {
-		content: "±sapma";
+		content: "± sapma";
 	}
 
 

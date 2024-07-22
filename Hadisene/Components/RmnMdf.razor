@@ -2,7 +2,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (rr != null)
+@if (rr != null && sad != null)
 {
 	<table style="min-width:340px;">
 		<caption>
@@ -89,6 +89,34 @@
 					</div>
 				</td>
 			</tr>
+			<tr>
+				<td>bölüm</td>
+				<td>
+					<div>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="SSL"
+							   @bind="rr.SrvAd"
+							   @bind:event="onchange"
+							   @bind:after="CheckSrv" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>gönderilen</td>
+				<td>
+					<div>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="SAL"
+							   @bind="rr.ActAd"
+							   @bind:event="onchange"
+							   @bind:after="CheckAct" />
+					</div>
+				</td>
+			</tr>
 
 			<tr>
 				<td colspan="2" class="lbl-top">açıklama</td>
@@ -113,22 +141,66 @@
 			<option value="@r.Key" />
 		}
 	</datalist>
+	<datalist id="SSL">
+		@foreach (var r in ssd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="SAL">
+		@foreach (var r in sad!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
 
 }
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public int RRId { get; set; }
-	private RR? rr = default;
-	private Dictionary<string, int>? ttd;
+	private RR? rr = default, orr = default;
+	private Dictionary<string, int>? ttd, ssd, sad;
 	private bool isOK;
 
 	private void CheckTsk()
 	{
-		if (ttd.TryGetValue(rr.TskAd, out var nid))
+		if (ttd!.TryGetValue(rr.TskAd, out var nid))
 		{
 			rr.TskId = nid;
 		}
+		else
+			rr.TskAd = orr.TskAd;
+	}
+	private void CheckSrv()
+	{
+		if (ssd!.TryGetValue(rr.SrvAd, out var nid))
+		{
+			rr.SrvId = nid;
+			SrvActLU(nid);
+
+			if (!String.IsNullOrEmpty(rr.ActAd) && sad!.TryGetValue(rr.ActAd, out var nid2))
+			{
+				rr.ActId = nid2;
+			}
+			else
+			{
+				rr.ActId = 0;
+				rr.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			rr.SrvAd = orr.SrvAd;
+	}
+	private void CheckAct()
+	{
+		if (sad!.TryGetValue(rr.ActAd, out var nid))
+		{
+			rr.ActId = nid;
+		}
+		else
+			rr.ActAd = orr.ActAd;
 	}
 
 	private void CheckRSD(DateTime? val)
@@ -138,7 +210,7 @@
 		// Time part
 		if (val.HasValue && rr!.RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
 			val = rr.RSD!.Value.Date.Add(val.Value.TimeOfDay);
-		
+
 		if (val == null || val < min)
 			rr!.RSD = min;
 		else
@@ -162,9 +234,11 @@
 						p7 = rr.ISH,
 						p8 = rr.RSD,
 						p9 = rr.RPH,
-						pq = rr.TskId,
-						pb = rr.Inf,
-						pc = rr.Del,
+						pa = rr.TskId,
+						pb = rr.SrvId,
+						pc = rr.ActId,
+						pd = rr.Inf,
+						pe = rr.Del,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -182,19 +256,24 @@
 		//Modal.Show<ModalConfirm>("deneme");
 
 		using var conn = db.GetConnection();
-		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-		if (RRId == 0)
-		{
-			rr = new();
-			return;
-		}
 		try
 		{
-			rr = conn.QuerySingle<RR>("RR_SEL",
-					new { UsrId = my.Id, RRId = RRId },
-					commandType: CommandType.StoredProcedure);
+			if (RRId == 0)
+			{
+				rr = new();
+			}
+			else
+			{
+				rr = conn.QuerySingle<RR>("RR_SEL",
+						new { UsrId = my.Id, RRId = RRId },
+						commandType: CommandType.StoredProcedure);
+			}
 
+			ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			//Srv Actors
+			SrvActLU(rr.SrvId);
 		}
 		catch (Exception ex)
 		{
@@ -203,6 +282,16 @@
 		}
 	}
 
+	private void SrvActLU(int SSId)
+	{
+		if (SSId > 0)
+		{
+			using var conn = db.GetConnection();
+			sad = conn.Query<UU>("SA_LU", new { SSId = rr.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		}
+		else
+			sad = new();
+	}
 
 	private string Idf()
 	{
@@ -226,6 +315,10 @@
 		public int Prd = 1; // Yıllık
 		public int TskId;
 		public string? TskAd;
+		public int SrvId;
+		public string? SrvAd;
+		public int ActId;
+		public string? ActAd;
 		public int ISH = 1;     // RSDden Kaç saat önce Talep yaratılacak
 		public int RPH = 1;     // Planlanan süre
 		public DateTime? RSD = DateTime.Now.AddHours(1);
@@ -240,9 +333,24 @@
 				Del = value ? 1 : 0;
 			}
 		}
+
+		public RR ShallowCopy()
+		{
+			return (RR)this.MemberwiseClone();
+		}
 	}
 
 	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class SS
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class UU
 	{
 		public int Id;
 		public string Ad;

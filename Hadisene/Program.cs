@@ -3,6 +3,14 @@ using Blazored.Toast;
 using Hadisene.Components;
 using Hadisene.Lib;
 using SixLabors.ImageSharp.Web.DependencyInjection;
+using System.Globalization;
+
+CultureInfo culture;
+culture = CultureInfo.CreateSpecificCulture("tr-TR");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+Thread.CurrentThread.CurrentCulture = culture;
+Thread.CurrentThread.CurrentUICulture = culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +19,8 @@ builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\Hadisene.json",
-                       optional: false,
-                       reloadOnChange: true);
+					   optional: false,
+					   reloadOnChange: true);
 
 builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();

@@ -25,7 +25,7 @@
 		<div>Giriş yapın</div>
 	}
 
-	<InputSelect TValue="string"
+	<InputSelect TValue="string" style="font-size:large"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
 				 ValueExpression="@(() => selVal)">
@@ -34,15 +34,16 @@
 		{
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
 			<option value="OrdStat">📈 Özet</option>
-			<option value="RmnQry">⏳ Periyodik</option>
+			<option value="SrvQryPrv">🔐 Gruplarım</option>
+			<option value="RmnQry">⏳ Periyodiklerim</option>
 			@if (my.Ytk == 1)
 			{
 				<optgroup label="Tanımlar">
-					<option value="UsrQry">👫 Kullanıcı &nbsp;&nbsp;</option>
-					<option value="SrvQry">⚓ Birim</option>
-					<option value="TskQry">📝 Konu</option>
+					<option value="UsrQry">👫 Kullanıcılar &nbsp;</option>
+					<option value="SrvQry">⚓ Gruplar</option>
+					<option value="TskQry">📝 Konular</option>
 					@* <option value="PtrQry">⛓️ Şablon</option> *@
-					<option value="MdlQry">🖇️ TalepŞablon</option>
+					<option value="MdlQry">🖇️ Talep Modelleri</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -92,6 +93,10 @@
 		else if (selectedValue == "SrvQry")
 		{
 			await ShowSrvQry();
+		}
+		else if (selectedValue == "SrvQryPrv")
+		{
+			await ShowSrvQryPrv();
 		}
 		else if (selectedValue == "TskQry")
 		{
@@ -176,7 +181,20 @@
 	private async Task ShowSrvQry()
 	{
 		ModalParameters mp = new();
-		// mp.Add("OOId", oo.OOId);
+		mp.Add("Prv", false);
+
+		Modal.Show<SrvQry>("Servisler", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+					Position = ModalPosition.Middle
+				});
+	}
+	private async Task ShowSrvQryPrv()
+	{
+		ModalParameters mp = new();
+		mp.Add("Prv", true);
 
 		Modal.Show<SrvQry>("Servisler", mp,
 			new ModalOptions

@@ -4,10 +4,10 @@
 
 @if (tbl != null)
 {
-	<table >
+	<table>
 		<caption>
 			<button @onclick="@(() => ShowMdf(0))">
-				<span class="material-symbols-outlined">add</span>Birim Tanım
+				<span class="material-symbols-outlined">add</span>Grup Tanım
 			</button>
 		</caption>
 		<tbody>
@@ -37,6 +37,8 @@
 }
 
 @code {
+	[Parameter] public bool Prv { get; set; }
+
 	private List<SS> tbl;
 	ModalOptions options = new ModalOptions()
 		{
@@ -49,6 +51,7 @@
 	{
 		ModalParameters mp = new();
 		mp.Add("SSId", id);
+		mp.Add("Prv", Prv);
 
 		var x = Modal.Show<SrvMdf>("", mp, options);
 		var r = await x.Result;
@@ -64,7 +67,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<SS>("SS_QRY",
-				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = my.FrmId, c = Prv ? 1 : 0 }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

@@ -7,7 +7,7 @@
 	<table style="min-width:340px;">
 		<caption>
 			<button @onclick="Kaydet">
-				<span class="material-symbols-outlined">check</span>Birim Kaydet
+				<span class="material-symbols-outlined">check</span>Grup Kaydet
 			</button>
 		</caption>
 		<tbody>
@@ -66,6 +66,7 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public bool Prv { get; set; }
 	[Parameter] public int SSId { get; set; }
 	private SS? ss;
 	private List<SU>? su;
@@ -102,6 +103,7 @@
 						p4 = SSId,
 						p5 = ss.Ad,
 						p6 = ss.Psf,
+						p7 = Prv ? 1 : 0,
 					},
 					commandType: CommandType.StoredProcedure);
 
