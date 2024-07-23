@@ -18,6 +18,7 @@
 				<th>period</th>
 				<th>sonraki<br />planlanan başlangıç</th>
 				<th>konu</th>
+				<th>kullanıcı</th>
 			</tr>
 			@foreach (var rec in tbl)
 			{
@@ -35,6 +36,7 @@
 					<td>@rec.PrdAd</td>
 					<td>@rec.RSD.ToS()</td>
 					<td>@rec.TskAd</td>
+					<td>@rec.UUAd</td>
 				</tr>
 			}
 		</tbody>
@@ -42,6 +44,7 @@
 }
 
 @code {
+	[Parameter] public bool Prv { get; set; }
 	private List<RR> tbl;
 
 	ModalOptions options = new ModalOptions()
@@ -71,7 +74,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<RR>("RR_QRY",
-				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = my.FrmId, c = Prv ? 1 : 0 }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 
@@ -98,6 +101,7 @@
 		public string? Ad;
 		public string? PrdAd;
 		public string? TskAd;
+		public string? UUAd;
 		public DateTime? RSD;
 	}
 }

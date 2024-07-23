@@ -207,12 +207,12 @@
 							dsb = !(rec.ActId == my.Id || (rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3));
 						}
 					}
-					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başlat</button>
-					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Bitir</button>
+					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başladım</button>
+					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Tamamladım</button>
 
 					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
-					<div class="ooStuA ooC ooTxtS">Başlat ?</div>
-					<div class="ooStuA ooC ooTxtF">Bitir ?</div>
+					<div class="ooStuA ooC ooTxtS">Başladım</div>
+					<div class="ooStuA ooC ooTxtF">Tamamladım</div>
 					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
 				</div>
 			</div>

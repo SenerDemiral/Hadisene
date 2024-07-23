@@ -12,11 +12,17 @@
 		</caption>
 		<tbody>
 			<tr>
-				<th>edit</th>
-				<th>isim</th>
-				<th>ytk</th>
-				<th>tel</th>
-				<th>mail</th>
+				<th rowspan="2">edit</th>
+				<th rowspan="2">isim</th>
+				<th rowspan="2">ytk</th>
+				<th rowspan="2">tel</th>
+				<th rowspan="2">mail</th>
+				<th colspan="2" class="ta-c">özel</th>
+			</tr>
+			<tr>
+				@* <td colspan="5"></td> *@
+				<th>Grp</th>
+				<th>Prydk</th>
 			</tr>
 			@foreach (var rec in tbl)
 			{
@@ -31,6 +37,13 @@
 					<td style="text-align:center;font-family: monospace;">@rec.YtkTxt</td>
 					<td>@rec.Tel</td>
 					<td>@rec.Mail</td>
+					<td class="ta-c">
+						<input type="checkbox" checked=@rec.isFPS onclick="return false" style="width:auto" />
+					</td>
+					<td class="ta-c">
+						<input type="checkbox" checked=@rec.isFPR onclick="return false" style="width:auto" />
+					</td>
+
 				</tr>
 			}
 		</tbody>
@@ -94,5 +107,11 @@
 		public string? Mail;
 		public string? Pwd;
 		public string? YtkTxt;
+
+		public int FPS;
+		public bool isFPS => FPS == 1 ? true : false;
+		public int FPR;
+		public bool isFPR => FPR == 1 ? true : false;
+
 	}
 }

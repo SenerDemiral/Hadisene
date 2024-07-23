@@ -51,6 +51,14 @@
 				<td>pwd</td>
 				<td><input type="text" maxlength="20" @bind="rec!.Pwd" /></td>
 			</tr>
+			<tr>
+				<td>özel Grp</td>
+				<td><input type="checkbox" @bind="rec.isFPS" style="width:auto" /></td>
+			</tr>
+			<tr>
+				<td>özel Prydk</td>
+				<td><input type="checkbox" @bind="rec.isFPR" style="width:auto" /></td>
+			</tr>
 
 			<tr>
 				<td colspan="2" style="padding:0;">
@@ -106,8 +114,15 @@
 						p6 = rec.Tel,
 						p7 = rec.Mail,
 						p8 = rec.Pwd,
+						p9 = rec.FPS,
+						pa = rec.FPR,
 					},
 					commandType: CommandType.StoredProcedure);
+			if (my.Id == UUId)
+			{
+				my.FPS = rec.FPS == 1 ? true : false;
+				my.FPR = rec.FPR == 1 ? true : false;
+			}
 
 			// Servisleri ins/upd/del
 			foreach (var r in us)
@@ -181,6 +196,26 @@
 		public string? Tel;
 		public string? Mail;
 		public string? Pwd;
+		
+		public int FPS;
+		public bool isFPS
+		{
+			get => FPS == 1;
+			set
+			{
+				FPS = value ? 1 : 0;
+			}
+		}
+
+		public int FPR;
+		public bool isFPR
+		{
+			get => FPR == 1;
+			set
+			{
+				FPR = value ? 1 : 0;
+			}
+		}
 	}
 	public sealed class US
 	{

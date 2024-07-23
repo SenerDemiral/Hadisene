@@ -25,7 +25,7 @@
 		<div>Giriş yapın</div>
 	}
 
-	<InputSelect TValue="string" style="font-size:large"
+	<InputSelect TValue="string" style="font-size:1rem"
 				 Value="selVal"
 				 ValueChanged="MenuChange"
 				 ValueExpression="@(() => selVal)">
@@ -34,8 +34,14 @@
 		{
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
 			<option value="OrdStat">📈 Özet</option>
-			<option value="SrvQryPrv">🔐 Gruplarım</option>
-			<option value="RmnQry">⏳ Periyodiklerim</option>
+			@if (my.FPS)
+			{
+				<option value="SrvQryPrv">🔐 Gruplarım</option>
+			}
+			@if (my.FPR)
+			{
+				<option value="RmnQryPrv">⏳ Periyodiklerim</option>
+			}
 			@if (my.Ytk == 1)
 			{
 				<optgroup label="Tanımlar">
@@ -44,6 +50,7 @@
 					<option value="TskQry">📝 Konular</option>
 					@* <option value="PtrQry">⛓️ Şablon</option> *@
 					<option value="MdlQry">🖇️ Talep Modelleri</option>
+					<option value="RmnQry">⏳ Periyodikler</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -118,6 +125,10 @@
 		{
 			await ShowRmnQry();
 		}
+		else if (selectedValue == "RmnQryPrv")
+		{
+			await ShowRmnQry();
+		}
 		else if (selectedValue == "Refresh")
 		{
 			await js.InvokeVoidAsync("hardReload");
@@ -138,7 +149,7 @@
 	private ValueTask ShowRmnQry()
 	{
 		ModalParameters mp = new();
-		// mp.Add("OOId", oo.OOId);
+		mp.Add("Prv", false);
 
 		Modal.Show<RmnQry>("Hatırlatıcılar", mp,
 			new ModalOptions
@@ -150,12 +161,25 @@
 				});
 		return ValueTask.CompletedTask;
 	}
-	private ValueTask ShowUsrQry()
+	private async Task ShowRmnQryPrv()
+	{
+		ModalParameters mp = new();
+		mp.Add("Prv", true);
+
+		Modal.Show<RmnQry>("Hatırlatıcılar", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+					Position = ModalPosition.Middle
+				});
+	}
+
+	private async Task ShowUsrQry()
 	{
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
-
-		Modal.Show<UsrQry>("Kullanıcılar", mp,
+		var messageForm = Modal.Show<UsrQry>("Kullanıcılar", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -163,7 +187,9 @@
 					SizeCustomClass = "blazored-modal-custom-size",
 					Position = ModalPosition.Middle
 				});
-		return ValueTask.CompletedTask;
+		var result = await messageForm.Result;
+		StateHasChanged();
+		//return ValueTask.CompletedTask;
 	}
 	private async Task ShowTskQry()
 	{
@@ -323,6 +349,8 @@
 			my.FrmId = x.FRMID;
 			my.FrmAd = x.FRMAD;
 			my.SrvStr = x.SRVSTR;
+			my.FPS = x.FPS == 1 ? true : false;		// PrvtSrv
+			my.FPR = x.FPR == 1 ? true : false;		// PrvtRmn
 
 			await Notifier.Invoke("UsrEnter", new NotifyArgs
 				{
