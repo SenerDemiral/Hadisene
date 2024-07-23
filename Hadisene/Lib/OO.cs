@@ -118,5 +118,5 @@ public sealed class OO
 			}
 		}
 	}
-	public Dictionary<int,int> OrdUsrMap = new();
+	public Dictionary<int,int> OrdUsrMap = new();	// Usr,Rol
 }

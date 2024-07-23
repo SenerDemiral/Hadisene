@@ -192,23 +192,44 @@
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
 					@{
-						// ActId = 0 Belirsiz olabilir, Bu servisteki Aktorlerden biri başlatabilir ve kendisi Act olur
-						// Act kendisiyse veya Kendi bir Actor ve OrdUsrlarından biri kendisi ise
-						// bool dsb = !(rec.ActId == my.Id || (my.Ytk == 4 && rec.OrdUsrSet.Contains(my.Id)));
-						bool dsb;
-						if (rec.ReqId == rec.ActId) // Ozel
+						bool enb;
+						// Aktörsem
+						if (my.Id == rec.ActId)
 						{
-							dsb = true;
-							if (rec.ReqId == my.Id)
-								dsb = false;	
+							enb = true;
 						}
+						// İsteyensem
+						else if (my.Id == rec.ReqId)
+						{
+							enb = true;
+						}
+						// Aktör belirsiz ise Gruptaki Gözlemci dışındakilerden biri bensem
+						else if (rec.ActId == 0)
+						{
+							enb = rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3;
+						}
+						// Grup sorumlusu bensem
 						else
 						{
-							dsb = !(rec.ActId == my.Id || (rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3));
+							enb = rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] == 2;
 						}
+
+						// if (rec.ActId == 0) // Act belirtilmemiş
+						// {
+						// 	// Srv da üyeysem ve Rol in (0,2) ise.  Rol:0(-),2(sorumlu),3(gözlemci)
+						// 	// -1: Req üye değil ve Grup dışından biri
+						// 	enb = rec.OrdUsrMap.ContainsKey(my.Id) && //rec.OrdUsrMap[my.Id] != 3;
+						// 	rec.OrdUsrMap[my.Id].IsAny(-1, 0, 2); // Gözlemci:3 dışındakiler
+						// }
+						// else
+						// {
+						// 	// Act bensem veya Srv de sorumluysam
+						// 	enb = rec.ActId == my.Id ||
+						// 	(rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] == 2);
+						// }
 					}
-					<button class="ooStuA ooI ooBtnS" disabled="@dsb" @onclick="@(() => Baslat(rec))">Başladım</button>
-					<button class="ooStuA ooI ooBtnF" disabled="@dsb" @onclick="@(() => Bitir(rec))">Tamamladım</button>
+					<button class="ooStuA ooI ooBtnS" disabled="@(!enb)" @onclick="@(() => Baslat(rec))">Başladım</button>
+					<button class="ooStuA ooI ooBtnF" disabled="@(!enb)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
 
 					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
 					<div class="ooStuA ooC ooTxtS">Başladım</div>

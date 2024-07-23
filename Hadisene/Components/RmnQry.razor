@@ -18,7 +18,7 @@
 				<th>period</th>
 				<th>sonraki<br />planlanan başlangıç</th>
 				<th>konu</th>
-				<th>kullanıcı</th>
+				<th>☼ kimin</th>
 			</tr>
 			@foreach (var rec in tbl)
 			{
@@ -34,7 +34,7 @@
 					</td>
 					<td>@rec.Ad</td>
 					<td>@rec.PrdAd</td>
-					<td>@rec.RSD.ToS()</td>
+					<td>@rec.RSD?.ToString("dd.MM.yy HH:mm")</td>
 					<td>@rec.TskAd</td>
 					<td>@rec.UUAd</td>
 				</tr>
