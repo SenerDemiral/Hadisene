@@ -87,13 +87,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="act hdr">
-					<td colspan="3">kime</td>
+				<tr class="srv hdr">
+					<td colspan="3">grup</td>
 				</tr>
-				<tr class="act">
+				<tr class="Srv">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.actList)
+							@foreach (var itm in UDB.srvList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />
@@ -103,13 +103,13 @@
 						</div>
 					</td>
 				</tr>
-				<tr class="srv hdr">
-					<td colspan="3">birim</td>
+				<tr class="act hdr">
+					<td colspan="3">kime</td>
 				</tr>
-				<tr class="Srv">
+				<tr class="act">
 					<td colspan="3" class="bdy">
 						<div class="lst">
-							@foreach (var itm in UDB.srvList)
+							@foreach (var itm in UDB.actList)
 							{
 								<div>
 									<input type="checkbox" @bind-value="itm.Selected" />

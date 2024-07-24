@@ -57,7 +57,11 @@
 			</tr>
 			<tr>
 				<td>özel Prydk</td>
-				<td><input type="checkbox" @bind="rec.isFPR" style="width:auto" /></td>
+				<td><input type="checkbox" @bind="rec.isFPP" style="width:auto" /></td>
+			</tr>
+			<tr>
+				<td>özel Mdl</td>
+				<td><input type="checkbox" @bind="rec.isFPM" style="width:auto" /></td>
 			</tr>
 
 			<tr>
@@ -115,13 +119,16 @@
 						p7 = rec.Mail,
 						p8 = rec.Pwd,
 						p9 = rec.FPS,
-						pa = rec.FPR,
+						pa = rec.FPP,
+						pb = rec.FPM,
 					},
 					commandType: CommandType.StoredProcedure);
-			if (my.Id == UUId)
+			
+					if (my.Id == UUId)
 			{
 				my.FPS = rec.FPS == 1 ? true : false;
-				my.FPR = rec.FPR == 1 ? true : false;
+				my.FPP = rec.FPP == 1 ? true : false;
+				my.FPM = rec.FPM == 1 ? true : false;
 			}
 
 			// Servisleri ins/upd/del
@@ -207,13 +214,23 @@
 			}
 		}
 
-		public int FPR;
-		public bool isFPR
+		public int FPP;
+		public bool isFPP
 		{
-			get => FPR == 1;
+			get => FPP == 1;
 			set
 			{
-				FPR = value ? 1 : 0;
+				FPP = value ? 1 : 0;
+			}
+		}
+
+		public int FPM;
+		public bool isFPM
+		{
+			get => FPM == 1;
+			set
+			{
+				FPM = value ? 1 : 0;
 			}
 		}
 	}

@@ -15,7 +15,7 @@
 				<th>edit</th>
 				<th>ad</th>
 				<th>link</th>
-				<th>aylık</th>
+				@* <th>aylık</th> *@
 				<th>kimin</th>
 				<th class="ta-c">talepler</th>
 			</tr>
@@ -29,7 +29,7 @@
 					</td>
 					<td>@rec.Ad</td>
 					<td><input type="checkbox" disabled @bind="@rec.isChn" /></td>
-					<td><input type="checkbox" disabled @bind="@rec.isAYLIK" /></td>
+					@* <td><input type="checkbox" disabled @bind="@rec.isAYLIK" /></td> *@
 					<td>@rec.UUAd</td>
 					<td class="ta-c">
 						<button @onclick="@(() => ShowDty(rec.MMId))">
@@ -43,7 +43,9 @@
 }
 
 @code {
+	[Parameter] public bool Prv { get; set; }
 	private List<MM> tbl;
+
 	ModalOptions options = new ModalOptions()
 		{
 			HideHeader = true,
@@ -92,7 +94,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<MM>("MM_QRY",
-				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = my.FrmId, c = Prv ? 1 : 0 }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

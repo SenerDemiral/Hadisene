@@ -7,7 +7,8 @@ public sealed class AppState
 	public int Id;
 	public string? Ad = null;
 	public bool FPS;        // Flag PrivateServis açabilir
-	public bool FPR;        // Flag PrivateRemainder açabilir
+	public bool FPP;        // Flag PrivatePeriyodik açabilir
+	public bool FPM;        // Flag PrivateModel açabilir
 	public int FrmId;
 	public string? FrmAd = null;
 	public int Ytk = 0;  // 1:Admn, 2:Sorumlu, 3:Denetci, 4:Actor/Görevli, 4:Requester/İsteyen, 8:Pasif, 9:Ayrıldı

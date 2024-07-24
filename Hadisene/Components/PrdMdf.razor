@@ -2,7 +2,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (rr != null && sad != null)
+@if (pp != null && sad != null)
 {
 	<table style="min-width:340px;">
 		<caption>
@@ -17,16 +17,16 @@
 			</tr>
 			<tr>
 				<td>ad</td>
-				<td><input type="text" maxlength="30" @bind="rr!.Ad" /></td>
+				<td><input type="text" maxlength="30" @bind="pp!.Ad" /></td>
 			</tr>
 			<tr>
 				<td>pasif</td>
-				<td><input type="checkbox" @bind="rr.isPsf" style="width:auto" /></td>
+				<td><input type="checkbox" @bind="pp.isPsf" style="width:auto" /></td>
 			</tr>
 			<tr>
 				<td>period</td>
 				<td>
-					<select @bind="rr.Prd" style="width:100%;">
+					<select @bind="pp.Prd" style="width:100%;">
 						<option value="1">Yıllık</option>
 						<option value="2">Aylık</option>
 						<option value="3">Haftalık</option>
@@ -46,13 +46,13 @@
 						<div class="date">
 							<input type="date"
 								   @bind:event="onchange"
-								   @bind:get="@rr.RSD"
+								   @bind:get="@pp.RSD"
 								   @bind:set="CheckRSD" />
 						</div>
 						<div class="time">
 							<input type="time"
 								   @bind:event="onchange"
-								   @bind:get="@rr.RSD"
+								   @bind:get="@pp.RSD"
 								   @bind:set="CheckRSD" />
 						</div>
 					</div>
@@ -64,7 +64,7 @@
 			</tr>
 			<tr>
 				<td>saat</td>
-				<td><input type="number" min="1" @bind="rr.RPH" /></td>
+				<td><input type="number" min="1" @bind="pp.RPH" /></td>
 			</tr>
 
 			<tr>
@@ -72,7 +72,7 @@
 			</tr>
 			<tr>
 				<td>saat</td>
-				<td><input type="number" min="1" @bind="rr.ISH" /></td>
+				<td><input type="number" min="1" @bind="pp.ISH" /></td>
 			</tr>
 
 			<tr>
@@ -83,7 +83,7 @@
 							   maxlength="30"
 							   size="30"
 							   list="TTL"
-							   @bind="rr.TskAd"
+							   @bind="pp.TskAd"
 							   @bind:event="onchange"
 							   @bind:after="CheckTsk" />
 					</div>
@@ -97,7 +97,7 @@
 							   maxlength="30"
 							   size="30"
 							   list="SSL"
-							   @bind="rr.SrvAd"
+							   @bind="pp.SrvAd"
 							   @bind:event="onchange"
 							   @bind:after="CheckSrv" />
 					</div>
@@ -111,7 +111,7 @@
 							   maxlength="30"
 							   size="30"
 							   list="SAL"
-							   @bind="rr.ActAd"
+							   @bind="pp.ActAd"
 							   @bind:event="onchange"
 							   @bind:after="CheckAct" />
 					</div>
@@ -123,14 +123,14 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<InputTextArea @bind-Value="rr.Inf"
+					<InputTextArea @bind-Value="pp.Inf"
 								   rows="2"
 								   style="min-width:100%; resize: both;" />
 				</td>
 			</tr>
 			<tr>
 				<td>sil</td>
-				<td><input type="checkbox" @bind="rr.isDel" style="width:auto" /></td>
+				<td><input type="checkbox" @bind="pp.isDel" style="width:auto" /></td>
 			</tr>
 		</tbody>
 	</table>
@@ -158,49 +158,49 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
-	[Parameter] public int RRId { get; set; }
-	private RR? rr = default, orr = default;
+	[Parameter] public int PPId { get; set; }
+	private PP? pp = default, opp = default;
 	private Dictionary<string, int>? ttd, ssd, sad;
 	private bool isOK;
 
 	private void CheckTsk()
 	{
-		if (ttd!.TryGetValue(rr.TskAd, out var nid))
+		if (ttd!.TryGetValue(pp.TskAd, out var nid))
 		{
-			rr.TskId = nid;
+			pp.TskId = nid;
 		}
 		else
-			rr.TskAd = orr.TskAd;
+			pp.TskAd = opp.TskAd;
 	}
 	private void CheckSrv()
 	{
-		if (ssd!.TryGetValue(rr.SrvAd, out var nid))
+		if (ssd!.TryGetValue(pp.SrvAd, out var nid))
 		{
-			rr.SrvId = nid;
+			pp.SrvId = nid;
 			SrvActLU(nid);
 
-			if (!String.IsNullOrEmpty(rr.ActAd) && sad!.TryGetValue(rr.ActAd, out var nid2))
+			if (!String.IsNullOrEmpty(pp.ActAd) && sad!.TryGetValue(pp.ActAd, out var nid2))
 			{
-				rr.ActId = nid2;
+				pp.ActId = nid2;
 			}
 			else
 			{
-				rr.ActId = 0;
-				rr.ActAd = "";
+				pp.ActId = 0;
+				pp.ActAd = "";
 			}
 			//CheckAct();
 		}
 		else
-			rr.SrvAd = orr.SrvAd;
+			pp.SrvAd = opp.SrvAd;
 	}
 	private void CheckAct()
 	{
-		if (sad!.TryGetValue(rr.ActAd, out var nid))
+		if (sad!.TryGetValue(pp.ActAd, out var nid))
 		{
-			rr.ActId = nid;
+			pp.ActId = nid;
 		}
 		else
-			rr.ActAd = orr.ActAd;
+			pp.ActAd = opp.ActAd;
 	}
 
 	private void CheckRSD(DateTime? val)
@@ -208,13 +208,13 @@
 		DateTime min = DateTime.Now.AddHours(1);
 
 		// Time part
-		if (val.HasValue && rr!.RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
-			val = rr.RSD!.Value.Date.Add(val.Value.TimeOfDay);
+		if (val.HasValue && pp!.RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
+			val = pp.RSD!.Value.Date.Add(val.Value.TimeOfDay);
 
 		if (val == null || val < min)
-			rr!.RSD = min;
+			pp!.RSD = min;
 		else
-			rr!.RSD = val;
+			pp!.RSD = val;
 	}
 
 	public async Task Kaydet()
@@ -222,23 +222,23 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			_ = conn.Execute("RR_MDF",
+			_ = conn.Execute("PP_MDF",
 					new
 					{
 						p1 = my.Id,
 						p2 = my.FrmId,
-						p3 = RRId,
-						p4 = rr.Psf,
-						p5 = rr.Prd,
-						p6 = rr!.Ad,
-						p7 = rr.ISH,
-						p8 = rr.RSD,
-						p9 = rr.RPH,
-						pa = rr.TskId,
-						pb = rr.SrvId,
-						pc = rr.ActId,
-						pd = rr.Inf,
-						pe = rr.Del,
+						p3 = PPId,
+						p4 = pp.Psf,
+						p5 = pp.Prd,
+						p6 = pp!.Ad,
+						p7 = pp.ISH,
+						p8 = pp.RSD,
+						p9 = pp.RPH,
+						pa = pp.TskId,
+						pb = pp.SrvId,
+						pc = pp.ActId,
+						pd = pp.Inf,
+						pe = pp.Del,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -259,21 +259,21 @@
 
 		try
 		{
-			if (RRId == 0)
+			if (PPId == 0)
 			{
-				rr = new();
+				pp = new();
 			}
 			else
 			{
-				rr = conn.QuerySingle<RR>("RR_SEL",
-						new { UsrId = my.Id, RRId = RRId },
+				pp = conn.QuerySingle<PP>("PP_SEL",
+						new { UsrId = my.Id, PPId = PPId },
 						commandType: CommandType.StoredProcedure);
 			}
 
 			ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			//Srv Actors
-			SrvActLU(rr.SrvId);
+			SrvActLU(pp.SrvId);
 		}
 		catch (Exception ex)
 		{
@@ -287,7 +287,7 @@
 		if (SSId > 0)
 		{
 			using var conn = db.GetConnection();
-			sad = conn.Query<UU>("SA_LU", new { SSId = rr.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			sad = conn.Query<UU>("SA_LU", new { SSId = pp.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		}
 		else
 			sad = new();
@@ -295,12 +295,12 @@
 
 	private string Idf()
 	{
-		return RRId == 0 ? "yeni" : RRId.ToString("### ### ###");
+		return PPId == 0 ? "yeni" : PPId.ToString("### ### ###");
 	}
 
-	public sealed class RR
+	public sealed class PP
 	{
-		public int RRId;
+		public int PPId;
 		public string? Ad;
 		public int Psf;
 		public bool isPsf
@@ -334,9 +334,9 @@
 			}
 		}
 
-		public RR ShallowCopy()
+		public PP ShallowCopy()
 		{
-			return (RR)this.MemberwiseClone();
+			return (PP)this.MemberwiseClone();
 		}
 	}
 

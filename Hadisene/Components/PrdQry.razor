@@ -24,9 +24,9 @@
 			{
 				<tr>
 					<td>
-						<button @onclick="@(() => ShowMdf(rec.RRId))">
+						<button @onclick="@(() => ShowMdf(rec.PPId))">
 							<span class="material-symbols-outlined">edit</span>
-							<span style="font-size:.6rem;">@rec.RRId</span>
+							<span style="font-size:.6rem;">@rec.PPId</span>
 						</button>
 					</td>
 					<td>
@@ -45,7 +45,7 @@
 
 @code {
 	[Parameter] public bool Prv { get; set; }
-	private List<RR> tbl;
+	private List<PP> tbl;
 
 	ModalOptions options = new ModalOptions()
 		{
@@ -57,9 +57,9 @@
 	public async Task ShowMdf(int id)
 	{
 		ModalParameters mp = new();
-		mp.Add("RRId", id);
+		mp.Add("PPId", id);
 
-		var x = Modal.Show<RmnMdf>("", mp, options);
+		var x = Modal.Show<PrdMdf>("", mp, options);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
@@ -72,7 +72,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			tbl = (await conn.QueryAsync<RR>("RR_QRY",
+			tbl = (await conn.QueryAsync<PP>("PP_QRY",
 				new { a = my.Id, b = my.FrmId, c = Prv ? 1 : 0 }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
@@ -91,9 +91,9 @@
 		await Read();
 	}
 
-	public sealed class RR
+	public sealed class PP
 	{
-		public int RRId;
+		public int PPId;
 		public int Psf;
 		public bool isPsf => Psf == 1 ? true : false;
 

@@ -38,9 +38,17 @@
 			{
 				<option value="SrvQryPrv">🔐 Gruplarım</option>
 			}
-			@if (my.FPR)
+			@if (my.FPP)
 			{
-				<option value="RmnQryPrv">⏳ Periyodiklerim</option>
+				<option value="PrdQryPrv">⏳ Periyodiklerim</option>
+			}
+			@if (my.FPM)
+			{
+				<option value="MdlQryPrv">🖇️ Modellerim</option>
+			}
+			@if (my.FPP)
+			{
+				<option value="PrdQryPrv">⏳ Periyodiklerim</option>
 			}
 			@if (my.Ytk == 1)
 			{
@@ -48,9 +56,8 @@
 					<option value="UsrQry">👫 Kullanıcılar &nbsp;</option>
 					<option value="SrvQry">⚓ Gruplar</option>
 					<option value="TskQry">📝 Konular</option>
-					@* <option value="PtrQry">⛓️ Şablon</option> *@
-					<option value="MdlQry">🖇️ Talep Modelleri</option>
-					<option value="RmnQry">⏳ Periyodikler</option>
+					<option value="MdlQry">🖇️ Modeller</option>
+					<option value="PrdQry">⏳ Periyodikler</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -113,21 +120,21 @@
 		{
 			await ShowUsrQry();
 		}
-		else if (selectedValue == "PtrQry")
-		{
-			await ShowPtrQry();
-		}
 		else if (selectedValue == "MdlQry")
 		{
 			await ShowMdlQry();
 		}
-		else if (selectedValue == "RmnQry")
+		else if (selectedValue == "MdlQryPrv")
 		{
-			await ShowRmnQry();
+			await ShowMdlQryPrv();
 		}
-		else if (selectedValue == "RmnQryPrv")
+		else if (selectedValue == "PrdQry")
 		{
-			await ShowRmnQry();
+			await ShowPrdQry();
+		}
+		else if (selectedValue == "PrdQryPrv")
+		{
+			await ShowPrdQryPrv();
 		}
 		else if (selectedValue == "Refresh")
 		{
@@ -146,12 +153,12 @@
 		}
 	}
 
-	private ValueTask ShowRmnQry()
+	private ValueTask ShowPrdQry()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", false);
 
-		Modal.Show<RmnQry>("Hatırlatıcılar", mp,
+		Modal.Show<PrdQry>("Hatırlatıcılar", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -160,12 +167,12 @@
 				});
 		return ValueTask.CompletedTask;
 	}
-	private async Task ShowRmnQryPrv()
+	private async Task ShowPrdQryPrv()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", true);
 
-		Modal.Show<RmnQry>("Hatırlatıcılar", mp,
+		Modal.Show<PrdQry>("Hatırlatıcılar", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
@@ -224,22 +231,22 @@
 					Size = ModalSize.Medium,
 				});
 	}
-	private async Task ShowPtrQry()
+	private async Task ShowMdlQry()
 	{
 		ModalParameters mp = new();
-		// mp.Add("OOId", oo.OOId);
+		mp.Add("Prv", false);
 
-		Modal.Show<PtrQry>("Şablonlar", mp,
+		Modal.Show<MdlQry>("Model", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
 				});
 	}
-	private async Task ShowMdlQry()
+	private async Task ShowMdlQryPrv()
 	{
 		ModalParameters mp = new();
-		// mp.Add("OOId", oo.OOId);
+		mp.Add("Prv", true);
 
 		Modal.Show<MdlQry>("Model", mp,
 			new ModalOptions
@@ -340,7 +347,8 @@
 			my.FrmAd = x.FRMAD;
 			my.SrvStr = x.SRVSTR;
 			my.FPS = x.FPS == 1 ? true : false;		// PrvtSrv
-			my.FPR = x.FPR == 1 ? true : false;		// PrvtRmn
+			my.FPP = x.FPP == 1 ? true : false;		// PrvtPeriyodik
+			my.FPM = x.FPM == 1 ? true : false;     // PrvtModel
 
 			await Notifier.Invoke("UsrEnter", new NotifyArgs
 				{
