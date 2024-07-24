@@ -157,7 +157,6 @@
 					HideHeader = true,
 					Size = ModalSize.Custom,
 					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
 				});
 		return ValueTask.CompletedTask;
 	}
@@ -171,7 +170,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 
@@ -185,7 +183,6 @@
 					HideHeader = true,
 					Size = ModalSize.Custom,
 					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
 				});
 		var result = await messageForm.Result;
 		StateHasChanged();
@@ -201,7 +198,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 	private async Task ShowSrvQry()
@@ -214,7 +210,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 	private async Task ShowSrvQryPrv()
@@ -227,7 +222,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 	private async Task ShowPtrQry()
@@ -240,7 +234,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 	private async Task ShowMdlQry()
@@ -253,7 +246,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Medium,
-					Position = ModalPosition.Middle
 				});
 	}
 
@@ -264,8 +256,6 @@
 			{
 				HideHeader = true,
 				Size = ModalSize.Small,
-				// SizeCustomClass = "custom-size-modal",
-				Position = ModalPosition.Middle
 			};
 		ModalParameters mp = new();
 
@@ -391,7 +381,7 @@
 				// 	if (selVal == "OrdStat")
 				// 		navigationManager.NavigateTo($"OrdStat/{usrTkn}/{@my.Id}/{@my.Ytk}");
 
-				toastService.ShowInfo($"Yeni Talep eklendi #{value.OOId.toSqid()}");
+				toastService.ShowInfo($"Yeni Talep eklendi {value.OOId.toSqid()}");
 
 				try
 				{

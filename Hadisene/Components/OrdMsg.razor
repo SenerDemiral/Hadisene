@@ -92,7 +92,6 @@
 				HideHeader = true,
 				Size = ModalSize.Custom,
 				SizeCustomClass = "blazored-modal-custom-size",
-				Position = ModalPosition.Middle
 			};
 		ModalParameters mp = new();
 		mp.Add("imgSrc", rec.Msg.Substring(0, rec.Msg.IndexOf("?")));
@@ -185,8 +184,7 @@
 
 		using var conn = db.GetConnection();
 		var x = conn.QuerySingle("OM_INS_IMG",
-			new { a = my.Id, b = OOId, c = my.FrmId, d = "I", f = fileExt },
-			commandType: CommandType.StoredProcedure);
+			new { a = my.Id, b = OOId, c = my.FrmId, d = "I", f = fileExt }, commandType: CommandType.StoredProcedure);
 
 		int OMId = x.OMID;
 		return OMId;
@@ -198,14 +196,13 @@
 		try
 		{
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
-				new { a = my.Id, b = OOId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure)
+				new { a = my.Id, b = OOId }, commandType: CommandType.StoredProcedure)
 			).ToList();
 
 			omList = omList.OrderBy(x => x.InsTS).ToList();
 
-			ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = OOId },
-				commandType: CommandType.StoredProcedure);
+			ordUsrs = conn.ExecuteScalar<string>("OO_USRS",
+				new { p1 = OOId }, commandType: CommandType.StoredProcedure);
 
 			Notifier.Notify += OnNotify;
 		}
@@ -226,7 +223,8 @@
 		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
-			var x = conn.QuerySingle<OM>("OM_SEL", new { a = my.Id, b = value.OMId }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingle<OM>("OM_SEL",
+				new { a = my.Id, b = value.OMId }, commandType: CommandType.StoredProcedure);
 
 			if (x.Prvt == 0 || my.Ytk < 4)
 			{

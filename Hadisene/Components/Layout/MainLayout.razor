@@ -1,7 +1,10 @@
 ﻿@inherits LayoutComponentBase
 @using Blazored.Toast.Configuration
 
-<CascadingBlazoredModal Position="ModalPosition.Middle" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+<CascadingBlazoredModal Position="ModalPosition.Middle"
+						HideCloseButton="true"
+						Size="ModalSize.Automatic"
+						@rendermode="new InteractiveServerRenderMode(prerender: false)" />
 <BlazoredToasts Position="ToastPosition.BottomRight"
 				Timeout="10"
 				@rendermode="new InteractiveServerRenderMode(prerender: false)" />

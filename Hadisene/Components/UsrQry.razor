@@ -53,12 +53,11 @@
 @code {
 	private List<UU> tbl;
 
-	ModalOptions options = new ModalOptions()
+	ModalOptions mdlOpts = new ModalOptions()
 		{
 			HideHeader = true,
 			Size = ModalSize.Large,
 			ActivateFocusTrap = false,
-			Position = ModalPosition.Middle
 		};
 
 	public async Task ShowMdf(int id)
@@ -66,7 +65,7 @@
 		ModalParameters mp = new();
 		mp.Add("UUId", id);
 
-		var x = Modal.Show<UsrMdf>("", mp, options);
+		var x = Modal.Show<UsrMdf>("", mp, mdlOpts);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

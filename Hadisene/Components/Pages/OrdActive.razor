@@ -191,45 +191,9 @@
 				<div class="ooFtr">
 					<div class="ooStuZ">KAPANDI</div>
 					<div class="ooStuX">İ P T A L</div>
-					@{
-						bool enb;
-						// Aktörsem
-						if (my.Id == rec.ActId)
-						{
-							enb = true;
-						}
-						// İsteyensem
-						else if (my.Id == rec.ReqId)
-						{
-							enb = true;
-						}
-						// Aktör belirsiz ise Gruptaki Gözlemci dışındakilerden biri bensem
-						else if (rec.ActId == 0)
-						{
-							enb = rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] != 3;
-						}
-						// Grup sorumlusu bensem
-						else
-						{
-							enb = rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] == 2;
-						}
 
-						// if (rec.ActId == 0) // Act belirtilmemiş
-						// {
-						// 	// Srv da üyeysem ve Rol in (0,2) ise.  Rol:0(-),2(sorumlu),3(gözlemci)
-						// 	// -1: Req üye değil ve Grup dışından biri
-						// 	enb = rec.OrdUsrMap.ContainsKey(my.Id) && //rec.OrdUsrMap[my.Id] != 3;
-						// 	rec.OrdUsrMap[my.Id].IsAny(-1, 0, 2); // Gözlemci:3 dışındakiler
-						// }
-						// else
-						// {
-						// 	// Act bensem veya Srv de sorumluysam
-						// 	enb = rec.ActId == my.Id ||
-						// 	(rec.OrdUsrMap.ContainsKey(my.Id) && rec.OrdUsrMap[my.Id] == 2);
-						// }
-					}
-					<button class="ooStuA ooI ooBtnS" disabled="@(!enb)" @onclick="@(() => Baslat(rec))">Başladım</button>
-					<button class="ooStuA ooI ooBtnF" disabled="@(!enb)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
+					<button class="ooStuA ooI ooBtnS" disabled="@(!rec.isSF)" @onclick="@(() => Baslat(rec))">Başladım</button>
+					<button class="ooStuA ooI ooBtnF" disabled="@(!rec.isSF)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
 
 					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
 					<div class="ooStuA ooC ooTxtS">Başladım</div>
@@ -280,7 +244,6 @@
 					HideHeader = true,
 					Size = ModalSize.Custom,
 					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
 				});
 	}
 
@@ -294,7 +257,6 @@
 				{
 					HideHeader = true,
 					Size = ModalSize.Large,
-					Position = ModalPosition.Middle
 				});
 
 		OrdViewUpd(oo);
@@ -311,6 +273,11 @@
 	}
 	private async Task ShowEdit(OO oo)
 	{
+		if (!oo.isEdt)
+		{
+			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
+			return;
+		}
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
@@ -320,7 +287,6 @@
 					HideHeader = true,
 					Size = ModalSize.Custom,
 					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
 				});
 
 		var r = await x.Result;
@@ -334,8 +300,8 @@
 
 	private async Task ShowMsg(OO oo)
 	{
-		// if (!oo.OrdUsrSet.Contains(my.Id))
-		if (!oo.OrdUsrMap.ContainsKey(my.Id))
+		// if (!oo.OrdUsrMap.ContainsKey(my.Id))
+		if (!oo.isMbr)
 		{
 			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
 			return;
@@ -353,7 +319,6 @@
 					HideHeader = true,
 					Size = ModalSize.Custom,
 					SizeCustomClass = "blazored-modal-custom-size",
-					Position = ModalPosition.Middle
 				});
 
 		var r = await x.Result;
@@ -531,7 +496,7 @@
 				{
 					ooList.RemoveAt(iof);
 					await InvokeAsync(StateHasChanged);
-					toastService.ShowInfo($"Talep Arşivlendi #{value.OOId.toSqid()}");
+					toastService.ShowInfo($"Talep Arşivlendi {value.OOId.toSqid()}");
 				}
 			}
 			else if (key == "IO")   // Insert
@@ -539,8 +504,7 @@
 				// İlgili kaydı bul
 				using var conn = db.GetConnection();
 				var x = conn.QuerySingle<OO>("OO_QRY",
-					new { A = my.Id, B = qryStr, p3 = value.OOId },
-					commandType: CommandType.StoredProcedure);
+					new { A = my.Id, B = qryStr, p3 = value.OOId },	commandType: CommandType.StoredProcedure);
 
 				ooList.Insert(0, x);
 
@@ -562,7 +526,6 @@
 			else
 			{
 				int iof = ooList!.FindIndex(x => x.OOId == value.OOId);
-				//(value.CId == CId || value.OrdUsrSet.Contains(my.UsrId)))
 				if (iof != -1)
 				{
 					if (key == "UO")

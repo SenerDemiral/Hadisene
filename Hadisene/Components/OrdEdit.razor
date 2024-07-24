@@ -512,8 +512,7 @@
 			commandType: CommandType.StoredProcedure);
 
 
-			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },
-			commandType: CommandType.StoredProcedure);
+			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },	commandType: CommandType.StoredProcedure);
 
 			var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
@@ -557,7 +556,6 @@
 		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-		//oo = conn.QuerySingle<OO>($"select * from OO_SEL({OOId})");
 		if (OOId == 0)
 		{
 			mode = Mode.New;
@@ -565,11 +563,10 @@
 		else
 		{
 			oo = conn.QuerySingle<OO>("OO_SEL",
-			new { p1 = my.Id, p2 = OOId },
-			commandType: CommandType.StoredProcedure);
+				new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
 		}
 		ooo = oo.ShallowCopy();
-		
+
 		//Srv Actors
 		SrvActLU(oo.SrvId);
 

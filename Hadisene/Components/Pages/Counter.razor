@@ -49,7 +49,7 @@
     private (string key, int value) lastNotification;
 
     public async Task IncrementCount() { 
-        toastService.ShowInfo("Yeni Talep eklendi");
+        //toastService.ShowInfo("Yeni Talep eklendi");
         
         User.Clicks++;
         await Notifier.InvokeIO("key", User.Clicks);
