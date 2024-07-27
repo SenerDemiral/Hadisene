@@ -414,7 +414,29 @@
 		oo.SoF = "S";
 	}
 	private async Task OkArsivle(OO oo)
-	{ }
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			conn.Execute("update OO set BD = BD + 1, Stu = 'Z' where OOId = @OOId;", new { OOId = oo.OOId });
+
+			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = oo.OOId }, commandType: CommandType.StoredProcedure);
+
+			await Notifier.Invoke("DO", new NotifyArgs
+				{
+					FFId = my.FrmId,
+					UUId = my.Id,
+					OOId = oo.OOId,
+					CId = oo.CId,
+					OrdUsrs = ordUsrs
+				});
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
 
 	private async Task Ok(OO oo)
 	{

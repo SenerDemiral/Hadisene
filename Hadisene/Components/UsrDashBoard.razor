@@ -210,6 +210,8 @@
 		else
 			url = $"/ordactive/0/{String.Join('&', sl)}";
 
+		url = $"{url}&{DateTime.Now.TimeOfDay}";	// Parametre değiştiğini force etmek için
+
 		navigationManager.NavigateTo(url);
 
 	}
