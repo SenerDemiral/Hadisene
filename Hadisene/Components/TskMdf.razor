@@ -20,6 +20,16 @@
 				<td><input type="text" maxlength="30" @bind="tt!.Ad" /></td>
 			</tr>
 			<tr>
+				<td colspan="2" class="lbl-top">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="tt.Inf"
+								   rows="2"
+								   style="min-width:100%; resize: both;" />
+				</td>
+			</tr>
+			<tr>
 				<td>pasif</td>
 				<td><input type="checkbox" @bind="tt.isPsf" style="width:auto" /></td>
 			</tr>
@@ -44,7 +54,8 @@
 						p2 = my.FrmId,
 						p3 = Id,
 						p4 = tt!.Ad,
-						p5 = tt.Psf
+						p5 = tt!.Inf,
+						p6 = tt.Psf
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -69,7 +80,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			tt = conn.QuerySingle<TT>("select * from TT where TTId = @Id",
+			tt = conn.QuerySingleOrDefault<TT>("select * from TT where TTId = @Id",
 					new { Id = Id },
 					commandType: CommandType.StoredProcedure);
 		}
@@ -90,6 +101,7 @@
 	{
 		public int TTId;
 		public string? Ad;
+		public string? Inf;
 		public int Psf;
 		public bool isPsf
 		{

@@ -32,7 +32,7 @@
 					   class="refs"
 					   maxlength="20"
 					   @bind:event="oninput" @bind="Rf1" />
-				</td>
+			</td>
 		</tr>
 		<tr>
 			<td>ref2</td>
@@ -86,7 +86,7 @@
 		try
 		{
 			using var conn = db.GetConnection();
-			_ = conn.Execute("MM2OO",
+			var cId = conn.ExecuteScalar<int>("MM2OO",
 					new
 					{
 						p1 = my.Id,
@@ -98,6 +98,20 @@
 					},
 					commandType: CommandType.StoredProcedure);
 
+			if (cId != 0)
+			{
+				ModalParameters mp = new();
+				mp.Add("CId", cId);
+				mp.Add("qryStr", "all");
+
+				Modal.Show<OrdActive>("Bağlı", mp,
+					new ModalOptions
+						{
+							HideHeader = true,
+							Size = ModalSize.ExtraLarge,
+							// SizeCustomClass = "blazored-modal-custom-size",
+						});
+			}
 		}
 		catch (Exception ex)
 		{

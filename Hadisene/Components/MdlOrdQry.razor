@@ -17,13 +17,19 @@
 			</caption>
 			<tbody>
 				<tr>
-					<th>edit</th>
-					<th>konu</th>
-					<th>grup</th>
-					<th>kime</th>
-					<th>+gün</th>
-					<th>plnBaş</th>
+					<th rowspan="2">edit</th>
+					<th rowspan="2">konu</th>
+					<th rowspan="2">grup</th>
+					<th rowspan="2">kime</th>
+					<th rowspan="2">±gün</th>
+					<th colspan="2">planlanan başlangıç</th>
+					<th colspan="2">bu sefer</th>
+				</tr>
+				<tr>
+					<th>zmn</th>
 					<th>süre(s)</th>
+					<th>Ok</th>
+					<th>±gün</th>
 
 				</tr>
 				@foreach (var rec in tbl)
@@ -40,6 +46,10 @@
 						<td class="ta-c">@rec.aGun</td>
 						<td class="ta-c">@rec.RST.ToString("HH:mm")</td>
 						<td class="ta-c">@rec.RPH</td>
+						<td><input type="checkbox" @bind="rec.isxOK" /></td>
+						<td class="ta-c">
+							<input type="number" style="width:56px" @bind-value="@rec.xaGun" />
+						</td>
 					</tr>
 				}
 			</tbody>
@@ -74,6 +84,19 @@
 
 	public async Task ShowM2O()
 	{
+		using var conn = db.GetConnection();
+		foreach (var t in tbl)
+		{
+			conn.Execute("MO_X_UPD",
+				new
+				{
+					p1 = t.MOId,
+					p2 = t.xOK,
+					p3 = t.xaGun,
+				},
+				commandType: CommandType.StoredProcedure);
+		}
+
 		ModalParameters mp = new();
 		mp.Add("MMId", MMId);
 
@@ -119,11 +142,20 @@
 		public string? TskAd;
 		public string? ActAd;
 
-		public int aGun;		//Iki Talep arasındaki gün sayısı
-		public DateTime RST;		
+		public int aGun;        //Talepler ins edilirken BasTrh den kac gün sonra bu baslayacak
+		public DateTime RST;
 		public int RPH;         //RequestPeriodHour
-		//public TimeOnly RST;	//RequestStartTime
 
+		public int xOK;			//Bu seferlik
+		public bool isxOK
+		{
+			get => xOK == 1;
+			set
+			{
+				xOK = value ? 1 : 0;
+			}
+		}
+		public int xaGun;         //Bu seferlik
 
 		public string? Rf1;
 		public string? Rf2;

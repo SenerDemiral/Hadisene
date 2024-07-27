@@ -190,46 +190,51 @@
 
 .ooCard .ooFtr {
 	grid-area: ooFtr;
+	align-content: center;
 	background-color: gainsboro;
 	color: black;
 	padding: 0 4px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 2rem;
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
+	/*gap: 2rem;*/
 }
 
-	.ooCard .ooFtr > * {
-		flex: 1;
-		text-align: center;
-	}
+.ooStuT > * {
+	flex: 1;
+	text-align: center;
+}
+
+.ooC {
+	flex: 1;
+	text-align: center;
+}
+/*********************************************/
+.ooCard[data-Stu="A"] .ooStuA {
+	display: flex;
+	justify-content: space-between;
+}
 
 /*Footer section Hide*/
-.ooCard[data-Stu="A"] .ooStuZ,
-.ooCard[data-Stu="A"] .ooStuX {
+.ooCard[data-Stu="A"] .ooStuT {
 	display: none;
 }
 
-.ooCard:[data-Stu="Z"] .ooStuX,
-.ooCard:[data-Stu="Z"] .ooStuA {
-	display: none;
+.ooCard[data-Stu="T"] .ooStuT {
+	display: flex;
+	justify-content: space-around;
 }
 
-.ooCard[data-Stu="X"] .ooStuZ,
-.ooCard[data-Stu="X"] .ooStuA {
+.ooCard[data-Stu="T"] .ooStuA {
 	display: none;
-}
-
-.ooCard[data-Stu="X"] {
-	opacity: 0.5;
 }
 
 /*Input or Confirm*/
-.ooCard[data-IoC="I"] .ooC {
+.ooCard[data-ioc="I"] .ooC {
 	display: none;
 }
 
-.ooCard[data-IoC="C"] .ooI {
+.ooCard[data-ioc="C"] .ooI {
 	display: none;
 }
 
@@ -242,6 +247,10 @@
 	display: none;
 }
 
+/**********/
+
+
+/**********/
 
 button[data-Pin="0"].ooPin::after {
 	content: "keep_off";
@@ -302,6 +311,7 @@ button.ooCID:disabled {
 	font-size: 1rem;
 	padding-left: 4px !important;
 }
+
 .ooAct {
 	color: goldenrod;
 	font-weight: bold;

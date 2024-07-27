@@ -37,6 +37,10 @@
 							<img src=@rec.Msg />
 						</button>
 					}
+					else if (rec.Typ == "F")
+					{
+						<a href="@rec.Msg" target="_blank">dosya.@rec.Msg.Split('.').Last()</a>
+					}
 					else
 					{
 						<div class="msg">@rec.Msg</div>
@@ -78,6 +82,8 @@
 @code {
 	[Parameter]
 	public int OOId { get; set; } = 0;
+	[Parameter]
+	public int isChn { get; set; } = 0;
 
 	private List<OM>? omList;
 	public string? msg;
@@ -104,41 +110,53 @@
 		//var fileName = $"{env.WebRootPath}\\uploads\\F101\\{e.File.Name}";
 		//await using FileStream fs = new(fileName, FileMode.Create);
 		//await e.File.OpenReadStream().CopyToAsync(fs);
+
+		int OMId = 0;
+		string typ = "I";
+		string fullName;
+
 		try
 		{
 			if (e.File.ContentType.StartsWith("image/"))
 			{
+				typ = "I";
 				// OpenReadStream maxFileSize limitini geçerse yapmıyor
 				using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
 				{
 					image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
-					var OMId = InsertImageRec(e);
-					var dirName = $@"{env.WebRootPath}\uploads\F{my.FrmId}";
-					Directory.CreateDirectory(dirName); // if not exists
-					var fileName = $@"{dirName}\M{OMId}{Path.GetExtension(e.File.Name)}";
 
-					image.Save(fileName);
+					(OMId, fullName) = InsertImageRec(e, typ);
 
-					//await Task.Delay(1000);
-
-					await Notifier.Invoke("IM", new NotifyArgs
-						{
-							UUId = my.Id,
-							OMId = OMId,
-							OOId = OOId,
-							MsgTyp = "I",
-						});
+					image.Save(fullName);
 
 				}
 			}
-			else
+			else if (!string.IsNullOrEmpty(e.File.ContentType))
 			{
 				// Şimdilik
-				throw new InvalidOperationException("Sadece Image");
+				// throw new InvalidOperationException("Sadece Image");
 				// await using FileStream fs = new(fileName, FileMode.Create);
 				// await e.File.OpenReadStream().CopyToAsync(fs);
+				typ = "F";
+				(OMId, fullName) = InsertImageRec(e, typ);
+
+				await using FileStream fs = new(fullName, FileMode.Create);
+				await e.File.OpenReadStream().CopyToAsync(fs);
+			}
+			else
+			{
+				throw new InvalidOperationException("Desteklenmeyen dosya tipi");
 			}
 
+			//await Task.Delay(1000);
+
+			await Notifier.Invoke("IM", new NotifyArgs
+				{
+					UUId = my.Id,
+					OMId = OMId,
+					OOId = OOId,
+					MsgTyp = typ,
+				});
 		}
 		catch (Exception ex)
 		{
@@ -160,11 +178,9 @@
 			return;
 
 		using var conn = db.GetConnection();
-		var x = conn.QuerySingle("OM_INS_TXT",
+		var OMId = conn.ExecuteScalar<int>("OM_INS_TXT",
 			new { a = my.Id, b = OOId, c = my.FrmId, f = msg, g = isPrivate ? 1 : 0 },
 			commandType: CommandType.StoredProcedure);
-
-		int OMId = x.OMID;
 
 		await Notifier.Invoke("IM", new NotifyArgs
 			{
@@ -178,16 +194,20 @@
 		msg = null;
 	}
 
-	private int InsertImageRec(InputFileChangeEventArgs e)
+	private (int, string) InsertImageRec(InputFileChangeEventArgs e, string typ)
 	{
-		var fileExt = Path.GetExtension(e.File.Name);
+		var fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(e.File.Name);
 
 		using var conn = db.GetConnection();
-		var x = conn.QuerySingle("OM_INS_IMG",
-			new { a = my.Id, b = OOId, c = my.FrmId, d = "I", f = fileExt }, commandType: CommandType.StoredProcedure);
+		var OMId = conn.ExecuteScalar<int>("OM_INS_IMG",
+			new { a = my.Id, b = OOId, c = my.FrmId, d = typ, f = fileName }, commandType: CommandType.StoredProcedure);
 
-		int OMId = x.OMID;
-		return OMId;
+		var dirName = $@"{env.WebRootPath}\uploads\F{my.FrmId}";
+		Directory.CreateDirectory(dirName); // if not exists
+		
+		var fullName = $@"{dirName}\{typ}{OMId}-{fileName}";
+
+		return (OMId, fullName);
 	}
 
 	private async Task Read()
@@ -196,7 +216,7 @@
 		try
 		{
 			omList = (await conn.QueryAsync<OM>("OM_QRY",
-				new { a = my.Id, b = OOId }, commandType: CommandType.StoredProcedure)
+				new { a = my.Id, b = OOId, c = isChn }, commandType: CommandType.StoredProcedure)
 			).ToList();
 
 			omList = omList.OrderBy(x => x.InsTS).ToList();
@@ -223,10 +243,10 @@
 		if (key == "IM" && value.OOId == OOId)
 		{
 			using var conn = db.GetConnection();
-			var x = conn.QuerySingle<OM>("OM_SEL",
-				new { a = my.Id, b = value.OMId }, commandType: CommandType.StoredProcedure);
+			var x = conn.QuerySingleOrDefault<OM>("OM_SEL",
+				new { a = my.Id, b = value.OMId, c = isChn }, commandType: CommandType.StoredProcedure);
 
-			if (x.Prvt == 0 || my.Ytk < 4)
+			if (x != null)
 			{
 				omList!.Add(x);
 

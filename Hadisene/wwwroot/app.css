@@ -461,7 +461,7 @@ tbody.zebra tr:nth-child(odd) {
 		margin-inline: 8px;
 	}
 
-		.pge .bdy .stk {
+		.stk {
 			position: sticky;
 			top: 0;
 			left: 0;

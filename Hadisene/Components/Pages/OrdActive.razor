@@ -46,7 +46,7 @@
 
 			<div class="ooCard" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
-				 data-IoC="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
+				 data-ioc="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
 
 				<div class="ooHdr">
 					<div class="tooltip">
@@ -189,16 +189,25 @@
 				</div>
 
 				<div class="ooFtr">
-					<div class="ooStuZ">KAPANDI</div>
-					<div class="ooStuX">İ P T A L</div>
+					<div class="ooStuA">
 
-					<button class="ooStuA ooI ooBtnS" disabled="@(!rec.isSF)" @onclick="@(() => Baslat(rec))">Başladım</button>
-					<button class="ooStuA ooI ooBtnF" disabled="@(!rec.isSF)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
+						<button class="ooI ooBtnS" disabled="@(!rec.isSF)" @onclick="@(() => Baslat(rec))">Başladım</button>
+						<button class="ooI ooBtnF" disabled="@(!rec.isSF)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
 
-					<button class="ooStuA ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
-					<div class="ooStuA ooC ooTxtS">Başladım</div>
-					<div class="ooStuA ooC ooTxtF">Tamamladım</div>
-					<button class="ooStuA ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">İptal</button>
+						<button class="ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
+						<div class="ooC ooTxtS">Başladım</div>
+						<div class="ooC ooTxtF">Tamamladım</div>
+						<button class="ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Vazgeç</button>
+					</div>
+
+
+					<div class="ooStuT">
+						<button class="ooI ooBtnT" disabled="@(!rec.isSF)" @onclick="@(() => Arsivle(rec))">Arşivle</button>
+
+						<button class="ooC ooBtnOK" @onclick="@(() => OkArsivle(rec))">OK</button>
+						<div class="ooC ooTxtT">Arşivle</div>
+						<button class="ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Vazgeç</button>
+					</div>
 				</div>
 			</div>
 		}
@@ -301,7 +310,7 @@
 	private async Task ShowMsg(OO oo)
 	{
 		// if (!oo.OrdUsrMap.ContainsKey(my.Id))
-		if (!oo.isMbr)
+		if (!oo.isMbr && CId == 0)
 		{
 			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
 			return;
@@ -312,6 +321,7 @@
 
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
+		mp.Add("isChn", CId == 0 ? 0 : 1);
 
 		var x = Modal.Show<OrdMsg>("deneme", mp,
 			new ModalOptions
@@ -398,6 +408,14 @@
 		oo.SoF = "F";
 
 	}
+	private void Arsivle(OO oo)
+	{
+		oo.IoC = "C";
+		oo.SoF = "S";
+	}
+	private async Task OkArsivle(OO oo)
+	{ }
+
 	private async Task Ok(OO oo)
 	{
 		try
@@ -449,7 +467,7 @@
 		PgeHdr = CId switch
 		{
 			0 => "Aktif Talepler",
-			> 1 => "Bağlı Talepler",
+			> 0 => "Bağlı Talepler",
 			_ => "?",
 		};
 
@@ -504,7 +522,7 @@
 				// İlgili kaydı bul
 				using var conn = db.GetConnection();
 				var x = conn.QuerySingle<OO>("OO_QRY",
-					new { A = my.Id, B = qryStr, p3 = value.OOId },	commandType: CommandType.StoredProcedure);
+					new { A = my.Id, B = qryStr, p3 = value.OOId }, commandType: CommandType.StoredProcedure);
 
 				ooList.Insert(0, x);
 

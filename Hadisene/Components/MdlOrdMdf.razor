@@ -28,6 +28,16 @@
 				</td>
 			</tr>
 			<tr>
+				<td colspan="2">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="mo.Inf"
+								   rows="2"
+								   style="min-width:280px; resize: both;" />
+				</td>
+			</tr>
+			<tr>
 				<td>birim</td>
 				<td>
 					<input type="text"
@@ -52,48 +62,35 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">kaç gün sonra başlayacak</td>
+				<td colspan="2">kaç gün önce/sonra başlayacak</td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>±gün</td>
 				<td>
-					<input type="number" style="width:56px" min="0" @bind-value="@mo.iaGun" />
+					<input type="number" style="width:56px" @bind-value="@mo.iaGun" />
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">planlanan başlangıç zamanı</td>
+				<td colspan="2">planlanan başlangıç</td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>zaman</td>
 				<td>
 					<input type="time" @bind-value="@mo.RSD" />
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">planlanan süre (saat)</td>
-			</tr>
-			<tr>
-				<td></td>
+				<td>süre(s)</td>
 				<td>
-					<input type="number" style="width:56px" min="0" @bind-value="@mo.iRPH" />
+					<input type="number" style="width:56px" @bind-value="@mo.iRPH" />
 				</td>
 			</tr>
-			<tr>
-				<td colspan="2">açıklama</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<InputTextArea @bind-Value="mo.Inf"
-								   rows="2"
-								   style="min-width:280px; resize: both;" />
-				</td>
-			</tr>
-			@if (mo.MOId != 0)
+			@if (MOId != 0)
 			{
 				<tr>
-					<td>silinecek</td>
+					<td style="color:red">sil</td>
 					<td>
-						<input type="checkbox" @bind=@mo.Del disabled=@(mo.MOId == 0) style="width:auto" />
+						<input type="checkbox" @bind=@mo.Del disabled=@(MOId == 0) style="width:auto" />
 					</td>
 				</tr>
 			}
@@ -154,6 +151,12 @@
 		if (ttd!.TryGetValue(mo.TskAd, out var nid))
 		{
 			mo.TskId = nid;
+			using var conn = db.GetConnection();
+			var tt = conn.QuerySingle<TT>("TT_SEL",
+						new { TTId = nid },
+						commandType: CommandType.StoredProcedure);
+			if (!string.IsNullOrEmpty(tt.Inf))
+				mo.Inf = tt.Inf;
 		}
 		else
 			mo.TskAd = omo.TskAd;
@@ -255,7 +258,7 @@
 		public string? ActAd;
 
 		public int aGun;        //kaç gün sonra başlayacak +Gun
-		public DateTime RSD;    //Tarihin zmn kısmı RequestStartTime
+		public DateTime RSD = DateTime.Today;    //Tarihin zmn kısmı RequestStartTime
 		public int RPH;         //RequestPeriodHour
 
 		public int iaGun 
@@ -295,6 +298,7 @@
 	{
 		public int Id;
 		public string Ad;
+		public string? Inf;
 	}
 	public sealed class UU
 	{
