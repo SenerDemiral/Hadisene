@@ -306,8 +306,8 @@
 			string[] sa = itm.Split("#", StringSplitOptions.RemoveEmptyEntries);
 			list.Add(new SelList { Ad = sa[0], Id = sa[1], Selected = false });
 		}
-		// DB den sorted geliyor
-		//list.Sort((x, y) => String.Compare(x.Ad, y.Ad, null, CompareOptions.OrdinalIgnoreCase));
+		// DB den sorted gelmiyor
+		list.Sort((x, y) => String.Compare(x.Ad, y.Ad, null, CompareOptions.OrdinalIgnoreCase));
 	}
 
 	public sealed class DashBoard

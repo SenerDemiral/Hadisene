@@ -51,7 +51,6 @@
 				<div class="ooHdr">
 					<div class="tooltip">
 						<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
-							<span>@((MarkupString)rec.UpdFlg)</span>
 							<span class="material-symbols-outlined">settings</span>
 							@* <div class="ooBtnEdtId">&nbsp;&bull;@rec.OOId.toSqid()</div> *@
 						</button>
@@ -105,7 +104,8 @@
 									<div class="tooltip">
 										<button class="ooOk"
 												@onclick="@(() => OrdViewUpd(rec))">
-											<span class="material-symbols-outlined">flag</span>
+											<span>@((MarkupString)rec.UpdFlg)</span>
+											@* <span class="material-symbols-outlined">flag</span> *@
 										</button>
 										<span class="tooltiptext">gördüm</span>
 									</div>
@@ -191,21 +191,21 @@
 				<div class="ooFtr">
 					<div class="ooStuA">
 
-						<button class="ooI ooBtnS" disabled="@(!rec.isSF)" @onclick="@(() => Baslat(rec))">Başladım</button>
-						<button class="ooI ooBtnF" disabled="@(!rec.isSF)" @onclick="@(() => Bitir(rec))">Tamamladım</button>
+						<button class="ooI ooBtnS" disabled="@(!rec.isSF)" @onclick="@(() => Baslat(rec))">Başlat</button>
+						<button class="ooI ooBtnF" disabled="@(!rec.isSF)" @onclick="@(() => Bitir(rec))">Tamamla</button>
 
 						<button class="ooC ooBtnOK" @onclick="@(() => Ok(rec))">OK</button>
-						<div class="ooC ooTxtS">Başladım</div>
-						<div class="ooC ooTxtF">Tamamladım</div>
+						<div class="ooC ooTxtS">Başlat?</div>
+						<div class="ooC ooTxtF">Tamamla?</div>
 						<button class="ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Vazgeç</button>
 					</div>
 
 
 					<div class="ooStuT">
-						<button class="ooI ooBtnT" disabled="@(!rec.isSF)" @onclick="@(() => Arsivle(rec))">Arşivle</button>
+						<button class="ooI ooBtnT" @onclick="@(() => Arsivle(rec))">💤 Arşivle</button>
 
 						<button class="ooC ooBtnOK" @onclick="@(() => OkArsivle(rec))">OK</button>
-						<div class="ooC ooTxtT">Arşivle</div>
+						<div class="ooC ooTxtT">Arşivle?</div>
 						<button class="ooC ooBtnCancel" @onclick="@(() => Cancel(rec))">Vazgeç</button>
 					</div>
 				</div>
@@ -368,7 +368,7 @@
 		{
 			using var conn = db.GetConnection();
 			var x = conn.ExecuteScalar("OU_OVTS_UPD", new { a = my.Id, b = oo.OOId });
-			oo.UpdFlg = "";
+			oo.UpdFlg = "&#127988;";	// Emoji BlackFlag
 		}
 		catch (Exception ex)
 		{

@@ -562,8 +562,11 @@
 		}
 		else
 		{
-			oo = conn.QuerySingle<OO>("OO_SEL",
-				new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
+		// 	oo = conn.QuerySingle<OO>("OO_SEL",
+		// 		new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
+
+			oo = conn.QuerySingleOrDefault<OO>("OO_QRY",
+				new { p1 = my.Id, p2 = "", p3 = OOId }, commandType: CommandType.StoredProcedure);
 		}
 		ooo = oo.ShallowCopy();
 
