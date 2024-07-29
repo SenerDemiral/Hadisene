@@ -15,7 +15,6 @@
 				<th>edit</th>
 				<th>ad</th>
 				<th>psf</th>
-				<th>☼ kimin</th>
 			</tr>
 			@foreach (var rec in tbl)
 			{
@@ -30,7 +29,6 @@
 					<td>
 						<input type="checkbox" checked=@rec.isPsf onclick="return false" style="width:auto" />
 					</td>
-					<td>@rec.UUAd</td>
 
 				</tr>
 			}
@@ -93,7 +91,6 @@
 		public string? Ad;
 		public int Psf;
 		public bool isPsf => Psf == 1 ? true : false;
-		public string? UUAd;
 	}
 }
 

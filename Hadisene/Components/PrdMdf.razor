@@ -276,6 +276,7 @@
 						new { UsrId = my.Id, PPId = PPId },
 						commandType: CommandType.StoredProcedure);
 			}
+			opp = pp.ShallowCopy();
 
 			ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);

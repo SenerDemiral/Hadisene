@@ -17,18 +17,47 @@
 			</tr>
 			<tr>
 				<td>ad</td>
-				<td><input type="text" maxlength="30" @bind="ss!.Ad" /></td>
+				<td><input type="text" maxlength="30" @bind="ss!.Ad" disabled="@Prv"/></td>
 			</tr>
 			<tr>
 				<td>pasif</td>
-				<td><input type="checkbox" @bind="ss.isPsf" style="width:auto" /></td>
+				<td><input type="checkbox" @bind="ss.isPsf" disabled="@Prv" style="width:auto" /></td>
 			</tr>
+			<tr>
+				<td>Talep Kuralı</td>
+				<td>
+					<select @bind="ss.TlpKrl" disabled="@Prv" style="width:100%;">
+							<option value="0">Herkes</option>
+							<option value="1">Grup üyeleri</option>
+							<option value="2">Grup sorumluları</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Takip Kuralı</td>
+				<td>
+					<select @bind="ss.TkpKrl" disabled="@Prv" style="width:100%;">
+						<option value="0">Sorumlu+Gözlemci+Aktör+İsteyen</option>
+						<option value="1">Üyeler+İsteyen</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Baş/Bit Kuralı</td>
+				<td>
+					<select @bind="ss.S_FKrl" disabled="@Prv" style="width:100%;">
+						<option value="0">Sorumlu+Aktör+İsteyen</option>
+						<option value="1">Sorumlu+İsteyen</option>
+					</select>
+				</td>
+			</tr>
+
 			@if (ss.SSId != 0)
 			{
 				<tr>
 					<td>sil (kullanılmadıysa) </td>
 					<td>
-						<input type="checkbox" @bind="ss.Del" style="width:auto" />
+						<input type="checkbox" @bind="ss.Del" disabled="@Prv" style="width:auto" />
 					</td>
 				</tr>
 			}
@@ -103,7 +132,10 @@
 						p4 = SSId,
 						p5 = ss.Ad,
 						p6 = ss.Psf,
-						p7 = Prv ? 1 : 0,
+						p7 = ss.TlpKrl,
+						p8 = ss.TkpKrl,
+						p9 = ss.S_FKrl,
+						pa = Prv ? 1 : 0,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -196,15 +228,12 @@
 				Psf = value ? 1 : 0;
 			}
 		}
-		public int Gnl;
-		public bool isGnl
-		{
-			get => Gnl == 1;
-			set
-			{
-				Gnl = value ? 1 : 0;
-			}
-		}
+		// 0:Herkes, 1:Servis üyeleri, 2:Servis Sorumluları Talep edebilir
+		public int TlpKrl;
+		// 0:Mevcut, 1:ServisÜyeleri + ReqId Takip edebilir
+		public int TkpKrl;
+		// 0:Mevcut, 1:Sorumlular + ReqId Baş/Bit yapabilir
+		public int S_FKrl;
 	}
 
 	public sealed class SU

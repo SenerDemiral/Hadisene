@@ -63,7 +63,16 @@
 				<td>özel Mdl</td>
 				<td><input type="checkbox" @bind="rec.isFPM" style="width:auto" /></td>
 			</tr>
-
+			<tr>
+				<td colspan="2" class="lbl-top">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="rec.Inf"
+								   rows="2"
+								   style="min-width:100%; resize: both;" />
+				</td>
+			</tr>
 			<tr>
 				<td colspan="2" style="padding:0;">
 					<div style="max-height:8lh;overflow:auto">
@@ -118,9 +127,10 @@
 						p6 = rec.Tel,
 						p7 = rec.Mail,
 						p8 = rec.Pwd,
-						p9 = rec.FPS,
-						pa = rec.FPP,
-						pb = rec.FPM,
+						p9 = rec.Inf,
+						pa = rec.FPS,
+						pb = rec.FPP,
+						pc = rec.FPM,
 					},
 					commandType: CommandType.StoredProcedure);
 			
@@ -203,6 +213,7 @@
 		public string? Tel;
 		public string? Mail;
 		public string? Pwd;
+		public string? Inf;
 		
 		public int FPS;
 		public bool isFPS
