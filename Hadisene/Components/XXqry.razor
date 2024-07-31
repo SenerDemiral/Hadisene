@@ -1,0 +1,116 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (tbl != null)
+{
+	<table>
+		<caption>
+			<button @onclick="@(() => ShowMdf(0))">
+				<span class="material-symbols-outlined">add</span>Talep Modelleri
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<th>edit</th>
+				<th>ad</th>
+				<th class="ta-c">talepler</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>
+						<button @onclick="@(() => ShowMdf(rec.XXId))">
+							<span class="material-symbols-outlined">edit</span>@rec.XXId
+						</button>
+					</td>
+					<td>@rec.Ad</td>
+					<td class="ta-c">
+						<button @onclick="@(() => ShowDty(rec.XXId))">
+							<span class="material-symbols-outlined">settings_b_roll</span>
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter] public bool Prv { get; set; }
+	private List<XX> tbl;
+
+	ModalOptions options = new ModalOptions()
+		{
+			HideHeader = true,
+			Size = ModalSize.Medium,
+		};
+
+	public async Task ShowMdf(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("XXId", id);
+
+		var x = Modal.Show<XXmdf>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.Large,
+				});
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	public async Task ShowDty(int id)
+	{
+		ModalParameters mp = new();
+		mp.Add("XXId", id);
+
+		var x = Modal.Show<XOqry>("", mp,
+			new ModalOptions()
+				{
+					HideHeader = true,
+					Size = ModalSize.ExtraLarge,
+				});
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			await Read();
+		}
+	}
+
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			tbl = (await conn.QueryAsync<XX>("XX_QRY",
+				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+
+	public sealed class XX
+	{
+		public int XXId;
+		public string? Ad;
+	}
+}
+

@@ -1,0 +1,92 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (xx != null)
+{
+	<table style="min-width:340px;">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">check</span>Konu Kaydet
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<td>id#</td>
+				<td>@Idf()</td>
+			</tr>
+			<tr>
+				<td>ad</td>
+				<td><input type="text" maxlength="30" @bind="xx!.Ad" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="lbl-top">açıklama</td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int XXId { get; set; }
+	private XX? xx;
+
+	public async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			_ = conn.Execute("XX_MDF",
+					new
+					{
+						p1 = my.Id,
+						p2 = my.FrmId,
+						p3 = XXId,
+						p4 = xx!.Ad,
+					},
+					commandType: CommandType.StoredProcedure);
+
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+
+		await ModalIns.CloseAsync(ModalResult.Ok());
+	}
+
+	protected override void OnInitialized()
+	{
+		//Modal.Show<ModalConfirm>("deneme");
+		if (XXId == 0)
+		{
+			xx = new();
+			return;
+		}
+		try
+		{
+			using var conn = db.GetConnection();
+			xx = conn.QuerySingleOrDefault<XX>("select * from XX where XXId = @Id",
+					new { Id = XXId },
+					commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+
+	private string Idf()
+	{
+		return XXId == 0 ? "yeni" : XXId.ToString("### ### ###");
+	}
+
+	public sealed class XX
+	{
+		public int XXId;
+		public string? Ad;
+	}
+}

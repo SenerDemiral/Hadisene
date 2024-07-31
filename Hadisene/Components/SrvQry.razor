@@ -6,9 +6,16 @@
 {
 	<table>
 		<caption>
-			<button @onclick="@(() => ShowMdf(0))">
-				<span class="material-symbols-outlined">add</span>Grup Tanım
-			</button>
+			@if (Prv)
+			{
+				<span>Grup Tanım</span>
+			}
+			else
+			{
+				<button @onclick="@(() => ShowMdf(0))">
+					<span class="material-symbols-outlined">add</span>Grup Tanım
+				</button>
+			}
 		</caption>
 		<tbody>
 			<tr>

@@ -47,6 +47,8 @@ body {
 
 input[type="text"] {
 	width: 100%;
+	font-weight: inherit;
+	color: inherit;
 }
 
 input[type="date"],
@@ -68,7 +70,7 @@ input[type="time"] {
 	font-family: monospace;
 }
 
-.date, 
+.date,
 .time {
 	flex: 1;
 }
@@ -461,42 +463,42 @@ tbody.zebra tr:nth-child(odd) {
 		margin-inline: 8px;
 	}
 
-		.stk {
-			position: sticky;
-			top: 0;
-			left: 0;
-			width: fit-content;
-			margin: 8px auto;
-			display: flex;
-			align-items: center;
-			gap: 1rem;
-			background-color: whitesmoke;
-			z-index: 10;
-		}
+.stk {
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: fit-content;
+	margin: 8px auto;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	background-color: whitesmoke;
+	z-index: 10;
+}
 
-	.pge .top {
-		grid-area: top;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 8px;
-		padding: 0 8px;
-		height: var(--top-h);
-		background-color: darkkhaki;
-		border-bottom: 4px solid black;
-	}
+.pge .top {
+	grid-area: top;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 0 8px;
+	height: var(--top-h);
+	background-color: darkkhaki;
+	border-bottom: 4px solid black;
+}
 
-	.pge .btm {
-		grid-area: btm;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 8px;
-		padding: 0 8px;
-		height: var(--btm-h);
-		background-color: khaki;
-		border-top: 4px solid black;
-	}
+.pge .btm {
+	grid-area: btm;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 0 8px;
+	height: var(--btm-h);
+	background-color: khaki;
+	border-top: 4px solid black;
+}
 
 @media print {
 	.pge .top,

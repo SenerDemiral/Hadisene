@@ -1,0 +1,511 @@
+﻿@page "/liste/{XXId:int}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+<button @onclick="AddMaster">MasterEkle</button>
+<button @onclick="Kaydet">Kaydet</button>
+<hr />
+
+@if (sl?.Count > 0 && ttd != null && ssd != null)
+{
+	<table style="table-layout:auto;width:auto">
+		<thead>
+			<tr style="background-color: aquamarine;">
+				<th>+</th>
+				<th>konu</th>
+				<th>grup</th>
+				<th>üye</th>
+				<th>±gün</th>
+				<th>zaman</th>
+				<th>süre(s)</th>
+				<th>X</th>
+			</tr>
+		</thead>
+		@{
+			int i = 0;
+			int oldId = sl[0].mXOId;
+		}
+		@foreach (var s in sl)
+		{
+			int idx = i;
+
+			@if (oldId != s.mXOId) //oldId != sl[i].mXOId
+			{
+				oldId = s.mXOId; //oldId = sl[i].mXOId
+
+				<tr>
+					<td colspan="20" class="td-blnk"></td>
+				</tr>
+			}
+
+			<tr data-typ="@s.Typ" data-root="@s.pXOId">
+				@if (s.pXOId == 0)    //sl[i].pXOId == 0
+				{
+					<td><button @onclick="@(() => AddSlave(idx))">+ @idx </button></td>
+				}
+				else
+				{
+					<td style="border-top-style: hidden;"></td>
+				}
+				@* <td>@s.Typ</td>
+		<td>@s.mXOId</td>
+		<td>@s.XOId</td>
+		<td>@s.pXOId</td> *@
+				<td class="inp-txt">
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="TTL"
+						   @bind="s.TskAd"
+						   @bind:event="onchange"
+						   @bind:after="() => CheckTsk(s)" />
+				</td>
+				<td class="inp-txt">
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="s.SrvAd"
+						   @bind:event="onchange"
+						   @bind:after="() => CheckSrv(s)" />
+				</td>
+				<td class="inp-txt">
+					<div style="display:inline-flex;gap:2px">
+						<button @onclick="@(() => ActEdit(s))">✒️</button>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="SAL"
+							   disabled="@s.ActDsb"
+							   @bind="s.ActAd"
+							   @bind:event="onchange"
+							   @bind:after="() => CheckAct(s)" />
+					</div>
+				</td>
+				<td>
+					<input type="number" style="width:56px" @bind-value="@s.dGun" />
+				</td>
+				<td>
+					<input type="time" @bind-value="@s.RSD" />
+				</td>
+				<td>
+					<input type="number" style="width:56px" @bind-value="@s.RPH" />
+				</td>
+				<td><button @onclick="@(() => SilToggle(idx))">X @idx </button></td>
+			</tr>
+
+			i++;
+		}
+	</table>
+
+	<datalist id="SSL">
+		@foreach (var r in ssd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	<datalist id="SAL">
+		@foreach (var r in sad!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+}
+
+<style>
+	tr[data-typ="D"] {
+		color: red;
+	}
+
+	tr[data-root="0"] {
+		font-weight: bold;
+	}
+
+	.td-blnk {
+		height: 8px;
+		background-color: aquamarine;
+	}
+
+	th, td {
+		border: none;
+	}
+	.inp-txt {
+		max-width: 20ch;
+	}
+</style>
+
+@code {
+	[Parameter] public int XXId { get; set; }
+	List<XO> sl = new();
+	private Dictionary<string, int>? ssd, ttd, sad;
+
+	int c = -1, d = 999;
+
+	private void CheckTsk(XO s)
+	{
+		if (ttd!.TryGetValue(s.TskAd, out var nid))
+		{
+			s.TskId = nid;
+		}
+		else
+		{
+			s.TskId = 0;
+			s.TskAd = "";
+		}
+	}
+	private void CheckSrv(XO s)
+	{
+		if (ssd!.TryGetValue(s.SrvAd, out var nid))
+		{
+			s.SrvId = nid;
+			SrvActLU(nid);
+
+			s.ActId = 0;
+			s.ActAd = "";
+		}
+		else
+		{
+			s.SrvId = 0;
+			s.SrvAd = "";
+		}
+	}
+	private void CheckAct(XO s)
+	{
+		if (sad!.TryGetValue(s.ActAd, out var nid))
+		{
+			s.ActId = nid;
+		}
+		else
+		{
+			s.ActId = 0;
+			s.ActAd = "";
+		}
+		s.ActDsb = true;
+	}
+
+	private void ActEdit(XO s)
+	{
+		SrvActLU(s.SrvId);
+		s.ActDsb = false;
+	}
+
+	private void Kaydet()
+	{
+		// Varsa Sil
+		KaydetBeforeAfter(before: true);
+		//return;
+
+		int oldPrnt = 0, newPrnt = 0, newId = 0;
+		foreach (var s in sl)
+		{
+			// newId = WriteRec(s);
+			// if (s.XOId < 0)
+			// 	newId = d++;        // newId = XO_MDF
+			// else
+			// 	newId = s.XOId;
+
+			//if (s.pXOId == 0 && s.XOId < 0)
+			if (s.pXOId == 0)   // Parent
+			{
+				oldPrnt = s.XOId;
+				newId = WriteRec(s);
+				newPrnt = newId;
+				s.XOId = newId;
+
+			}
+			else
+			{
+				s.pXOId = newPrnt;
+				newId = WriteRec(s);
+				s.XOId = newId;
+			}
+			//if (s.pXOId < 0 && oldPrnt == s.pXOId)
+
+
+			// // Root and New
+			// if (s.pXOId == 0 && s.XOId < 0)
+			// 	//if (s.pXOId == 0 && s.XOId < 0)
+			// {
+			// 	oldId = s.XOId;
+			// 	newId = d++;        // newId = XO_MDF
+			// 	s.XOId = newId;
+			// }
+
+			// if(s.pXOId < 0 && oldId == s.pXOId)
+			// {
+			// 	s.pXOId = newId;
+			// }
+		}
+
+		KaydetBeforeAfter(before: false);
+
+	}
+
+	private void KaydetBeforeAfter(bool before)
+	{
+		// Root Idx leri LIFO koy stack
+		int idx = 0;
+		Stack<int> myStack = new();
+
+		foreach (var s in sl)
+		{
+			if (s.pXOId == 0)
+				myStack.Push(idx);
+
+			idx++;
+		}
+
+		foreach (var f in myStack)
+		{
+			if (before)
+				KaydetBefore(f);
+			else
+				KaydetAfter(f);
+		}
+	}
+
+	private void KaydetBefore(int ridx)
+	{
+		// Sadece root idx gelir
+		// Child first/last index
+		int mId = sl[ridx].mXOId;
+		int fi = ridx;
+		var li = sl.FindLastIndex((z) => z.mXOId == mId);
+		if (sl[ridx].Typ == "D")    // Delete Child then Root
+		{
+			// Slaveleri sil, eski/yeni farketmez (DB zaten silecek)
+			for (int y = li; y > fi; y--)
+			{
+				sl.RemoveAt(y);
+			}
+			if (sl[ridx].XOId < 0)  // Root Yeni ise sil, eskiyse kalsın DB silecek
+			{
+				sl.RemoveAt(ridx);
+			}
+		}
+		else // Child, İçinde sil varsa, Root dışında
+		{
+			for (int y = li; y > fi; y--)
+			{
+				// Yeniyse sil, değilse bırak DB silecek
+				if (sl[y].Typ == "D" && sl[y].XOId < 0)
+					sl.RemoveAt(y);
+			}
+		}
+	}
+	private void KaydetAfter(int ridx)
+	{
+		// Sadece root idx gelir
+		// DB ile eşle, tekrar okumamak için
+
+		// Childs
+		int mId = sl[ridx].mXOId;
+		int fi = ridx;
+		var li = sl.FindLastIndex((z) => z.mXOId == mId);
+
+		if (sl[ridx].Typ == "D")    // Root
+		{
+			// Hepsini sil
+			for (int y = li; y >= fi; y--)
+			{
+				sl.RemoveAt(y);
+			}
+		}
+		else // İçinde sil varsa, Root dışında
+		{
+			for (int y = li; y > fi; y--)
+			{
+				if (sl[y].Typ == "D")
+					sl.RemoveAt(y);
+			}
+		}
+	}
+
+	private void SilToggle(int idx)
+	{   // XOId < 0 ise yeni eklenmiş
+		// pXOId = 0 ise Root
+
+		if (sl[idx].Typ == "D")
+		{
+			if (sl[idx].XOId < 0)
+				sl[idx].Typ = "I";
+			else
+				sl[idx].Typ = "S";  // Silmeden önce Upd yapmış olabilir
+		}
+		else
+			sl[idx].Typ = "D";
+
+
+		// if (sl[idx].pXOId == 0) // Ana
+		// {
+		// 	// İçindeki sonradan eklenmişleri remove
+		// 	// Diğerlerine Del flagı koy
+		// 	// Veya sadece D koy belki vazgeçer,
+		// 	// birdaha Del'e basarsa eski haline döndür
+		// 	// Del toggle sadece Sel kayıtlarında olmalı
+		// 	int mId = sl[idx].mXOId;
+		// 	int fi = idx;
+		// 	var li = sl.FindLastIndex((z) => z.mXOId == mId);
+		// 	for (int y = li; y >= fi; y--)
+		// 	{
+		// 		if (sl[y].XOId < 0)
+		// 			sl.RemoveAt(y);
+		// 		else
+		// 			sl[y].Typ = "D";
+		// 	}
+		// }
+		// else
+		// {
+		// 	if (sl[idx].XOId < 0)
+		// 		sl.RemoveAt(idx);
+		// 	else
+		// 		sl[idx].Typ = "D";
+
+		// }
+
+	}
+
+	private void AddSlave(int idx)
+	{
+		XO x = new();
+		x.Typ = "I";
+		x.mXOId = sl[idx].mXOId;
+		x.XOId = c;
+		x.pXOId = sl[idx].XOId;
+
+		sl.Insert(idx + 1, x);
+		c--;
+	}
+
+	private void AddMaster()
+	{
+		sl.Add(new XO { Typ = "I", mXOId = c, XOId = c, pXOId = 0 });
+		c--;
+	}
+
+	private int WriteRec(XO r)
+	{
+		int newId = 0;
+		try
+		{
+			using var conn = db.GetConnection();
+			newId = conn.ExecuteScalar<int>("XO_MDF",
+					new
+					{
+						p1 = my.Id,
+						p2 = XXId,
+						p3 = r.Typ,
+						p4 = r.mXOId,
+						p5 = r.XOId,
+						p6 = r.pXOId,
+						p7 = r.dGun,
+						p8 = r.RSD,
+						p9 = r.RPH,
+						pa = r.TskId,
+						pb = r.SrvId,
+						pc = r.ActId,
+					},
+					commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalWarning>(hata);
+		}
+		return newId;
+
+	}
+	private async Task Read()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			sl = (await conn.QueryAsync<XO>("XO_QRY",
+				new { a = my.Id, b = XXId }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				commandType: CommandType.StoredProcedure)
+			).ToList();
+
+			//Notifier.Notify += OnNotify;
+		}
+		catch (Exception ex)
+		{
+			var hata = ex.Message.Split("\r\n")[1];
+			Modal.Show<ModalConfirm>(hata);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+		// sl.Add(new XO { mXOId = 1, XOId = 1, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 2, XOId = 2, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 3, XOId = 3, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 4, XOId = 4, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 5, XOId = 5, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 6, XOId = 6, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 7, XOId = 7, pXOId = 0 });
+		// sl.Add(new XO { mXOId = 8, XOId = 8, pXOId = 0 });
+
+		// base.OnInitialized();
+		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//Srv Actors
+		sad = conn.Query<UU>("SA_LU", new { SSId = sl[0].SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+	private void SrvActLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		sad = conn.Query<UU>("SA_LU", new { SSId = SSId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+
+	public sealed class XO
+	{
+		public string Typ = "S";
+		public int mXOId;
+		public int XOId;
+		public int pXOId;
+		public int dGun;
+		public DateTime RSD;
+		public int RPH;
+
+		public int TskId;
+		public int SrvId;
+		public int ActId;
+		public string? TskAd;
+		public string? SrvAd;
+		public string? ActAd;
+		public bool ActDsb = true;
+
+		public string? Inf;
+
+	}
+
+	public sealed class SS
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+		public string? Inf;
+	}
+	public sealed class UU
+	{
+		public int Id;
+		public string Ad;
+	}
+}

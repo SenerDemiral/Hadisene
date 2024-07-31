@@ -41,6 +41,7 @@
 			@if (my.FPM)
 			{
 				<option value="MdlQryPrv">🖇️ Modellerim</option>
+				<option value="XXqry">🖇️ XX</option>
 			}
 			@if (my.FPP)
 			{
@@ -115,6 +116,10 @@
 		else if (selectedValue == "UsrQry")
 		{
 			await ShowUsrQry();
+		}
+		else if (selectedValue == "XXqry")
+		{
+			await ShowXXqry();
 		}
 		else if (selectedValue == "MdlQry")
 		{
@@ -221,6 +226,17 @@
 		mp.Add("Prv", true);
 
 		Modal.Show<SrvQry>("Servisler", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Medium,
+				});
+	}
+	private async Task ShowXXqry()
+	{
+		ModalParameters mp = new();
+
+		Modal.Show<XXqry>("Model", mp,
 			new ModalOptions
 				{
 					HideHeader = true,
