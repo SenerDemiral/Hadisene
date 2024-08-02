@@ -38,6 +38,28 @@
 				</td>
 			</tr>
 			<tr>
+				<td>ref1</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="mo.Rf1"
+						   @bind:event="onchange"
+						   @bind:after="(() => mo.Rf1 = mo.Rf1.toASCII())" />
+				</td>
+			</tr>
+			<tr>
+				<td>ref2</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="mo.Rf2"
+						   @bind:event="onchange"
+						   @bind:after="(() => mo.Rf2 = mo.Rf2.toASCII())" />
+				</td>
+			</tr>
+			<tr>
 				<td>grup</td>
 				<td>
 					<input type="text"
@@ -67,7 +89,7 @@
 			<tr>
 				<td>±gün</td>
 				<td>
-					<input type="number" style="width:56px" @bind-value="@mo.iaGun" />
+					<input type="number" style="width:56px" @bind-value="@mo.aGun" />
 				</td>
 			</tr>
 			<tr>
@@ -190,6 +212,8 @@
 						p8 = mo.TskId,
 						p9 = mo.ActId,
 						pa = mo.Inf,
+						pb = mo.Rf1,
+						pc = mo.Rf2,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -261,14 +285,6 @@
 		public DateTime RSD = DateTime.Today;    //Tarihin zmn kısmı RequestStartTime
 		public int RPH;         //RequestPeriodHour
 
-		public int iaGun 
-		{
-			get => aGun; 
-			set
-			{
-				aGun = Math.Abs(value);
-			}
-		}
 		public int iRPH
 		{
 			get => RPH;
@@ -278,9 +294,9 @@
 			}
 		}
 
+		public string? Inf;
 		public string? Rf1;
 		public string? Rf2;
-		public string? Inf;
 
 		public bool Del;
 

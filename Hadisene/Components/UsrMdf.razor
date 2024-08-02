@@ -51,16 +51,20 @@
 				<td>pwd</td>
 				<td><input type="text" maxlength="20" @bind="rec!.Pwd" /></td>
 			</tr>
+
 			<tr>
-				<td>özel Grp</td>
+				<td colspan="2" class="lbl-top">izinler</td>
+			</tr>
+			<tr>
+				<td>grup</td>
 				<td><input type="checkbox" @bind="rec.isFPS" style="width:auto" /></td>
 			</tr>
 			<tr>
-				<td>özel Prydk</td>
+				<td>periyodik</td>
 				<td><input type="checkbox" @bind="rec.isFPP" style="width:auto" /></td>
 			</tr>
 			<tr>
-				<td>özel Mdl</td>
+				<td>model</td>
 				<td><input type="checkbox" @bind="rec.isFPM" style="width:auto" /></td>
 			</tr>
 			<tr>

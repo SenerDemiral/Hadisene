@@ -477,6 +477,8 @@
 		{
 			int cid = conn.ExecuteScalar<int>("CID_NEW", new { }, commandType: CommandType.StoredProcedure);
 			oo.CId = cid;   // Şimdikine
+			// Önceki AnaTalep ise (parentı yok) onun Idsi, varsa (3. ve sanrası ekleniyor), pIdsi
+			oo.pOOId = ooo.pOOId == 0 ? ooo.OOId : ooo.pOOId;
 
 			// Öncekine CId koy
 			int oldOOId = ooo.OOId;
@@ -492,8 +494,9 @@
 			int refId = conn.ExecuteScalar<int>("OO_MDF",
 			new
 			{
-				p1 = my.Id,
-				p2 = oo.OOId,
+				p0 = my.Id,
+				p1 = oo.OOId,
+				p2 = oo.pOOId,
 				p3 = oo.Stu,
 				p4 = my.FrmId,
 				p5 = oo.CId,

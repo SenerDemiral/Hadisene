@@ -8,9 +8,10 @@ public sealed class OO
     public DateTime? UpdTS;
     public string? UpdFlg;
 
-    //public int UsrId;   // Last updated by 
+	//public int UsrId;   // Last updated by 
 
-    public int OOId;
+	public int OOId;
+	public int pOOId;
     public string? Stu = "A";
     public int ReqId;
     public int SrvId;

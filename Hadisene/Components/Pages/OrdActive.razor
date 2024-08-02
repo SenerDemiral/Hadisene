@@ -118,9 +118,12 @@
 										<span class="tooltiptext">pin</span>
 									</div>
 
+									@{
+										string prntCid = rec.CId > 0 && rec.pOOId == 0 ? "prnt-cid" : "";
+									}
 									<div style="display:inline-flex;align-items:center;">
 										<div class="tooltip">
-											<button class="ooCID"
+											<button class="ooCID @prntCid"
 													disabled=@(rec.CId == 0)
 													@onclick="@(() => Chained(rec))">
 											</button>

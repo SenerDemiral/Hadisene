@@ -24,7 +24,10 @@
 				<td><input type="checkbox" @bind="ss.isPsf" disabled="@Prv" style="width:auto" /></td>
 			</tr>
 			<tr>
-				<td>Talep Kuralı</td>
+				<td colspan="2" class="lbl-top">kurallar</td>
+			</tr>
+			<tr>
+				<td>talep</td>
 				<td>
 					<select @bind="ss.TlpKrl" disabled="@Prv" style="width:100%;">
 							<option value="0">Herkes</option>
@@ -34,7 +37,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Takip Kuralı</td>
+				<td>takip</td>
 				<td>
 					<select @bind="ss.TkpKrl" disabled="@Prv" style="width:100%;">
 						<option value="0">Sorumlu+Gözlemci+Aktör+İsteyen</option>
@@ -43,7 +46,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Baş/Bit Kuralı</td>
+				<td>başla/tamamla</td>
 				<td>
 					<select @bind="ss.S_FKrl" disabled="@Prv" style="width:100%;">
 						<option value="0">Sorumlu+Aktör+İsteyen</option>

@@ -142,12 +142,18 @@
 					<td class="fld-hdr">Güncelleme</td>
 					<td colspan="2">@UDB.LastUpd.ToShortTimeString()</td>
 				</tr>
+
 				<tr>
 					<td colspan="3" style="padding:0;">
 						<button @onclick="GoOrdActive" style="width: 100%;background-color: yellow;padding: 0;">
 							<span class="material-symbols-outlined">search</span>
 						</button>
 					</td>
+				</tr>
+
+				<tr>
+					<td class="ta-c"> >= </td>
+					<td colspan="2"><input type="date" @bind="Trh1" /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -166,6 +172,7 @@
 	private bool cbCSR, cbCSB, cbCSG, cbCFR, cbCFB, cbCFG, cbPin, cbOnV, cbMnV;
 	private string? Rf1;
 	private string? Rf2;
+	private DateTime? Trh1;
 
 	private void PosChanged()
 	{
@@ -204,13 +211,16 @@
 		if (!string.IsNullOrEmpty(Rf2))
 			sl.Add($"Rf2={Rf2}");
 
+		if (Trh1 is not null)
+			sl.Add($@"Trh1={Trh1?.ToString("dd.MM.yyyy")}");
+
 		string url;
 		if (sl.Count == 0)
 			url = $"/ordactive/0/all";
 		else
 			url = $"/ordactive/0/{String.Join('&', sl)}";
 
-		url = $"{url}&{DateTime.Now.TimeOfDay}";	// Parametre değiştiğini force etmek için
+		url = $"{url}&{DateTime.Now.Ticks}";    // Parametre değiştiğini force etmek için
 
 		navigationManager.NavigateTo(url);
 

@@ -54,8 +54,7 @@
 		var x = Modal.Show<XXmdf>("", mp,
 			new ModalOptions()
 				{
-					HideHeader = true,
-					Size = ModalSize.Large,
+					Size = ModalSize.Automatic,
 				});
 		var r = await x.Result;
 		if (r.Confirmed)

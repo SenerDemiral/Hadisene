@@ -1,0 +1,220 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+@if (xo != null)
+{
+	<table style="width:200px;font-size:.8rem">
+		<caption>
+			<button @onclick="Kaydet">
+				<span class="material-symbols-outlined">check</span>OK
+			</button>
+		</caption>
+		<tbody>
+			<tr>
+				<td>id#</td>
+				<td>@Idf()</td>
+			</tr>
+			<tr>
+				<td>konu</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="TTL"
+						   @bind="xo.TskAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckTsk" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">açıklama</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="xo.Inf"
+								   rows="2"
+								   style="min-width:280px; resize: both;" />
+				</td>
+			</tr>
+			<tr>
+				<td>Ref1</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="xo.Rf1"
+						   @bind:event="onchange"
+						   @bind:after="(() => xo.Rf1 = xo.Rf1.toASCII())" />
+				</td>
+			</tr>
+			<tr>
+				<td>Ref2</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="xo.Rf2"
+						   @bind:event="onchange"
+						   @bind:after="(() => xo.Rf2 = xo.Rf2.toASCII())" />
+				</td>
+			</tr>
+			<tr>
+				<td>grup</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="xo.SrvAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckSrv" />
+				</td>
+			</tr>
+			<tr>
+				<td>kime</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SAL"
+						   @bind="xo.ActAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">kaç gün önce/sonra başlayacak</td>
+			</tr>
+			<tr>
+				<td>±gün</td>
+				<td>
+					<input type="number" style="width:56px" @bind-value="@xo.dGun" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">planlanan başlangıç</td>
+			</tr>
+			<tr>
+				<td>zaman</td>
+				<td>
+					<input type="time" @bind-value="@xo.RSD" />
+				</td>
+			</tr>
+			<tr>
+				<td>süre(s)</td>
+				<td>
+					<input type="number" style="width:56px" @bind-value="@xo.iRPH" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<datalist id="SAL">
+		@foreach (var r in sad!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+}
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public XO xo { get; set; }
+	[Parameter] public Dictionary<string, int>? ssd { get; set; }
+	[Parameter] public Dictionary<string, int>? ttd { get; set; }
+	private XO? oxo;
+	private Dictionary<string, int>? sad;
+
+	private void CheckSrv()
+	{
+		if (ssd!.TryGetValue(xo.SrvAd, out var nid))
+		{
+			xo.SrvId = nid;
+			SrvActLU(nid);
+
+			if (!String.IsNullOrEmpty(xo.ActAd) && sad!.TryGetValue(xo.ActAd, out var nid2))
+			{
+				xo.ActId = nid2;
+			}
+			else
+			{
+				xo.ActId = 0;
+				xo.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			xo.SrvAd = oxo.SrvAd;
+	}
+	private void CheckTsk()
+	{
+		if (ttd!.TryGetValue(xo.TskAd, out var nid))
+		{
+			xo.TskId = nid;
+			using var conn = db.GetConnection();
+			var tt = conn.QuerySingle<TT>("TT_SEL",
+						new { TTId = nid },
+						commandType: CommandType.StoredProcedure);
+			if (!string.IsNullOrEmpty(tt.Inf))
+				xo.Inf = tt.Inf;
+		}
+		else
+			xo.TskAd = oxo.TskAd;
+	}
+	private void CheckAct()
+	{
+		if (sad!.TryGetValue(xo.ActAd, out var nid))
+		{
+			xo.ActId = nid;
+		}
+		else
+			xo.ActAd = oxo.ActAd;
+	}
+
+	public async Task Kaydet()
+	{
+		// Yazma bu değerleri gönder
+		await ModalIns.CloseAsync(ModalResult.Ok(xo));
+	}
+
+	protected override void OnInitialized()
+	{
+		oxo = xo.ShallowCopy();
+		SrvActLU(xo.SrvId);
+
+	}
+	private void SrvActLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		sad = conn.Query<UU>("SA_LU", new { SSId = xo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+
+	private string Idf()
+	{
+		return xo.XOId <= 0 ? "yeni" : xo.XOId.ToString();
+	}
+
+	
+	public sealed class SS
+	{
+		public int Id;
+		public string Ad;
+	}
+	public sealed class TT
+	{
+		public int Id;
+		public string Ad;
+		public string? Inf;
+	}
+	public sealed class UU
+	{
+		public int Id;
+		public string Ad;
+	}
+
+
+}

@@ -337,6 +337,13 @@ th {
 	font-size: .8rem;
 }
 
+.fw-b {
+	font-weight: bold;
+}
+
+.prnt-cid {
+	background-color: bisque;
+}
 .ta-c {
 	text-align: center;
 }
