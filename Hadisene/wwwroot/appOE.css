@@ -65,8 +65,8 @@
 	grid-template-areas:
 		"oeStu oeStu oeStu oeChn"
 		"oeReq oeReq oeReq oeReq"
-		"oeTsk oeTsk oeTsk oeTsk"
 		"oeSrv oeSrv oeSrv oeSrv"
+		"oeTsk oeTsk oeTsk oeTsk"
 		"oeAct oeAct oeAct oeAct"
 		"oeRSD oeRSD oeASD oeASD"
 		"oeRFD oeRFD oeAFD oeAFD"

@@ -92,6 +92,33 @@
 					</div>
 				</td>
 			</tr>
+			<tr>
+				<td colspan="2" style="padding:0;">
+					<div style="max-height:8lh;overflow:auto">
+						<table>
+							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
+								<th><input type="checkbox" @bind="MergeAllTsk" style="width:auto" /></th>
+								<th>konu</th>
+								<th>herkes</th>
+								<th style="padding:2px 0">üye</th>
+								<th style="padding:2px 0">sorumlu</th>
+							</tr>
+							@foreach (var r in st)
+							{
+								<tr>
+									<td class="ta-c"><input type="checkbox" @bind="r.isMbr" /></td>
+									<td>@r.TTAd</td>
+									<InputRadioGroup @bind-Value="r.TlpKrl" Name="@r.TTId.ToString()">
+										<td class="ta-c"><InputRadio Value="0" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="2" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="3" disabled="@(!r.isMbr)" /></td>
+									</InputRadioGroup>
+								</tr>
+							}
+						</table>
+					</div>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 }
@@ -102,6 +129,7 @@
 	[Parameter] public int SSId { get; set; }
 	private SS? ss;
 	private List<SU>? su;
+	private List<ST>? st;
 
 	private bool _MergeAllUsr;
 	private bool MergeAllUsr
@@ -115,6 +143,20 @@
 					r.Mbr = value ? 1 : 0;
 			}
 			_MergeAllUsr = value;
+		}
+	}
+	private bool _MergeAllTsk;
+	private bool MergeAllTsk
+	{
+		get => _MergeAllTsk;
+		set
+		{
+			foreach (var r in st)
+			{
+				if (r.STId == 0)
+					r.Mbr = value ? 1 : 0;
+			}
+			_MergeAllTsk = value;
 		}
 	}
 
@@ -158,22 +200,27 @@
 					commandType: CommandType.StoredProcedure);
 			}
 
-			// if (MergeAllUsr)
-			// {
-			// 	_ = conn.Execute("SU_ALLUSR_INS",
-			// 		new
-			// 		{
-			// 			p1 = my.FrmId,
-			// 			p2 = newSSId,
-			// 		},
-			// 		commandType: CommandType.StoredProcedure);
-
-			// }
+			// Userları ins/upd/del
+			foreach (var r in st)
+			{
+				_ = conn.Execute("TS_MDF",
+					new
+					{
+						p1 = r.STId,
+						p2 = my.FrmId,
+						p3 = newSSId,
+						p4 = r.TTId,
+						p5 = r.Mbr,
+						p6 = r.TlpKrl
+					},
+					commandType: CommandType.StoredProcedure);
+			}
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalWarning>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
 
 		await ModalIns.CloseAsync(ModalResult.Ok());
@@ -204,6 +251,15 @@
 
 			su = su.OrderByDescending(x => x.Mbr).ThenBy(y => y.UUAd).ToList();
 
+			st = conn.Query<ST>("ST_QRY",
+				new
+				{
+					p1 = SSId,
+					p2 = my.FrmId
+				},
+				commandType: CommandType.StoredProcedure).ToList();
+
+			st = st.OrderByDescending(x => x.Mbr).ThenBy(y => y.TTAd).ToList();
 		}
 		catch (Exception ex)
 		{
@@ -245,6 +301,22 @@
 		public int UUId;
 		public string? UUAd;
 		public int Rol;
+		public int Mbr;
+		public bool isMbr
+		{
+			get => Mbr == 1;
+			set
+			{
+				Mbr = value ? 1 : 0;
+			}
+		}
+	}
+	public sealed class ST
+	{
+		public int STId;
+		public int TTId;
+		public string? TTAd;
+		public int TlpKrl;
 		public int Mbr;
 		public bool isMbr
 		{

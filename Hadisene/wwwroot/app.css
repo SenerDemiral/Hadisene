@@ -276,6 +276,11 @@ button {
 		outline-offset: 1px;
 	}
 
+	button:disabled {
+		box-shadow: none;
+		transform: none;
+		cursor: default;
+	}
 
 
 .ooBtnEdt .material-symbols-outlined,

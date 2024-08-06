@@ -89,7 +89,7 @@
 			<tr>
 				<td>±gün</td>
 				<td>
-					<input type="number" style="width:56px" @bind-value="@xo.dGun" />
+					<input type="number" style="width:56px" disabled="@(xo.pXOId == 0)" @bind-value="@xo.dGun" />
 				</td>
 			</tr>
 			<tr>

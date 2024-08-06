@@ -74,17 +74,6 @@
 					   @bind:after="CheckReq" />
 			</div>
 
-			<div class="oeBox oeTsk">
-				<input type="text"
-					   maxlength="30"
-					   size="30"
-					   list="TTL"
-					   disabled="@oo.TskRO"
-					   @bind="oo.TskAd"
-					   @bind:event="onchange"
-					   @bind:after="CheckTsk" />
-			</div>
-
 			<div class="oeBox oeSrv">
 				<input type="text"
 					   maxlength="30"
@@ -94,6 +83,17 @@
 					   @bind="oo.SrvAd"
 					   @bind:event="onchange"
 					   @bind:after="CheckSrv" />
+			</div>
+
+			<div class="oeBox oeTsk">
+				<input type="text"
+					   maxlength="30"
+					   size="30"
+					   list="TTL"
+					   disabled="@oo.TskRO"
+					   @bind="oo.TskAd"
+					   @bind:event="onchange"
+					   @bind:after="CheckTsk" />
 			</div>
 
 			<div class="oeBox oeAct">
@@ -433,6 +433,7 @@
 		{
 			oo.SrvId = nid;
 			SrvActLU(nid);
+			SrvTskLU(nid);
 
 			if (!String.IsNullOrEmpty(oo.ActAd) && sad!.TryGetValue(oo.ActAd, out var nid2))
 			{
@@ -477,7 +478,7 @@
 		{
 			int cid = conn.ExecuteScalar<int>("CID_NEW", new { }, commandType: CommandType.StoredProcedure);
 			oo.CId = cid;   // Şimdikine
-			// Önceki AnaTalep ise (parentı yok) onun Idsi, varsa (3. ve sanrası ekleniyor), pIdsi
+							// Önceki AnaTalep ise (parentı yok) onun Idsi, varsa (3. ve sanrası ekleniyor), pIdsi
 			oo.pOOId = ooo.pOOId == 0 ? ooo.OOId : ooo.pOOId;
 
 			// Öncekine CId koy
@@ -515,7 +516,7 @@
 			commandType: CommandType.StoredProcedure);
 
 
-			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId },	commandType: CommandType.StoredProcedure);
+			string? ordUsrs = conn.ExecuteScalar<string>("OO_USRS", new { p1 = refId }, commandType: CommandType.StoredProcedure);
 
 			var key = oo.OOId == 0 ? "IO" : oo.Stu != "A" ? "DO" : "UO";
 			await Notifier.Invoke(key, new NotifyArgs
@@ -531,8 +532,9 @@
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalWarning>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
 
 	}
@@ -556,25 +558,28 @@
 	{
 		using var conn = db.GetConnection();
 		ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		//ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 		uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		if (OOId == 0)
 		{
 			mode = Mode.New;
+			sad = new();
+			ttd = new();
 		}
 		else
 		{
-		// 	oo = conn.QuerySingle<OO>("OO_SEL",
-		// 		new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
+			// 	oo = conn.QuerySingle<OO>("OO_SEL",
+			// 		new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
 
 			oo = conn.QuerySingleOrDefault<OO>("OO_QRY",
 				new { p1 = my.Id, p2 = "", p3 = OOId }, commandType: CommandType.StoredProcedure);
+
+			SrvActLU(oo.SrvId);
+			SrvTskLU(oo.SrvId);
 		}
 		ooo = oo.ShallowCopy();
 
-		//Srv Actors
-		SrvActLU(oo.SrvId);
 
 		//oo.StuRO = oo.Stu != "A" ? true : false;
 		stu = Statu.Aktif;
@@ -589,6 +594,12 @@
 		//var list = conn.Query<UU>("SA_LU", new { SSId = oo.SrvId }, commandType: CommandType.StoredProcedure).ToList();
 		//list.Sort((x, y) => String.Compare(x.Ad, y.Ad, new CultureInfo("tr-TR"), CompareOptions.IgnoreCase));
 		// sad = list.ToDictionary(k => k.Ad, e => e.Id);
+	}
+
+	private void SrvTskLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		ttd = conn.Query<TT>("ST_LU", new { UsrId = my.Id, SSId = oo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 	public async Task OnNotify(string key, NotifyArgs value)

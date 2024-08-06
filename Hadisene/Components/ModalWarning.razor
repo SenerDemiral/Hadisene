@@ -1,5 +1,22 @@
-﻿<h5>ModalWarning</h5>
+﻿<h5 style="color:red;padding-inline:8px;">@m0: @m1</h5>
 
 @code {
+	[Parameter] public string Message { get; set; }
 
+	private string m0;
+	private string m1;
+
+	protected override void OnInitialized()
+	{
+		if (!String.IsNullOrEmpty(Message))
+		{
+			m0 = Message.Split("\r\n")[0];
+			m1 = Message.Split("\r\n")[1];
+		}
+		else
+		{
+			m0 = "";
+			m1 = "";
+		}
+	}
 }

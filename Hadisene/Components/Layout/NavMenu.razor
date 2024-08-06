@@ -304,8 +304,9 @@
 			}
 			catch (Exception ex)
 			{
-				var hata = ex.Message.Split("\r\n")[1];
-				Modal.Show<ModalWarning>(hata);
+				ModalParameters mp2 = new();
+				mp.Add("Message", ex.Message);
+				Modal.Show<ModalWarning>("", mp2);
 				//navigationManager.NavigateTo("");
 			}
 		}

@@ -35,6 +35,18 @@ public sealed class XO
 
 	public bool Del;
 
+	public int Run;
+	public bool isRun
+	{
+		get => Run == 1 ? true : false;
+		set
+		{
+			Run = value ? 1 : 0;
+			Run_dGun = dGun;
+		}
+	}
+	public int Run_dGun;
+
 	public XO ShallowCopy()
 	{
 		return (XO)this.MemberwiseClone();

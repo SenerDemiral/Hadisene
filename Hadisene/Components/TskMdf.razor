@@ -33,37 +33,96 @@
 				<td>pasif</td>
 				<td><input type="checkbox" @bind="tt.isPsf" style="width:auto" /></td>
 			</tr>
+
+			<tr>
+				<td colspan="2" style="padding:0;">
+					<div style="max-height:8lh;overflow:auto">
+						<table>
+							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
+								<th><input type="checkbox" @bind="MergeAllSrv" style="width:auto" /></th>
+								<th>grup</th>
+								<th>herkes</th>
+								<th style="padding:2px 0">üye</th>
+								<th style="padding:2px 0">sorumlu</th>
+							</tr>
+							@foreach (var r in ts)
+							{
+								<tr>
+									<td class="ta-c"><input type="checkbox" @bind="r.isMbr" /></td>
+									<td>@r.SSAd</td>
+									<InputRadioGroup @bind-Value="r.TlpKrl" Name="@r.SSId.ToString()">
+										<td class="ta-c"><InputRadio Value="0" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="2" disabled="@(!r.isMbr)" /></td>
+										<td class="ta-c"><InputRadio Value="3" disabled="@(!r.isMbr)" /></td>
+									</InputRadioGroup>
+								</tr>
+							}
+						</table>
+					</div>
+				</td>
+			</tr>
+
+
 		</tbody>
 	</table>
 }
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
-	[Parameter] public int Id { get; set; }
+	[Parameter] public int TTId { get; set; }
 	private TT? tt;
-
+	private List<TS>? ts;	// TaskServices
+	private bool _MergeAllSrv;
+	private bool MergeAllSrv
+	{
+		get => _MergeAllSrv;
+		set
+		{
+			foreach (var r in ts)
+			{
+				if (r.STId == 0)
+					r.Mbr = value ? 1 : 0;
+			}
+			_MergeAllSrv = value;
+		}
+	}
 	public async Task Kaydet()
 	{
 		try
 		{
 			using var conn = db.GetConnection();
-			_ = conn.Execute("TT_MDF",
+			int newTTId = conn.ExecuteScalar<int>("TT_MDF",
 					new
 					{
 						p1 = my.Id,
 						p2 = my.FrmId,
-						p3 = Id,
+						p3 = TTId,
 						p4 = tt!.Ad,
 						p5 = tt!.Inf,
 						p6 = tt.Psf
 					},
 					commandType: CommandType.StoredProcedure);
-
+			// Userları ins/upd/del
+			foreach (var r in ts)
+			{
+				_ = conn.Execute("TS_MDF",
+					new
+					{
+						p1 = r.STId,
+						p2 = my.FrmId,
+						p4 = r.SSId,
+						p3 = newTTId,
+						p5 = r.Mbr,
+						p6 = r.TlpKrl
+					},
+					commandType: CommandType.StoredProcedure);
+			}
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalWarning>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
 
 		await ModalIns.CloseAsync(ModalResult.Ok());
@@ -72,17 +131,28 @@
 	protected override void OnInitialized()
 	{
 		//Modal.Show<ModalConfirm>("deneme");
-		if (Id == 0)
-		{
-			tt = new();
-			return;
-		}
 		try
 		{
 			using var conn = db.GetConnection();
+			if (TTId == 0)
+			{
+				tt = new();
+			}
+			else
+			{
 			tt = conn.QuerySingleOrDefault<TT>("select * from TT where TTId = @Id",
-					new { Id = Id },
+					new { Id = TTId },
 					commandType: CommandType.StoredProcedure);
+			}
+			ts = conn.Query<TS>("TS_QRY",
+					new
+					{
+						p1 = TTId,
+						p2 = my.FrmId
+					},
+					commandType: CommandType.StoredProcedure).ToList();
+
+			ts = ts.OrderByDescending(x => x.Mbr).ThenBy(y => y.SSAd).ToList();
 		}
 		catch (Exception ex)
 		{
@@ -94,7 +164,7 @@
 
 	private string Idf()
 	{
-		return Id == 0 ? "yeni" : Id.ToString("### ### ###");
+		return TTId == 0 ? "yeni" : TTId.ToString("### ### ###");
 	}
 
 	public sealed class TT
@@ -112,5 +182,22 @@
 			}
 		}
 
+	}
+
+	public sealed class TS
+	{
+		public int STId;
+		public int SSId;
+		public string? SSAd;
+		public int TlpKrl;
+		public int Mbr;
+		public bool isMbr
+		{
+			get => Mbr == 1;
+			set
+			{
+				Mbr = value ? 1 : 0;
+			}
+		}
 	}
 }

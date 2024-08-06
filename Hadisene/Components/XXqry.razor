@@ -54,7 +54,7 @@
 		var x = Modal.Show<XXmdf>("", mp,
 			new ModalOptions()
 				{
-					Size = ModalSize.Automatic,
+					Size = ModalSize.ExtraLarge,
 				});
 		var r = await x.Result;
 		if (r.Confirmed)
@@ -72,7 +72,8 @@
 			new ModalOptions()
 				{
 					HideHeader = true,
-					Size = ModalSize.ExtraLarge,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size"
 				});
 		var r = await x.Result;
 		if (r.Confirmed)

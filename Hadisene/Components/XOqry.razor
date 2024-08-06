@@ -5,73 +5,104 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-<div style="display:inline-flex;justify-content:space-between;width:100%">
-	<button @onclick="AddMaster">➕➕ Ekle</button>
+<div style="display:inline-flex;justify-content:space-between;width:100%;position: sticky;
+  top: 0;
+  background-color: aqua;
+  padding: 4px;">
+	<button class="emoji" @onclick="AddMaster">➕➕</button>
 	<button @onclick="Kaydet" data-changed="@hasChange">🆗 Kaydet @NOC</button>
+
+	<div style="display:inline-flex;gap:4px;">
+		<button disabled="@RunReadyDisabled" @onclick="RunReady">
+			<span class="material-symbols-outlined">check</span>
+		</button>
+		<input type="date" min="@RunMinTrh" disabled="@RunDisabled" @bind="RunSTrh" />
+		<button disabled="@RunDisabled" @onclick="RunOK">Run @RunCnt</button>
+	</div>
 </div>
 
-<hr />
+@* <hr /> *@
 
 @if (sl?.Count > 0 && ttd != null && ssd != null)
 {
-	<table style="table-layout:auto;width:auto">
-		<thead>
-			<tr>
-				<th>➕</th>
-				<th>edit</th>
-				<th>konu</th>
-				<th>grup</th>
-				<th>üye</th>
-				<th>±gün</th>
-				<th>zaman</th>
-				<th>süre(s)</th>
-				<th>➖</th>
-			</tr>
-		</thead>
-		@{
-			int i = 0;
-			int oldId = sl[0].mXOId;
-		}
-		@foreach (var s in sl)
-		{
-			int idx = i;
-
-			@if (oldId != s.mXOId) //oldId != sl[i].mXOId
-			{
-				oldId = s.mXOId; //oldId = sl[i].mXOId
-
+	<div>
+		<table style="table-layout:auto;width:auto">
+			<thead>
 				<tr>
-					<td colspan="20" class="td-blnk"></td>
+					<th></th>
+					<th>➕</th>
+					<th>edit</th>
+					<th>➖</th>
+					<th>konu</th>
+					<th>grup</th>
+					<th>üye</th>
+					<th>±gün</th>
+					<th>zaman</th>
+					<th>süre(s)</th>
+					<th>run</th>
+					<th>±gün</th>
 				</tr>
+			</thead>
+			@{
+				int i = 0;
+				int oldId = sl[0].mXOId;
 			}
+			@foreach (var s in sl)
+			{
+				int idx = i;
 
-			<tr data-deleted="@s.isDeleted" data-root="@s.pXOId">
-				<td>@s.XOId</td>
-				@if (s.pXOId == 0)    //sl[i].pXOId == 0
+				@if (oldId != s.mXOId) //oldId != sl[i].mXOId
 				{
-					<td><button @onclick="@(() => AddSlave(idx))">➕@idx</button></td>
+					oldId = s.mXOId; //oldId = sl[i].mXOId
+
+					<tr>
+						<td colspan="20" class="td-blnk"></td>
+					</tr>
 				}
-				else
-				{
-					<td style="border-top-style: hidden;"></td>
-				}
-				<td>
-					<button @onclick="@(() => ShowUpd(s))" data-edit="@s.isEdited">✒️</button>
 
-				</td>
-				<td class="inp-txt">@s.TskAd</td>
-				<td class="inp-txt">@s.SrvAd</td>
-				<td class="inp-txt">@s.ActAd</td>
-				<td class="ta-c">@s.dGun</td>
-				<td class="ta-c">@s.RSD.ToString("HH:mm")</td>
-				<td class="ta-c">@s.RPH</td>
-				<td><button @onclick="@(() => SilToggle(idx))">➖</button></td>
-			</tr>
+				<tr data-deleted="@s.isDeleted" data-root="@s.pXOId">
+					<td>@s.XOId</td>
+					@if (s.pXOId == 0)    //sl[i].pXOId == 0
+					{
+						<td><button class="emoji" @onclick="@(() => AddSlave(idx))">➕</button></td>
+					}
+					else
+					{
+						<td style="border-top-style: hidden;"></td>
+					}
+					<td>
+						<button class="emoji" @onclick="@(() => ShowInp(s))" data-edit="@s.isEdited">✒️</button>
 
-			i++;
-		}
-	</table>
+					</td>
+					<td><button class="emoji" @onclick="@(() => SilToggle(idx))">➖</button></td>
+					<td class="inp-txt">@s.TskAd</td>
+					<td class="inp-txt">@s.SrvAd</td>
+					<td class="inp-txt">@s.ActAd</td>
+					<td class="ta-c">@s.dGun</td>
+					<td class="ta-c">@s.RSD.ToString("HH:mm")</td>
+					<td class="ta-c">@s.RPH</td>
+					<td>
+						<input type="checkbox"
+							   disabled="@(s.XOId < 0 ? true : false)"
+							   @bind="s.isRun"
+							   @onclick="(() => RunToggle(s))"
+							   style="width:auto" />
+					</td>
+					@if (s.pXOId == 0)
+					{
+						<td></td>
+					}
+					else
+					{
+						<td><input type="number" style="width:56px" disabled="@(!s.isRun)" @bind:get="@s.Run_dGun" @bind:set="((x) => DGunChanged(x,s))" /></td>
+						@* <td><input type="number" style="width:56px" disabled="@(!s.isRun)" @bind="@s.Run_dGun" @bind:after="@DGunChanged()" /></td> *@
+					}
+				</tr>
 
+				i++;
+			}
+		</table>
+	</div>
 	<datalist id="SSL">
 		@foreach (var r in ssd!)
 		{
@@ -121,6 +152,9 @@
 	.inp-txt {
 		max-width: 20ch;
 	}
+	.emoji {
+		font-size: 12px;
+	}
 </style>
 
 @code {
@@ -129,6 +163,12 @@
 	private Dictionary<string, int>? ssd, ttd, sad;
 	private bool hasChange;
 	private int NOC;
+	private int RunCnt;
+	private DateTime? RunMRSD;
+	private DateTime? RunSTrh;
+	private string? RunMinTrh;
+	private bool RunDisabled = true;
+	private bool RunReadyDisabled = true;
 
 	int c = -1;
 
@@ -136,14 +176,130 @@
 	{
 		//NOC = sl.Count((z) => z.isEdited || (z.XOId > 0 && z.isDeleted));
 
-		NOC = sl.Count((z) => 
-			(z.XOId > 0  && (z.isEdited || z.isDeleted)) ||
+		NOC = sl.Count((z) =>
+			(z.XOId > 0 && (z.isEdited || z.isDeleted)) ||
 			(z.XOId <= 0 && z.isEdited && !z.isDeleted));
 
 		hasChange = NOC > 0 ? true : false;
+		RunReadyDisabled = hasChange;
 	}
 
-	public async Task ShowUpd(XO s)
+	public sealed class rXOI
+	{
+		public int r_CId;
+		public int r_pOOId;
+	}
+	private void RunOK()
+	{
+		int idx = 0;
+		Stack<int> myStack = new();
+		foreach (var s in sl)
+		{
+			if (s.pXOId == 0)
+				myStack.Push(idx);
+			idx++;
+		}
+
+		using var conn = db.GetConnection();
+
+		foreach (var p in myStack)
+		{
+			int CId = 0;
+			int pOOId = 0;
+			// Parent
+			if (sl[p].isRun)
+			{
+				var r = conn.QuerySingle<rXOI>("XO_OO_INS", new
+				{
+					UsrId = my.Id,
+					FFId = my.FrmId,
+					sTrh = RunSTrh,
+					XOId = sl[p].XOId,
+					dGun = sl[p].Run_dGun,
+					CId = -1,
+					pOOId = 0
+				}, commandType: CommandType.StoredProcedure);
+				CId = r.r_CId;
+				pOOId = r.r_pOOId;
+			}
+
+			int mId = sl[p].mXOId;
+			int fi = p + 1;
+			var li = sl.FindLastIndex((z) => z.mXOId == mId);
+			// Child
+			for (int y = fi; y <= li; y++)
+			{
+				if (sl[y].isRun)
+				{
+					conn.QuerySingle<rXOI>("XO_OO_INS", new
+					{
+						UsrId = my.Id,
+						FFId = my.FrmId,
+						sTrh = RunSTrh,
+						XOId = sl[y].XOId,
+						dGun = sl[y].Run_dGun,
+						CId = CId,
+						pOOId = pOOId
+					}, commandType: CommandType.StoredProcedure);
+				}
+			}
+		}
+		//RunInit();
+	}
+
+	private void RunInit()
+	{
+		foreach (var s in sl)
+		{
+			if (s.isRun)
+			{
+				s.isRun = false;
+				s.Run_dGun = s.dGun;
+			}
+		}
+		RunCnt = 0;
+	}
+	private void RunReady()
+	{
+		int mindGun = 999;
+		DateTime RSD = DateTime.MaxValue;
+		foreach (var s in sl)
+		{
+			if (s.isRun && s.Run_dGun < mindGun)
+			{
+				mindGun = s.Run_dGun;
+				RSD = s.RSD;
+			}
+		}
+		if (DateTime.Now.AddMinutes(1) > RSD)
+			RSD = RSD.AddDays(1);
+		RSD = RSD.AddDays(Math.Abs(mindGun));
+
+		RunMinTrh = RSD.ToString("yyyy-MM-dd");
+		RunSTrh = RSD;
+		RunDisabled = false;
+	}
+	private void DGunChanged(int v, XO s)
+	{
+		s.Run_dGun = v;
+		RunDisabled = true;
+	}
+	private void RunToggle(XO s)
+	{
+		s.isRun = !s.isRun;
+		if (s.pXOId == 0)
+		{
+			foreach (var z in sl.FindAll((x) => x.pXOId == s.XOId))
+			{
+				z.isRun = s.isRun;
+			}
+
+		}
+		RunCnt = sl.Count((z) => z.isRun);
+		RunReadyDisabled = RunCnt == 0 || hasChange;
+	}
+
+	public async Task ShowInp(XO s)
 	{
 		ModalParameters mp = new();
 		var cs = s.ShallowCopy();
@@ -153,7 +309,7 @@
 		mp.Add("ttd", ttd);
 		// mp.Add("XOId", s.XOId);
 
-		var x = Modal.Show<XOupd>("", mp);
+		var x = Modal.Show<XOinp>("", mp);
 
 		var r = await x.Result;
 		if (r.Confirmed)
@@ -175,7 +331,6 @@
 			s.Rf2 = cs.Rf2;
 		}
 	}
-
 
 	private void Kaydet()
 	{
@@ -222,12 +377,15 @@
 			// {
 			// 	s.pXOId = newId;
 			// }
+
+			s.isDeleted = false;
+			s.isEdited = false;
 		}
 
 		KaydetBeforeAfter(before: false);
 		ChangeCount();
-	}
 
+	}
 	private void KaydetBeforeAfter(bool before)
 	{
 		// Root Idx leri LIFO koy stack
@@ -250,7 +408,6 @@
 				KaydetAfter(f);
 		}
 	}
-
 	private void KaydetBefore(int ridx)
 	{
 		// Sadece root idx gelir
@@ -307,7 +464,6 @@
 			}
 		}
 	}
-
 	private void SilToggle(int idx)
 	{   // XOId < 0 ise yeni eklenmiş
 		// pXOId = 0 ise Root
@@ -343,7 +499,6 @@
 		// }
 
 	}
-
 	private void AddSlave(int idx)
 	{
 		XO x = new();
@@ -356,7 +511,6 @@
 		c--;
 
 	}
-
 	private void AddMaster()
 	{
 		sl.Add(new XO { Typ = "I", mXOId = c, XOId = c, pXOId = 0 });
@@ -397,8 +551,9 @@
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalWarning>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
 		return newId;
 
