@@ -17,7 +17,7 @@
 			</tr>
 			<tr>
 				<td>ad</td>
-				<td><input type="text" maxlength="30" @bind="ss!.Ad" disabled="@Prv"/></td>
+				<td><input type="text" maxlength="30" @bind="ss!.Ad" disabled="@Prv" /></td>
 			</tr>
 			<tr>
 				<td>pasif</td>
@@ -30,9 +30,10 @@
 				<td>talep</td>
 				<td>
 					<select @bind="ss.TlpKrl" disabled="@Prv" style="width:100%;">
-							<option value="0">Herkes</option>
-							<option value="1">Grup üyeleri</option>
-							<option value="2">Grup sorumluları</option>
+						<option value="0">Herkes</option>
+						<option value="1">Grup üyeleri</option>
+						<option value="2">Grup sorumluları</option>
+						<option value="-1">Hiçkimse</option>
 					</select>
 				</td>
 			</tr>
@@ -46,10 +47,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td>başla/tamamla</td>
+				<td>başla/bitir</td>
 				<td>
 					<select @bind="ss.S_FKrl" disabled="@Prv" style="width:100%;">
-						<option value="0">Sorumlu+Aktör+İsteyen</option>
+						<option value="0">Sorumlu+İsteyen+Aktör</option>
 						<option value="1">Sorumlu+İsteyen</option>
 					</select>
 				</td>
@@ -71,8 +72,8 @@
 						<table>
 							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
 								<th><input type="checkbox" @bind="MergeAllUsr" style="width:auto" /></th>
-								<th>kullanıcı</th>
-								<th>-</th>
+								<th>üye</th>
+								<th style="padding:2px 0">aktör</th>
 								<th style="padding:2px 0">sorumlu</th>
 								<th style="padding:2px 0">gözlemci</th>
 							</tr>

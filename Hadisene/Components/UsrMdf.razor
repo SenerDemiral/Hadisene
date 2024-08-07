@@ -82,9 +82,9 @@
 					<div style="max-height:8lh;overflow:auto">
 						<table>
 							<tr style="font-size:.6rem;position:sticky;top:0;background-color:aliceblue;">
-								<th></th>
-								<th>birim</th>
-								<th>-</th>
+								<th><input type="checkbox" @bind="MergeAllSrv" style="width:auto" /></th>
+								<th>grup</th>
+								<th>aktör</th>
 								<th style="padding:2px 0">sorumlu</th>
 								<th style="padding:2px 0">gözlemci</th>
 							</tr>
@@ -114,6 +114,21 @@
 	[Parameter] public int UUId { get; set; }
 	private UU? rec;
 	private List<US>? us;
+
+	private bool _MergeAllSrv;
+	private bool MergeAllSrv
+	{
+		get => _MergeAllSrv;
+		set
+		{
+			foreach (var r in us)
+			{
+				if (r.SUId == 0)
+					r.Mbr = value ? 1 : 0;
+			}
+			_MergeAllSrv = value;
+		}
+	}
 
 	public async Task Kaydet()
 	{

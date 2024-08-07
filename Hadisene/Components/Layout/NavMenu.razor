@@ -305,7 +305,7 @@
 			catch (Exception ex)
 			{
 				ModalParameters mp2 = new();
-				mp.Add("Message", ex.Message);
+				mp2.Add("Message", ex.Message);
 				Modal.Show<ModalWarning>("", mp2);
 				//navigationManager.NavigateTo("");
 			}
