@@ -41,7 +41,7 @@
 			@if (my.FPM)
 			{
 				<option value="MdlQryPrv">🖇️ Modellerim</option>
-				<option value="XXqry">🖇️ XX</option>
+				<option value="XXqry">🖇️ Modellerim 2</option>
 			}
 			@if (my.FPP)
 			{
@@ -54,8 +54,8 @@
 					<option value="SrvQry">⚓ Gruplar</option>
 					<option value="TskQry">📝 Konular</option>
 					<option value="MdlQry">🖇️ Modeller</option>
-					<option value="PrdQry">⏳ Periyodikler</option>
 					<option value="XXqry">🖇️ Modeller 2</option>
+					<option value="PrdQry">⏳ Periyodikler</option>
 
 				</optgroup>
 				<option value="ordDone">💤 Arşiv</option>
@@ -374,9 +374,9 @@
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalConfirm>(hata);
-		}
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);		}
 	}
 
 	public async Task OnNotify(string key, NotifyArgs value)

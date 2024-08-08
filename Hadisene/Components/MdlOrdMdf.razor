@@ -16,6 +16,18 @@
 				<th>@Idf()</th>
 			</tr>
 			<tr>
+				<td>grup</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="mo.SrvAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckSrv" />
+				</td>
+			</tr>
+			<tr>
 				<td>konu</td>
 				<td>
 					<input type="text"
@@ -28,7 +40,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">açıklama</td>
+				<td>kime</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SAL"
+						   @bind="mo.ActAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="lbl-top">açıklama</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -60,31 +84,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>grup</td>
-				<td>
-					<input type="text"
-						   maxlength="30"
-						   size="30"
-						   list="SSL"
-						   @bind="mo.SrvAd"
-						   @bind:event="onchange"
-						   @bind:after="CheckSrv" />
-				</td>
-			</tr>
-			<tr>
-				<td>kime</td>
-				<td>
-					<input type="text"
-						   maxlength="30"
-						   size="30"
-						   list="SAL"
-						   @bind="mo.ActAd"
-						   @bind:event="onchange"
-						   @bind:after="CheckAct" />
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">kaç gün önce/sonra başlayacak</td>
+				<td colspan="2" class="lbl-top">kaç gün önce/sonra başlayacak</td>
 			</tr>
 			<tr>
 				<td>±gün</td>
@@ -93,7 +93,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">planlanan başlangıç</td>
+				<td colspan="2" class="lbl-top">planlanan başlangıç</td>
 			</tr>
 			<tr>
 				<td>zaman</td>
@@ -152,6 +152,7 @@
 		if (ssd!.TryGetValue(mo.SrvAd, out var nid))
 		{
 			mo.SrvId = nid;
+			SrvTskLU(nid);
 			SrvActLU(nid);
 
 			if (!String.IsNullOrEmpty(mo.ActAd) && sad!.TryGetValue(mo.ActAd, out var nid2))
@@ -231,11 +232,14 @@
 	protected override void OnInitialized()
 	{
 		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		if (MOId == 0)
 		{
 			mo = new();
 			omo = new();
+			ttd = new();
+			sad = new();
 		}
 		else
 		{
@@ -247,18 +251,22 @@
 
 				omo = mo.ShallowCopy();
 
+				SrvTskLU(mo.SrvId);
+				SrvActLU(mo.SrvId);
 			}
 			catch (Exception ex)
 			{
-				var hata = ex.Message.Split("\r\n")[1];
-				Modal.Show<ModalConfirm>(hata);
+				ModalParameters mp = new();
+				mp.Add("Message", ex.Message);
+				Modal.Show<ModalWarning>("", mp);
 			}
 		}
-		ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		//Srv Actors
-		sad = conn.Query<UU>("SA_LU", new { SSId = mo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
+	}
+	private void SrvTskLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		ttd = conn.Query<TT>("ST_LU", new { UsrId = my.Id, SSId = mo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 	private void SrvActLU(int SSId)
 	{

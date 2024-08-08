@@ -221,12 +221,12 @@
 			<option value="@r.Key" />
 		}
 	</datalist>
-	<datalist id="UUL">
+	@* <datalist id="UUL">
 		@foreach (var r in uud!)
 		{
 			<option value="@r.Key" />
 		}
-	</datalist>
+	</datalist> *@
 
 }
 
@@ -557,8 +557,8 @@
 	{
 		using var conn = db.GetConnection();
 		ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		//ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+		
+		// uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		if (OOId == 0)
 		{

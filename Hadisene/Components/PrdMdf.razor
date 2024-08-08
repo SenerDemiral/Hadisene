@@ -24,6 +24,10 @@
 				<td><input type="checkbox" @bind="pp.isPsf" style="width:auto" /></td>
 			</tr>
 			<tr>
+				<td>sil</td>
+				<td><input type="checkbox" @bind="pp.isDel" style="width:auto" /></td>
+			</tr>
+			<tr>
 				<td>period</td>
 				<td>
 					<select @bind="pp.Prd" style="width:100%;">
@@ -77,6 +81,20 @@
 			</tr>
 
 			<tr>
+				<td>grup</td>
+				<td>
+					<div>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="SSL"
+							   @bind="pp.SrvAd"
+							   @bind:event="onchange"
+							   @bind:after="CheckSrv" />
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<td>konu</td>
 				<td>
 					<div>
@@ -91,31 +109,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" class="lbl-top">açıklama</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<InputTextArea @bind-Value="pp.Inf"
-								   rows="2"
-								   style="min-width:100%; resize: both;" />
-				</td>
-			</tr>
-			<tr>
-				<td>bölüm</td>
-				<td>
-					<div>
-						<input type="text"
-							   maxlength="30"
-							   size="30"
-							   list="SSL"
-							   @bind="pp.SrvAd"
-							   @bind:event="onchange"
-							   @bind:after="CheckSrv" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>gönderilen</td>
+				<td>gönderilen üye</td>
 				<td>
 					<div>
 						<input type="text"
@@ -128,11 +122,17 @@
 					</div>
 				</td>
 			</tr>
-
 			<tr>
-				<td>sil</td>
-				<td><input type="checkbox" @bind="pp.isDel" style="width:auto" /></td>
+				<td colspan="2" class="lbl-top">açıklama</td>
 			</tr>
+			<tr>
+				<td colspan="2">
+					<InputTextArea @bind-Value="pp.Inf"
+								   rows="2"
+								   style="min-width:100%; resize: both;" />
+				</td>
+			</tr>
+
 		</tbody>
 	</table>
 
@@ -164,6 +164,28 @@
 	private Dictionary<string, int>? ttd, ssd, sad;
 	private bool isOK;
 
+	private void CheckSrv()
+	{
+		if (ssd!.TryGetValue(pp.SrvAd, out var nid))
+		{
+			pp.SrvId = nid;
+			SrvActLU(nid);
+			SrvTskLU(nid);
+
+			if (!String.IsNullOrEmpty(pp.ActAd) && sad!.TryGetValue(pp.ActAd, out var nid2))
+			{
+				pp.ActId = nid2;
+			}
+			else
+			{
+				pp.ActId = 0;
+				pp.ActAd = "";
+			}
+			//CheckAct();
+		}
+		else
+			pp.SrvAd = opp.SrvAd;
+	}
 	private void CheckTsk()
 	{
 		if (ttd!.TryGetValue(pp.TskAd, out var nid))
@@ -179,27 +201,6 @@
 		}
 		else
 			pp.TskAd = opp.TskAd;
-	}
-	private void CheckSrv()
-	{
-		if (ssd!.TryGetValue(pp.SrvAd, out var nid))
-		{
-			pp.SrvId = nid;
-			SrvActLU(nid);
-
-			if (!String.IsNullOrEmpty(pp.ActAd) && sad!.TryGetValue(pp.ActAd, out var nid2))
-			{
-				pp.ActId = nid2;
-			}
-			else
-			{
-				pp.ActId = 0;
-				pp.ActAd = "";
-			}
-			//CheckAct();
-		}
-		else
-			pp.SrvAd = opp.SrvAd;
 	}
 	private void CheckAct()
 	{
@@ -262,34 +263,41 @@
 
 	protected override void OnInitialized()
 	{
-		//Modal.Show<ModalConfirm>("deneme");
-
 		using var conn = db.GetConnection();
 
 		try
 		{
+			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			if (PPId == 0)
 			{
 				pp = new();
+				ttd = new();
+				sad = new();
 			}
 			else
 			{
 				pp = conn.QuerySingle<PP>("PP_SEL",
 						new { UsrId = my.Id, PPId = PPId },
 						commandType: CommandType.StoredProcedure);
+
+				SrvTskLU(pp.SrvId);
+				SrvActLU(pp.SrvId);
 			}
 			opp = pp.ShallowCopy();
 
-			ttd = conn.Query<TT>("TT_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-			//Srv Actors
-			SrvActLU(pp.SrvId);
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalConfirm>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
+	}
+
+	private void SrvTskLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		ttd = conn.Query<TT>("ST_LU", new { UsrId = my.Id, SSId = pp.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 
 	private void SrvActLU(int SSId)

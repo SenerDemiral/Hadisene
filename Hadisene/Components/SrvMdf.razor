@@ -23,6 +23,15 @@
 				<td>pasif</td>
 				<td><input type="checkbox" @bind="ss.isPsf" disabled="@Prv" style="width:auto" /></td>
 			</tr>
+			@if (ss.SSId != 0)
+			{
+				<tr>
+					<td>sil (kullanılmadıysa) </td>
+					<td>
+						<input type="checkbox" @bind="ss.Del" disabled="@Prv" style="width:auto" />
+					</td>
+				</tr>
+			}
 			<tr>
 				<td colspan="2" class="lbl-top">kurallar</td>
 			</tr>
@@ -56,15 +65,6 @@
 				</td>
 			</tr>
 
-			@if (ss.SSId != 0)
-			{
-				<tr>
-					<td>sil (kullanılmadıysa) </td>
-					<td>
-						<input type="checkbox" @bind="ss.Del" disabled="@Prv" style="width:auto" />
-					</td>
-				</tr>
-			}
 
 			<tr>
 				<td colspan="2" style="padding:0;">
@@ -264,8 +264,9 @@
 		}
 		catch (Exception ex)
 		{
-			var hata = ex.Message.Split("\r\n")[1];
-			Modal.Show<ModalConfirm>(hata);
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
 		}
 	}
 

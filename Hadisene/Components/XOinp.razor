@@ -4,7 +4,7 @@
 
 @if (xo != null)
 {
-	<table style="width:200px;font-size:.8rem">
+	<table style="width:200px;font-size:.8rem;">
 		<caption>
 			<button @onclick="Kaydet">
 				<span class="material-symbols-outlined">check</span>OK
@@ -14,6 +14,18 @@
 			<tr>
 				<td>id#</td>
 				<td>@Idf()</td>
+			</tr>
+			<tr>
+				<td>grup</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SSL"
+						   @bind="xo.SrvAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckSrv" />
+				</td>
 			</tr>
 			<tr>
 				<td>konu</td>
@@ -28,7 +40,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">açıklama</td>
+				<td>kime</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="SAL"
+						   @bind="xo.ActAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckAct" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="lbl-top">açıklama</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -60,31 +84,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>grup</td>
-				<td>
-					<input type="text"
-						   maxlength="30"
-						   size="30"
-						   list="SSL"
-						   @bind="xo.SrvAd"
-						   @bind:event="onchange"
-						   @bind:after="CheckSrv" />
-				</td>
-			</tr>
-			<tr>
-				<td>kime</td>
-				<td>
-					<input type="text"
-						   maxlength="30"
-						   size="30"
-						   list="SAL"
-						   @bind="xo.ActAd"
-						   @bind:event="onchange"
-						   @bind:after="CheckAct" />
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">kaç gün önce/sonra başlayacak</td>
+				<td colspan="2" class="lbl-top">kaç gün önce/sonra başlayacak</td>
 			</tr>
 			<tr>
 				<td>±gün</td>
@@ -93,7 +93,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">planlanan başlangıç</td>
+				<td colspan="2" class="lbl-top">planlanan başlangıç</td>
 			</tr>
 			<tr>
 				<td>zaman</td>
@@ -111,6 +111,18 @@
 	</table>
 
 
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+	@* <datalist id="SSL">
+		@foreach (var r in ssd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist> *@
 	<datalist id="SAL">
 		@foreach (var r in sad!)
 		{
@@ -124,9 +136,8 @@
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public XO xo { get; set; }
 	[Parameter] public Dictionary<string, int>? ssd { get; set; }
-	[Parameter] public Dictionary<string, int>? ttd { get; set; }
 	private XO? oxo;
-	private Dictionary<string, int>? sad;
+	private Dictionary<string, int>? sad, ttd;
 
 	private void CheckSrv()
 	{
@@ -134,6 +145,7 @@
 		{
 			xo.SrvId = nid;
 			SrvActLU(nid);
+			SrvTskLU(nid);
 
 			if (!String.IsNullOrEmpty(xo.ActAd) && sad!.TryGetValue(xo.ActAd, out var nid2))
 			{
@@ -184,7 +196,13 @@
 	{
 		oxo = xo.ShallowCopy();
 		SrvActLU(xo.SrvId);
+		SrvTskLU(xo.SrvId);
 
+	}
+	private void SrvTskLU(int SSId)
+	{
+		using var conn = db.GetConnection();
+		ttd = conn.Query<TT>("ST_LU", new { UsrId = my.Id, SSId = xo.SrvId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 	}
 	private void SrvActLU(int SSId)
 	{

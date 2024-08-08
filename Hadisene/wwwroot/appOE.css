@@ -167,7 +167,7 @@
 }
 
 	.oeSrv::before {
-		content: "⚓gönderilen bölüm (grup/servis)";
+		content: "⚓gönderilen grup";
 	}
 
 .oeAct {
@@ -175,7 +175,7 @@
 }
 
 	.oeAct::before {
-		content: "🧍gönderilen kişi (alıcı/kime/muhatap)";
+		content: "🧍grup üyesi";
 	}
 
 
