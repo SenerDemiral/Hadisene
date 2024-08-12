@@ -44,7 +44,7 @@
 				<p>@rec.Inf</p>
 			</div>
 
-			<div class="ooCard" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
+			<div class="ooCard" data-card-typ="@rec.CardTyp" data-Ytk="@my.Ytk" data-Act=@(rec.ActId == my.Id)
 				 data-Stu="@rec.Stu" data-CS="@rec.CS" data-CF="@rec.CF"
 				 data-ioc="@rec.IoC" data-SoF="@rec.SoF" @key=rec.OOId>
 
@@ -52,12 +52,18 @@
 					<div class="tooltip">
 						<button class="ooBtnEdt" @onclick="@(() => ShowEdit(rec))">
 							<span class="material-symbols-outlined">settings</span>
+							@* <span>@rec.UsrRel</span> *@
 							@* <div class="ooBtnEdtId">&nbsp;&bull;@rec.OOId.toSqid()</div> *@
 						</button>
 						<span class="tooltiptext">edit</span>
 					</div>
 
-					<div class="ooHdrTxt">
+					<div style="width:0">
+						<span>@((MarkupString)rec.UpdFlg)</span>
+						<span class="material-symbols-outlined">@rec.UsrRel</span>
+					</div>
+
+					<div class="ooHdrTxt" @onclick="@(() => ShowCard(rec))">
 						<div class="ooTsk">
 							@rec.TskAd.Coalesce()
 						</div>
@@ -245,18 +251,9 @@
 		return ooList!.Exists((z) => z.IoC == "C");
 	}
 
-	private void AddNew()
+	private void ShowCard(OO oo)
 	{
-		ModalParameters mp = new();
-		mp.Add("OOId", 0);
-
-		Modal.Show<OrdEdit>("deneme", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		oo.CardTyp = oo.CardTyp == 0 ? 1 : 0;
 	}
 
 	private async Task ShowOVTS(OO oo)
@@ -273,7 +270,6 @@
 
 		OrdViewUpd(oo);
 	}
-
 	private async Task ShowInf(OO oo)
 	{
 		try
@@ -309,7 +305,6 @@
 
 		OrdViewUpd(oo);
 	}
-
 	private async Task ShowMsg(OO oo)
 	{
 		// if (!oo.OrdUsrMap.ContainsKey(my.Id))
@@ -339,7 +334,6 @@
 
 		OrdViewUpd(oo);
 	}
-
 	private async Task Chained(OO oo)
 	{
 		if (oo.CId > 0)
@@ -364,14 +358,13 @@
 			navigationManager.NavigateTo($"/ordactive/{oo.CId}/all");
 		}
 	}
-
 	private void OrdViewUpd(OO oo)
 	{
 		try
 		{
 			using var conn = db.GetConnection();
 			var x = conn.ExecuteScalar("OU_OVTS_UPD", new { a = my.Id, b = oo.OOId });
-			oo.UpdFlg = "&#127988;";	// Emoji BlackFlag
+			oo.UpdFlg = "&#127988;";    // Emoji BlackFlag
 		}
 		catch (Exception ex)
 		{
@@ -381,7 +374,6 @@
 		}
 
 	}
-
 	private void PinTgl(OO oo)
 	{
 		//toastService.ShowInfo("Yeni Talep eklendi");
@@ -443,7 +435,6 @@
 			Modal.Show<ModalWarning>("", mp);
 		}
 	}
-
 	private async Task Ok(OO oo)
 	{
 		try
@@ -484,6 +475,25 @@
 		oo.IoC = "I";
 	}
 
+	private async Task Refresh()
+	{
+		await Read();
+		StateHasChanged();
+	}
+	private void AddNew()
+	{
+		ModalParameters mp = new();
+		mp.Add("OOId", 0);
+
+		Modal.Show<OrdEdit>("deneme", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Custom,
+					SizeCustomClass = "blazored-modal-custom-size",
+				});
+	}
+
 	protected override async Task OnInitializedAsync()
 	{
 		if (qryStr == "all")
@@ -504,12 +514,6 @@
 
 		await Read();
 	}
-	private async Task Refresh()
-	{
-		await Read();
-		StateHasChanged();
-	}
-
 	private async Task Read()
 	{
 		//qryStr = qryStr == "x" ? "" : qryStr;   // Boş ise x gönder

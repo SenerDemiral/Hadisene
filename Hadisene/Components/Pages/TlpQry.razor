@@ -1,0 +1,213 @@
+﻿@page "/tlpqry/{CId:int}/{qryStr}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject NavigationManager navigationManager
+@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+@inject IToastService toastService
+@inject NotifierService Notifier
+@inject IJSRuntime js
+
+@if (ooList is not null)
+{
+	<div style="min-width:360px">
+		<table>
+			<thead>
+				<tr>
+					<th>Rel</th>
+					<th>#</th>
+					<th class="ad">Req/Act</th>
+					<th class="ad">Tsk/Srv</th>
+					<th class="ts">RSD/ASD</th>
+					<th class="ts">RFD/AFD</th>
+				</tr>
+			</thead>
+			@foreach (var oo in ooList)
+			{
+				<tbody>
+					<tr>
+						<td colspan="6" class="bos"></td>
+					</tr>
+					<tr>
+						<td rowspan="2">@oo.UsrRel</td>
+						<td rowspan="2">@oo.OOId</td>
+						<td>@oo.ReqAd</td>
+						<td>@oo.ActAd</td>
+						<td>@oo.SrvAd</td>
+						<td>@oo.TskAd</td>
+						<td class="ts" data-cs="@oo.CS">@oo.RSD?.ToString("dd.MM.yy HH:mm")</td>
+						<td class="ts" data-cf="@oo.CF">@oo.ASD?.ToString("dd.MM.yy HH:mm")</td>
+						<td rowspan="2">@oo.OOId</td>
+						<td rowspan="2">@oo.OOId</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<div class="btnGrp">
+								<button class="ooBtnInf" disabled="@oo.noInf"
+										@onclick="@(() => ShowInf(oo))">
+									<span class="material-symbols-outlined">info</span>
+								</button>
+								<button class="ooBtnOVTS"
+										@onclick="@(() => ShowOVTS(oo))">
+									<span class="material-symbols-outlined">visibility</span>
+								</button>
+								<button class="ooOk"
+										@onclick="@(() => OrdViewUpd(oo))">
+									<span>@((MarkupString)oo.UpdFlg)</span>
+									@* <span class="material-symbols-outlined">flag</span> *@
+								</button>
+								<button class="ooPin"
+										data-Pin="@oo.Pin"
+										@onclick="@(() => PinTgl(oo))">
+								</button>
+
+							</div>
+						</td>
+						<td class="ts" data-cs="@oo.CS">@oo.RFD?.ToString("dd.MM.yy HH:mm")</td>
+						<td class="ts" data-cf="@oo.CF">@oo.AFD?.ToString("dd.MM.yy HH:mm")</td>
+					</tr>
+				</tbody>
+			}
+		</table>
+	</div>
+}
+
+<style>
+	table {
+		table-layout: fixed;
+		width: revert;
+		margin-inline: auto;
+	}
+
+	thead {
+		background-color: maroon;
+		color: white;
+	}
+
+	tbody:nth-child(odd) {
+		background: #CCC;
+	}
+
+	.bos {
+		background-color: white;
+	}
+
+	[data-cs="R"],
+	[data-cf="R"] {
+		color: red;
+	}
+
+	[data-cs="B"],
+	[data-cf="B"] {
+		color: steelblue;
+	}
+
+	[data-cs="G"],
+	[data-cf="G"] {
+		color: forestgreen;
+	}
+
+	.ad {
+		min-width: 4rem;
+	}
+
+	.ts {
+		min-width: 72px;
+		width: 118px;
+		max-width: 118px;
+		text-align: center;
+	}
+</style>
+@code
+{
+	[Parameter]
+	public int CId { get; set; }
+	[Parameter]
+	public string? qryStr { get; set; } = "";
+	[Parameter]
+	public string? PgeHdr { get; set; } = "";
+	private List<OO>? ooList;
+
+	private async Task ShowInf(OO oo)
+	{ }
+	private async Task ShowOVTS(OO oo)
+	{
+		ModalParameters mp = new();
+		mp.Add("OOId", oo.OOId);
+
+		Modal.Show<OrdVTS>("OVTS", mp,
+			new ModalOptions
+				{
+					HideHeader = true,
+					Size = ModalSize.Large,
+				});
+
+		OrdViewUpd(oo);
+	}
+	private void OrdViewUpd(OO oo)
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var x = conn.ExecuteScalar("OU_OVTS_UPD", new { a = my.Id, b = oo.OOId });
+			oo.UpdFlg = "&#127988;";    // Emoji BlackFlag
+		}
+		catch (Exception ex)
+		{
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
+		}
+	}
+	private void PinTgl(OO oo)
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			var x = conn.ExecuteScalar("OU_PIN_TGL", new { a = my.Id, b = oo.OOId });
+			oo.Pin = (int)x;
+		}
+		catch (Exception ex)
+		{
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
+		}
+
+		OrdViewUpd(oo);
+	}
+
+	private void ShowTlpSng(OO o)
+	{
+
+	}
+	private void ShowTlpEdt(OO o)
+	{
+
+	}
+
+	private async Task Read()
+	{
+		qryStr = qryStr ?? "";
+		try
+		{
+			using var conn = db.GetConnection();
+			string sel = "select * from OO_QRY(@UsrId, @QryStr) order by Idx, Trh";
+			ooList = (await conn.QueryAsync<OO>(sel,
+				new { UsrId = my.Id, QryStr = qryStr }))
+				.ToList();
+		}
+		catch (Exception ex)
+		{
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+}

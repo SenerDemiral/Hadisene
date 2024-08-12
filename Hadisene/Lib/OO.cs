@@ -9,10 +9,12 @@ public sealed class OO
     public string? UpdFlg;
 
 	//public int UsrId;   // Last updated by 
+	public string UsrRel;   // Usr Relation 
+    public int CardTyp;
 
 	public int OOId;
 	public int pOOId;
-    public string? Stu = "A";
+    public string? Stu = "A";   // T gelirse Tamamlandı, Arşivlenebilir
     public int ReqId;
     public int SrvId;
     public int TskId;

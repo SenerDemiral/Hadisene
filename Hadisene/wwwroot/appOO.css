@@ -6,7 +6,7 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fit, 340px);
 	justify-content: center;
-	gap: 1.5rem;
+	gap: .8rem;
 	min-width: 340px;
 	margin-bottom: .5rem;
 }
@@ -372,6 +372,32 @@ button.ooCID:disabled {
 input[type="radio"] {
 	width: 1rem !important;
 	margin: 0;
+}
+
+@media (width < 600px) {
+	.ooCard {
+		display: grid;
+		/*gap: 2px;*/
+		grid-template-rows: 1fr;
+		grid-template-columns: 1fr;
+		/*grid-template-areas:
+			"ooHdr"
+			"ooFtr";*/
+		background-color: azure;
+		color: #444;
+		outline: 1px solid gray;
+		border-radius: 2px;
+		box-shadow: 4px 4px 8px gray;
+	}
+
+	.ooCard[data-card-typ="0"] :is(.ooTbl, .ooFtr, .ooBtnEdt){
+			display: none;
+	}
+
+	.ooFtr {
+		height: 32px;
+	}
+
 }
 
 /*@media (width < 600px) {

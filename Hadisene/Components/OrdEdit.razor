@@ -319,7 +319,6 @@
 		if (newMode == Mode.New)
 		{
 			SaveDsbl = false;
-			oo = new();
 			InitROfalse();
 			oo.StuROa = true;
 			oo.StuROx = true;
@@ -557,14 +556,15 @@
 	{
 		using var conn = db.GetConnection();
 		ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-		
+
 		// uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 		if (OOId == 0)
 		{
-			mode = Mode.New;
+			oo = new();
 			sad = new();
 			ttd = new();
+			mode = Mode.New;
 		}
 		else
 		{
