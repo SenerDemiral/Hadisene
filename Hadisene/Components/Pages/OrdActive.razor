@@ -10,8 +10,6 @@
 @implements IDisposable
 @using Hadisene.Components
 
-<PageTitle>AktifTalepler</PageTitle>
-
 <div class="stk">
 	<button @onclick="Refresh" style="background-color: yellow;">
 		<span class="material-symbols-outlined">refresh</span>
@@ -58,7 +56,7 @@
 						<span class="tooltiptext">edit</span>
 					</div>
 
-					<div style="width:0">
+					<div style="width:min-content;text-align:center;">
 						<span>@((MarkupString)rec.UpdFlg)</span>
 						<span class="material-symbols-outlined">@rec.UsrRel</span>
 					</div>

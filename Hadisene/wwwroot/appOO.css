@@ -4,10 +4,10 @@
 
 .ooCnt {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, 340px);
+	grid-template-columns: repeat(auto-fit, 360px);
 	justify-content: center;
 	gap: .8rem;
-	min-width: 340px;
+	min-width: 360px;
 	margin-bottom: .5rem;
 }
 
