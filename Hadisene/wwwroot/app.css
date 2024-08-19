@@ -321,6 +321,15 @@ button {
 	overflow: auto;
 }
 
+.bm-header {
+	padding: 0 !important;
+}
+
+.bm-close {
+	padding: 0 !important;
+	margin: unset !important;
+}
+
 
 
 

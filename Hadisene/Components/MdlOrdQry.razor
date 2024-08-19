@@ -74,7 +74,7 @@
 		mp.Add("MMId", MMId);
 		mp.Add("MOId", id);
 
-		var x = Modal.Show<MdlOrdMdf>("", mp, options);
+		var x = Modal.Show<MdlOrdMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
@@ -100,7 +100,7 @@
 		ModalParameters mp = new();
 		mp.Add("MMId", MMId);
 
-		var x = Modal.Show<Mdl2Ord>("", mp, options);
+		var x = Modal.Show<Mdl2Ord>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

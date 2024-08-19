@@ -2,9 +2,10 @@
 @using Blazored.Toast.Configuration
 
 <CascadingBlazoredModal Position="ModalPosition.Middle"
-						HideCloseButton="true"
-						HideHeader="true"
-						Size="ModalSize.Automatic"
+						HideCloseButton="false"
+						HideHeader="false"
+						Size="ModalSize.Custom"
+						SizeCustomClass="blazored-modal-custom-size"
 						@rendermode="new InteractiveServerRenderMode(prerender: false)" />
 <BlazoredToasts Position="ToastPosition.BottomRight"
 				Timeout="10"

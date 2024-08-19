@@ -161,13 +161,7 @@
 		ModalParameters mp = new();
 		mp.Add("Prv", false);
 
-		Modal.Show<PrdQry>("Hatırlatıcılar", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		Modal.Show<PrdQry>("", mp);
 		return ValueTask.CompletedTask;
 	}
 	private async Task ShowPrdQryPrv()
@@ -175,25 +169,14 @@
 		ModalParameters mp = new();
 		mp.Add("Prv", true);
 
-		Modal.Show<PrdQry>("Hatırlatıcılar", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<PrdQry>("", mp);
 	}
 
 	private async Task ShowUsrQry()
 	{
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
-		var messageForm = Modal.Show<UsrQry>("Kullanıcılar", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		var messageForm = Modal.Show<UsrQry>("", mp);
 		var result = await messageForm.Result;
 		StateHasChanged();
 		//return ValueTask.CompletedTask;
@@ -203,71 +186,41 @@
 		ModalParameters mp = new();
 		// mp.Add("OOId", oo.OOId);
 
-		Modal.Show<TskQry>("Görevler", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<TskQry>("", mp);
 	}
 	private async Task ShowSrvQry()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", false);
 
-		Modal.Show<SrvQry>("Servisler", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<SrvQry>("", mp);
 	}
 	private async Task ShowSrvQryPrv()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", true);
 
-		Modal.Show<SrvQry>("Servisler", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<SrvQry>("", mp);
 	}
 	private async Task ShowXXqry()
 	{
 		ModalParameters mp = new();
 
-		Modal.Show<XXqry>("Model", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<XXqry>("", mp);
 	}
 	private async Task ShowMdlQry()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", false);
 
-		Modal.Show<MdlQry>("Model", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<MdlQry>("", mp);
 	}
 	private async Task ShowMdlQryPrv()
 	{
 		ModalParameters mp = new();
 		mp.Add("Prv", true);
 
-		Modal.Show<MdlQry>("Model", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Medium,
-				});
+		Modal.Show<MdlQry>("", mp);
 	}
 
 

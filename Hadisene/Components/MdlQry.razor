@@ -57,12 +57,7 @@
 		ModalParameters mp = new();
 		mp.Add("MMId", id);
 
-		var x = Modal.Show<MdlMdf>("", mp,
-			new ModalOptions()
-				{
-					HideHeader = true,
-					Size = ModalSize.Large,
-				});
+		var x = Modal.Show<MdlMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
@@ -75,12 +70,7 @@
 		ModalParameters mp = new();
 		mp.Add("MMId", id);
 
-		var x = Modal.Show<MdlOrdQry>("", mp,
-			new ModalOptions()
-				{
-					HideHeader = true,
-					Size = ModalSize.ExtraLarge,
-				});
+		var x = Modal.Show<MdlOrdQry>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

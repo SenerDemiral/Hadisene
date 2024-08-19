@@ -59,7 +59,7 @@
 		mp.Add("SSId", id);
 		mp.Add("Prv", Prv);
 
-		var x = Modal.Show<SrvMdf>("", mp, options);
+		var x = Modal.Show<SrvMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

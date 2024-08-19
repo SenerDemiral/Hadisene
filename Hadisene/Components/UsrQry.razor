@@ -69,7 +69,7 @@
 		ModalParameters mp = new();
 		mp.Add("UUId", id);
 
-		var x = Modal.Show<UsrMdf>("", mp, mdlOpts);
+		var x = Modal.Show<UsrMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{

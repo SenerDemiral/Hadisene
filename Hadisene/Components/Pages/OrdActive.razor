@@ -259,12 +259,7 @@
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		Modal.Show<OrdVTS>("OVTS", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Large,
-				});
+		Modal.Show<OrdVTS>("OVTS", mp);
 
 		OrdViewUpd(oo);
 	}
@@ -281,19 +276,13 @@
 	{
 		if (!oo.isEdt)
 		{
-			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
+			Modal.Show<ModalConfirm>("Yetkili değilsiniz", new ModalOptions { HideHeader = false });
 			return;
 		}
 		ModalParameters mp = new();
 		mp.Add("OOId", oo.OOId);
 
-		var x = Modal.Show<OrdEdit>("deneme", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		var x = Modal.Show<OrdEdit>("", mp);
 
 		var r = await x.Result;
 		if (r.Confirmed)
@@ -319,13 +308,7 @@
 		mp.Add("OOId", oo.OOId);
 		mp.Add("isChn", CId == 0 ? 0 : 1);
 
-		var x = Modal.Show<OrdMsg>("deneme", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		var x = Modal.Show<OrdMsg>("", mp);
 
 		var r = await x.Result;
 		MsgShowing = false;
@@ -483,13 +466,7 @@
 		ModalParameters mp = new();
 		mp.Add("OOId", 0);
 
-		Modal.Show<OrdEdit>("deneme", mp,
-			new ModalOptions
-				{
-					HideHeader = true,
-					Size = ModalSize.Custom,
-					SizeCustomClass = "blazored-modal-custom-size",
-				});
+		Modal.Show<OrdEdit>("", mp);
 	}
 
 	protected override async Task OnInitializedAsync()

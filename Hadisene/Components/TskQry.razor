@@ -48,7 +48,7 @@
 		ModalParameters mp = new();
 		mp.Add("TTId", id);
 
-		var x = Modal.Show<TskMdf>("", mp, options);
+		var x = Modal.Show<TskMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
