@@ -257,7 +257,7 @@
 					StateHasChanged();
 				});
 
-				await Task.Delay(value.MsgTyp == "I" ? 1000 : 100);
+				//await Task.Delay(value.MsgTyp == "I" ? 1000 : 100);
 				try
 				{
 					await js.InvokeVoidAsync("scrollBottom", "scroll-area");

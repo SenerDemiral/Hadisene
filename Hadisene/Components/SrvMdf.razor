@@ -4,7 +4,7 @@
 
 @if (ss != null && su != null)
 {
-	<table style="min-width:340px;">
+	<table style="min-width:340px;max-width:fit-content;">
 		<caption>
 			<button @onclick="Kaydet">
 				<span class="material-symbols-outlined">check</span>Grup Kaydet
@@ -33,7 +33,7 @@
 				</tr>
 			}
 			<tr>
-				<td colspan="2" class="lbl-top">kurallar</td>
+				<td colspan="2" class="lbl-top">kurallar (kimler yapabilir)</td>
 			</tr>
 			<tr>
 				<td>talep</td>
@@ -42,7 +42,7 @@
 						<option value="0">Herkes</option>
 						<option value="1">Grup üyeleri</option>
 						<option value="2">Grup sorumluları</option>
-						<option value="-1">Hiçkimse</option>
+						@* <option value="-1">Hiçkimse</option> *@
 					</select>
 				</td>
 			</tr>
@@ -50,8 +50,8 @@
 				<td>takip</td>
 				<td>
 					<select @bind="ss.TkpKrl" disabled="@Prv" style="width:100%;">
-						<option value="0">Sorumlu+Gözlemci+Aktör+İsteyen</option>
-						<option value="1">Üyeler+İsteyen</option>
+						<option value="0">İsteyen+Sorumlu+Gözlemci+Aktör</option>
+						<option value="1">İsteyen+Üyeler</option>
 					</select>
 				</td>
 			</tr>
@@ -59,13 +59,16 @@
 				<td>başla/bitir</td>
 				<td>
 					<select @bind="ss.S_FKrl" disabled="@Prv" style="width:100%;">
-						<option value="0">Sorumlu+İsteyen+Aktör</option>
-						<option value="1">Sorumlu+İsteyen</option>
+						<option value="0">İsteyen+Sorumlu+Aktör</option>
+						<option value="1">İsteyen+Sorumlu</option>
 					</select>
 				</td>
 			</tr>
 
 
+			<tr>
+				<td colspan="2" class="lbl-top">üyeleri</td>
+			</tr>
 			<tr>
 				<td colspan="2" style="padding:0;">
 					<div style="max-height:8lh;overflow:auto">
@@ -93,6 +96,11 @@
 					</div>
 				</td>
 			</tr>
+
+			<tr>
+				<td colspan="2" class="lbl-top">kullanacağı konular</td>
+			</tr>
+
 			<tr>
 				<td colspan="2" style="padding:0;">
 					<div style="max-height:8lh;overflow:auto">

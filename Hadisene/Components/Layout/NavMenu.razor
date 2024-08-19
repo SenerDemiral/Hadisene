@@ -33,7 +33,7 @@
 		@if (my.Id != 0)
 		{
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
-			<option value="TlpQry/0/all">🚧 Talepler2</option>
+			@* <option value="TlpQry/0/all">🚧 Talepler2</option> *@
 			<option value="OrdStat">📈 Özet</option>
 			@if (my.FPS)
 			{
@@ -336,9 +336,12 @@
 		selVal = "";
 		await UsrEnter();
 		if (my.Id > 0)
+		{
+			// await MenuChange("ordActive/0/all");
 			await MenuChange("");
-	}
 
+		}
+	}
 	protected async Task UsrEnter()
 	{
 		using var conn = db.GetConnection();
@@ -408,7 +411,7 @@
 
 				try
 				{
-					await js.InvokeVoidAsync("playSound", "sound1");
+					await js.InvokeVoidAsync("playSound", "sound");
 				}
 				catch (JSDisconnectedException)
 				{
@@ -424,7 +427,7 @@
 		// In this scenario dispose gets called after around 3 minutes (by default) when we detect the connection has been lost and the client doesn't re-connect as part of disposing the entire circuit.
 
 		Notifier.Notify -= OnNotify;
-
+		
 		using var conn = db.GetConnection();
 		conn.Execute("USR_EXIT", new { UEXId = my.UEXId }, commandType: CommandType.StoredProcedure);
 

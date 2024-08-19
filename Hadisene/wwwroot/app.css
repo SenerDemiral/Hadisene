@@ -368,6 +368,8 @@ tbody.zebra tr:nth-child(odd) {
 .lbl-top {
 	font-size: .8rem;
 	background-color: lightgray;
+	text-align: center;
+	font-weight: bold;
 }
 
 /*********************/

@@ -248,6 +248,21 @@
 	public enum Statu { Aktif = 'A', İptal = 'X', Arşiv = 'Z' };
 	public Statu stu;
 	@* min="@(DateTime.Today.ToString("yyyy-MM-ddTHH:mm"))" *@
+	private bool modeRO;
+	private Mode _mode = Mode.Show;
+	public Mode mode
+	{
+		get => _mode;
+		set
+		{
+			// mode bir kere değişebilir, yanlış yaptıysa çık/gir yapsın
+			modeRO = true;
+			ModeChanging(_mode, value);
+			_mode = value;
+			StateHasChanged();
+
+		}
+	}
 
 	private void CheckRSD(DateTime? val)
 	{
@@ -297,21 +312,6 @@
 	}
 
 	//private string mode = "E";	// Edit, Duplicate/Clone, New/Insert
-	private bool modeRO;
-	private Mode _mode = Mode.Show;
-	public Mode mode
-	{
-		get => _mode;
-		set
-		{
-			// mode bir kere değişebilir, yanlış yaptıysa çık/gir yapsın
-			modeRO = true;
-			ModeChanging(_mode, value);
-			_mode = value;
-			StateHasChanged();
-
-		}
-	}
 	private void ModeChanging(Mode oldMode, Mode newMode)
 	{
 		DateTime rsd = DateTime.Today.AddDays(1);
@@ -569,7 +569,7 @@
 		else
 		{
 			// 	oo = conn.QuerySingle<OO>("OO_SEL",
-			// 		new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
+			// 	new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
 
 			oo = conn.QuerySingleOrDefault<OO>("OO_QRY",
 				new { p1 = my.Id, p2 = "", p3 = OOId }, commandType: CommandType.StoredProcedure);
