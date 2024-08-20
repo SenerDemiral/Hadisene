@@ -297,7 +297,7 @@
 		// if (!oo.OrdUsrMap.ContainsKey(my.Id))
 		if (!oo.isMbr && CId == 0)
 		{
-			Modal.Show<ModalConfirm>("Yetkili değilsiniz");
+			Modal.Show<ModalConfirm>("Yetkili değilsiniz", new ModalOptions { HideHeader = false });
 			return;
 		}
 

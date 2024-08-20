@@ -59,7 +59,7 @@
 		ModalParameters mp = new();
 		mp.Add("PPId", id);
 
-		var x = Modal.Show<PrdMdf>("", mp, options);
+		var x = Modal.Show<PrdMdf>("", mp);
 		var r = await x.Result;
 		if (r.Confirmed)
 		{
