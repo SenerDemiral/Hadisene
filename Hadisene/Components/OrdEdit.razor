@@ -540,48 +540,47 @@
 
 	protected override void OnInitialized()
 	{
-		try
-		{
-			Read();
-			Notifier.Notify += OnNotify;
-		}
-		catch (Exception ex)
-		{
-			var hata = ex.Message.Split("\r\n")[1];
-			// Modal.Show<Confirm>(hata);
-		}
+		Read();
+		Notifier.Notify += OnNotify;
 	}
 
 	private void Read()
 	{
-		using var conn = db.GetConnection();
-		ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-
-		// uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-
-		if (OOId == 0)
+		try
 		{
-			oo = new();
-			sad = new();
-			ttd = new();
-			mode = Mode.New;
+			using var conn = db.GetConnection();
+			ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+			// uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
+			if (OOId == 0)
+			{
+				oo = new();
+				sad = new();
+				ttd = new();
+				mode = Mode.New;
+			}
+			else
+			{
+				// 	oo = conn.QuerySingle<OO>("OO_SEL",
+				// 	new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
+
+				oo = conn.QuerySingleOrDefault<OO>("OO_QRY",
+					new { p1 = my.Id, p2 = "", p3 = OOId }, commandType: CommandType.StoredProcedure);
+
+				SrvActLU(oo.SrvId);
+				SrvTskLU(oo.SrvId);
+			}
+			ooo = oo.ShallowCopy();
+
+
+			//oo.StuRO = oo.Stu != "A" ? true : false;
+			stu = Statu.Aktif;
 		}
-		else
+		catch (Exception ex)
 		{
-			// 	oo = conn.QuerySingle<OO>("OO_SEL",
-			// 	new { p1 = my.Id, p2 = OOId }, commandType: CommandType.StoredProcedure);
-
-			oo = conn.QuerySingleOrDefault<OO>("OO_QRY",
-				new { p1 = my.Id, p2 = "", p3 = OOId }, commandType: CommandType.StoredProcedure);
-
-			SrvActLU(oo.SrvId);
-			SrvTskLU(oo.SrvId);
+			Modal.Show<ModalWarning>(ex.Message);
 		}
-		ooo = oo.ShallowCopy();
-
-
-		//oo.StuRO = oo.Stu != "A" ? true : false;
-		stu = Statu.Aktif;
 	}
 
 	private void SrvActLU(int SSId)
