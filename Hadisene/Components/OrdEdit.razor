@@ -67,6 +67,7 @@
 				<input type="text"
 					   maxlength="30"
 					   size="30"
+					   list="UUL"
 					   disabled="@oo.ReqRO"
 					   @bind="oo.ReqAd"
 					   @bind:event="onchange"
@@ -203,6 +204,12 @@
 
 	</div>
 
+	<datalist id="UUL">
+		@foreach (var r in uud!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
 	<datalist id="SSL">
 		@foreach (var r in ssd!)
 		{
@@ -221,13 +228,6 @@
 			<option value="@r.Key" />
 		}
 	</datalist>
-	@* <datalist id="UUL">
-		@foreach (var r in uud!)
-		{
-			<option value="@r.Key" />
-		}
-	</datalist> *@
-
 }
 
 @* <details>
@@ -331,6 +331,7 @@
 			oo.AFDro = true;
 			oo.ChainRO = true;
 
+			// Usr.Ytk Admin/Operator ise ReqId yi değiştirebilir
 			oo.ReqId = my.Id;
 			oo.ReqAd = my.Ad;
 
@@ -405,7 +406,10 @@
 		oo.InfRO = false;
 		oo.Rf1RO = false;
 		oo.Rf2RO = false;
-		// oo.ReqRO = false; Değişmez
+		if (my.Ytk == 1) // Usr.Ytk Admin/Operator ise ReqId yi değiştirebilir
+		{
+			oo.ReqRO = false; 
+		}
 		oo.SrvRO = false;
 		oo.TskRO = false;
 		oo.ActRO = false;
@@ -421,6 +425,7 @@
 		if (uud!.TryGetValue(oo.ReqAd, out var nid))
 		{
 			oo.ReqId = nid;
+			SrvLU(nid);
 		}
 		else
 			oo.ReqAd = ooo.ReqAd;
@@ -551,7 +556,7 @@
 			using var conn = db.GetConnection();
 			ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-			// uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 			if (OOId == 0)
 			{
@@ -581,6 +586,13 @@
 		{
 			Modal.Show<ModalWarning>(ex.Message);
 		}
+	}
+
+	private void SrvLU(int ReqId)
+	{
+		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { Usr = ReqId, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
 	}
 
 	private void SrvActLU(int SSId)
