@@ -79,7 +79,26 @@
 				<td>saat</td>
 				<td><input type="number" min="1" @bind="pp.ISH" /></td>
 			</tr>
+			<tr>
+				<td>sayaç</td>
+				<td><input type="number" min="0" @bind="pp.Cntr" /></td>
+			</tr>
 
+			<tr>
+				<td>isteyen</td> 
+				<td>
+					<div>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="UUL"
+							   disabled="@isReqDisabled"
+							   @bind="pp.ReqAd"
+							   @bind:event="onchange"
+							   @bind:after="CheckReq" />
+					</div>
+				</td>
+			</tr>
 			<tr>
 				<td>grup</td>
 				<td>
@@ -109,7 +128,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>gönderilen üye</td>
+				<td>grup üye</td>
 				<td>
 					<div>
 						<input type="text"
@@ -136,6 +155,12 @@
 		</tbody>
 	</table>
 
+	<datalist id="UUL">
+		@foreach (var r in uud!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
 	<datalist id="TTL">
 		@foreach (var r in ttd!)
 		{
@@ -161,9 +186,19 @@
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public int PPId { get; set; }
 	private PP? pp = default, opp = default;
-	private Dictionary<string, int>? ttd, ssd, sad;
-	private bool isOK;
+	private Dictionary<string, int>? uud, ttd, ssd, sad;
+	private bool isReqDisabled = true;
 
+	private void CheckReq()
+	{
+		if (uud!.TryGetValue(pp.ReqAd, out var nid))
+		{
+			pp.ReqId = nid;
+			SrvLU(nid);
+		}
+		else
+			pp.ReqAd = opp.ReqAd;
+	}
 	private void CheckSrv()
 	{
 		if (ssd!.TryGetValue(pp.SrvAd, out var nid))
@@ -243,11 +278,13 @@
 						p7 = pp.ISH,
 						p8 = pp.RSD,
 						p9 = pp.RPH,
-						pa = pp.TskId,
-						pb = pp.SrvId,
-						pc = pp.ActId,
-						pd = pp.Inf,
-						pe = pp.Del,
+						pa = pp.Cntr,
+						pb = pp.ReqId,
+						pc = pp.SrvId,
+						pd = pp.TskId,
+						pe = pp.ActId,
+						pf = pp.Inf,
+						pg = pp.Del,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -268,6 +305,7 @@
 		try
 		{
 			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			if (PPId == 0)
 			{
 				pp = new();
@@ -285,6 +323,8 @@
 			}
 			opp = pp.ShallowCopy();
 
+			if (my.Ytk.IsAny(1, 2))     // Admn/Oprtr isteyeni değiştirebilir
+				isReqDisabled = false;
 		}
 		catch (Exception ex)
 		{
@@ -292,6 +332,13 @@
 			mp.Add("Message", ex.Message);
 			Modal.Show<ModalWarning>("", mp);
 		}
+	}
+
+	private void SrvLU(int ReqId)
+	{
+		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { Usr = ReqId, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
 	}
 
 	private void SrvTskLU(int SSId)
@@ -331,16 +378,19 @@
 		}
 		public int UUId;
 		public int Prd = 1; // Yıllık
-		public int TskId;
-		public string? TskAd;
+		public int ReqId;
+		public string? ReqAd;
 		public int SrvId;
 		public string? SrvAd;
+		public int TskId;
+		public string? TskAd;
 		public int ActId;
 		public string? ActAd;
 		public int ISH = 1;     // RSDden Kaç saat önce Talep yaratılacak
 		public int RPH = 1;     // Planlanan süre
 		public DateTime? RSD = DateTime.Now.AddHours(1);
 		public string? Inf;
+		public int Cntr;		// Counter
 
 		public int Del;
 		public bool isDel

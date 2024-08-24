@@ -46,6 +46,6 @@ public class TimedHostedService : BackgroundService
 		_logger.LogInformation("Timed Hosted Service {RunTime} NoC:{count}", DateTime.Now, count);
 
 		using var conn = db.GetConnection();
-		await conn.ExecuteAsync("RR2OO", param: null, commandType: CommandType.StoredProcedure);
+		await conn.ExecuteAsync("PP2OO", param: null, commandType: CommandType.StoredProcedure);
 	}
 }

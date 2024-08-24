@@ -406,7 +406,7 @@
 		oo.InfRO = false;
 		oo.Rf1RO = false;
 		oo.Rf2RO = false;
-		if (my.Ytk == 1) // Usr.Ytk Admin/Operator ise ReqId yi değiştirebilir
+		if (my.Ytk.IsAny(1, 2)) // Usr.Ytk Admin/Operator ise ReqId yi değiştirebilir
 		{
 			oo.ReqRO = false; 
 		}

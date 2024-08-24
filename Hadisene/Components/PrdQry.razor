@@ -18,9 +18,9 @@
 				<th>period</th>
 				<th>sonraki<br />planlanan başlangıç</th>
 				<th>konu</th>
-				<th>●özel</th>
+				<th>isteyen</th>
 			</tr>
-			@foreach (var rec in tbl)
+			@foreach (var rec in tbl) 
 			{
 				<tr>
 					<td>
@@ -36,7 +36,7 @@
 					<td>@rec.PrdAd</td>
 					<td>@rec.RSD?.ToString("dd.MM.yy HH:mm")</td>
 					<td>@rec.TskAd</td>
-					<td>@rec.UUAd</td>
+					<td>@rec.ReqAd</td>
 				</tr>
 			}
 		</tbody>
@@ -101,7 +101,7 @@
 		public string? Ad;
 		public string? PrdAd;
 		public string? TskAd;
-		public string? UUAd;
+		public string? ReqAd;
 		public DateTime? RSD;
 	}
 }

@@ -46,7 +46,7 @@
 			CookieOptions co = new CookieOptions();
 			co.Secure = false;
 			co.HttpOnly = true;
-			co.SameSite = SameSiteMode.None;   //SameSiteMode.Strict;	 Mobilde çalışmıyor
+			co.SameSite = SameSiteMode.Lax;   //SameSiteMode.Strict;	 Mobilde çalışmıyor
 			//co.MaxAge = TimeSpan.FromMinutes(1); // Bitis suresi belirtilmediginde sessionCookie oluyor
 			co.MaxAge = TimeSpan.FromDays(30); // Bitis suresi belirtilmediginde sessionCookie oluyor
 			context.Response.Cookies.Append("hadisene", _usrTkn, co);

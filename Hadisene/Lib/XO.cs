@@ -10,9 +10,11 @@ public sealed class XO
 	public int pXOId { get; set; }
 
 	public int XOId { get; set; }
+	public int ReqId { get; set; }
 	public int SrvId { get; set; }
 	public int TskId { get; set; }
 	public int ActId { get; set; }
+	public string? ReqAd { get; set; }
 	public string? SrvAd { get; set; }
 	public string? TskAd { get; set; }
 	public string? ActAd { get; set; }
