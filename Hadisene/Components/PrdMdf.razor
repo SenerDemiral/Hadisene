@@ -24,6 +24,16 @@
 				<td><input type="checkbox" @bind="pp.isPsf" style="width:auto" /></td>
 			</tr>
 			<tr>
+				<td>sayaç</td>
+				<td>
+					<div>
+						<input type="number" min="0" @bind="pp.Cntr" style="width:80px" />
+						sıfırlandığında sil <input type="checkbox" @bind="pp.isDelIf0" style="width:auto" />
+					</div>
+
+				</td>
+			</tr>
+			<tr>
 				<td>sil</td>
 				<td><input type="checkbox" @bind="pp.isDel" style="width:auto" /></td>
 			</tr>
@@ -69,7 +79,7 @@
 			</tr>
 			<tr>
 				<td>saat</td>
-				<td><input type="number" min="1" @bind="pp.RPH" /></td>
+				<td><input type="number" min="1" @bind="pp.RPH" style="width:80px" /></td>
 			</tr>
 
 			<tr>
@@ -77,15 +87,14 @@
 			</tr>
 			<tr>
 				<td>saat</td>
-				<td><input type="number" min="1" @bind="pp.ISH" /></td>
-			</tr>
-			<tr>
-				<td>sayaç</td>
-				<td><input type="number" min="0" @bind="pp.Cntr" /></td>
+				<td><input type="number" min="1" @bind="pp.ISH" style="width:80px" /></td>
 			</tr>
 
 			<tr>
-				<td>isteyen</td> 
+				<td colspan="2" class="lbl-top">talep</td>
+			</tr>
+			<tr>
+				<td>isteyen</td>
 				<td>
 					<div>
 						<input type="text"
@@ -151,6 +160,28 @@
 								   style="min-width:100%; resize: both;" />
 				</td>
 			</tr>
+			<tr>
+				<td>ref1</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="pp.Rf1"
+						   @bind:event="onchange"
+						   @bind:after="(() => pp.Rf1 = pp.Rf1.toASCII())" />
+				</td>
+			</tr>
+			<tr>
+				<td>ref2</td>
+				<td>
+					<input type="text"
+						   class="refs"
+						   maxlength="20"
+						   @bind="pp.Rf2"
+						   @bind:event="onchange"
+						   @bind:after="(() => pp.Rf2 = pp.Rf2.toASCII())" />
+				</td>
+			</tr>
 
 		</tbody>
 	</table>
@@ -195,6 +226,12 @@
 		{
 			pp.ReqId = nid;
 			SrvLU(nid);
+			pp.SrvId = 0;
+			pp.SrvAd = "";
+			pp.TskId = 0;
+			pp.TskAd = "";
+			pp.ActId = 0;
+			pp.ActAd = "";
 		}
 		else
 			pp.ReqAd = opp.ReqAd;
@@ -206,17 +243,10 @@
 			pp.SrvId = nid;
 			SrvActLU(nid);
 			SrvTskLU(nid);
-
-			if (!String.IsNullOrEmpty(pp.ActAd) && sad!.TryGetValue(pp.ActAd, out var nid2))
-			{
-				pp.ActId = nid2;
-			}
-			else
-			{
-				pp.ActId = 0;
-				pp.ActAd = "";
-			}
-			//CheckAct();
+			pp.TskId = 0;
+			pp.TskAd = "";
+			pp.ActId = 0;
+			pp.ActAd = "";
 		}
 		else
 			pp.SrvAd = opp.SrvAd;
@@ -279,12 +309,15 @@
 						p8 = pp.RSD,
 						p9 = pp.RPH,
 						pa = pp.Cntr,
-						pb = pp.ReqId,
-						pc = pp.SrvId,
-						pd = pp.TskId,
-						pe = pp.ActId,
-						pf = pp.Inf,
-						pg = pp.Del,
+						pb = pp.DelIf0,
+						pc = pp.ReqId,
+						pd = pp.SrvId,
+						pe = pp.TskId,
+						pf = pp.ActId,
+						pg = pp.Inf,
+						ph = pp.Rf1,
+						pi = pp.Rf2,
+						pj = pp.Del,
 					},
 					commandType: CommandType.StoredProcedure);
 
@@ -305,12 +338,13 @@
 		try
 		{
 			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
-			uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			if (PPId == 0)
 			{
 				pp = new();
 				ttd = new();
 				sad = new();
+				pp.ReqId = my.Id;
+				pp.ReqAd = my.Ad;
 			}
 			else
 			{
@@ -324,7 +358,14 @@
 			opp = pp.ShallowCopy();
 
 			if (my.Ytk.IsAny(1, 2))     // Admn/Oprtr isteyeni değiştirebilir
+			{
 				isReqDisabled = false;
+				uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			}
+			else
+			{
+				uud = new();
+			}
 		}
 		catch (Exception ex)
 		{
@@ -390,8 +431,18 @@
 		public int RPH = 1;     // Planlanan süre
 		public DateTime? RSD = DateTime.Now.AddHours(1);
 		public string? Inf;
-		public int Cntr;		// Counter
-
+		public string? Rf1;
+		public string? Rf2;
+		public int Cntr;        // Counter
+		public int DelIf0;      // Delete if Counter 0
+		public bool isDelIf0
+		{
+			get => DelIf0 == 1;
+			set
+			{
+				DelIf0 = value ? 1 : 0;
+			}
+		}
 		public int Del;
 		public bool isDel
 		{

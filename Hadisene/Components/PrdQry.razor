@@ -73,7 +73,7 @@
 		{
 			using var conn = db.GetConnection();
 			tbl = (await conn.QueryAsync<PP>("PP_QRY",
-				new { a = my.Id, b = my.FrmId, c = Prv ? 1 : 0 }, // SP parametreleri DB deki sırasıyla gönderilmeli
+				new { a = my.Id, b = my.FrmId }, // SP parametreleri DB deki sırasıyla gönderilmeli
 				commandType: CommandType.StoredProcedure)
 			).ToList();
 

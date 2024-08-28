@@ -1265,7 +1265,7 @@ input[type="radio"] {
 }
 
 	.oeReq::before {
-		content: "🙋gönderen (talep eden / kimden)";
+		content: "↗️ isteyen (talep eden)";
 	}
 
 .oeTsk {
@@ -1273,7 +1273,7 @@ input[type="radio"] {
 }
 
 	.oeTsk::before {
-		content: "📝konu";
+		content: "⏺️ konu";
 	}
 
 .oeSrv {
@@ -1281,7 +1281,7 @@ input[type="radio"] {
 }
 
 	.oeSrv::before {
-		content: "⚓gönderilen grup";
+		content: "⏩ grup";
 	}
 
 .oeAct {
@@ -1289,7 +1289,7 @@ input[type="radio"] {
 }
 
 	.oeAct::before {
-		content: "🧍grup üyesi";
+		content: "➡️ grup üyesi";
 	}
 
 
