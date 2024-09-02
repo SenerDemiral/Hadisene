@@ -13,29 +13,17 @@
 		<tbody>
 			<tr>
 				<td>id#</td>
-				<td>@Idf()</td>
+				<td>
+					<div style="display:flex;justify-content: space-between;">
+						<div>@Idf()</div>
+						<div>pasif <input type="checkbox" @bind="pp.isPsf" style="width:auto" /></div>
+						<div>sil <input type="checkbox" @bind="pp.isDel" style="width:auto" /></div>
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<td>ad</td>
 				<td><input type="text" maxlength="30" @bind="pp!.Ad" /></td>
-			</tr>
-			<tr>
-				<td>pasif</td>
-				<td><input type="checkbox" @bind="pp.isPsf" style="width:auto" /></td>
-			</tr>
-			<tr>
-				<td>sayaç</td>
-				<td>
-					<div>
-						<input type="number" min="0" @bind="pp.Cntr" style="width:80px" />
-						sıfırlandığında sil <input type="checkbox" @bind="pp.isDelIf0" style="width:auto" />
-					</div>
-
-				</td>
-			</tr>
-			<tr>
-				<td>sil</td>
-				<td><input type="checkbox" @bind="pp.isDel" style="width:auto" /></td>
 			</tr>
 			<tr>
 				<td>period</td>
@@ -45,9 +33,41 @@
 						<option value="2">Aylık</option>
 						<option value="3">Haftalık</option>
 						<option value="4">Günlük</option>
-						<option value="5">TekSeferlik</option>
+						@* <option value="5">TekSeferlik</option> *@
+						<option value="9">BelirlenenTarihlerde</option>
 						}
 					</select>
+				</td>
+			</tr>
+			@if(pp.Prd == 9)
+			{
+				<tr>
+					<td>tarihler</td>
+					<td>
+						<button @onclick="@(() => ShowDates())">
+							<span class="material-symbols-outlined">calendar_month</span>
+						</button>
+					</td>
+				</tr>
+
+			}
+			<tr>
+				<td>sayaç</td>
+				<td>
+					<div style="display:flex;justify-content: space-between;">
+						@if(pp.Prd == 9)
+						{
+							@pp.Cntr
+						}
+						else
+						{
+							<input type="number" min="0" @bind="pp.Cntr" style="width:80px" />
+						}
+						<div>
+							sıfırlandığında sil <input type="checkbox" @bind="pp.isDelIf0" style="width:auto" />
+						</div>
+					</div>
+
 				</td>
 			</tr>
 
@@ -183,6 +203,7 @@
 				</td>
 			</tr>
 
+
 		</tbody>
 	</table>
 
@@ -220,6 +241,20 @@
 	private Dictionary<string, int>? uud, ttd, ssd, sad;
 	private bool isReqDisabled = true;
 
+
+	public async Task ShowDates()
+	{
+		ModalParameters mp = new();
+		mp.Add("PPId", PPId);
+		mp.Add("pRSD", pp.RSD);
+
+		var x = Modal.Show<PrdDates>("", mp);
+		var r = await x.Result;
+		if (r.Confirmed)
+		{
+			//await Read();
+		}
+	}
 	private void CheckReq()
 	{
 		if (uud!.TryGetValue(pp.ReqAd, out var nid))

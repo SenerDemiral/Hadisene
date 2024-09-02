@@ -1,0 +1,154 @@
+﻿@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+
+<table>
+	<caption>
+		<button @onclick="Kaydet">
+			<span class="material-symbols-outlined">check</span>Kaydet
+		</button>
+	</caption>
+	<thead>
+		<tr>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var r in pd)
+		{
+			<tr>
+				<td>@r.PDId</td>
+				<td>@r.RSD?.ToString("dd.MM.yy HH:mm")</td>
+				<td>
+					<button @onclick="@(() => Sil(r))">
+						<span class="material-symbols-outlined">delete</span>
+					</button>
+				</td>
+			</tr>
+		}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td>@Cnt</td>
+			<td>
+				<div class="trh">
+					<div class="date">
+						<input type="date"
+							   @bind:event="onchange"
+							   @bind:get="@RSD"
+							   @bind:set="CheckRSD" />
+					</div>
+					<div class="time">
+						<input type="time"
+							   @bind:event="onchange"
+							   @bind:get="@RSD"
+							   @bind:set="CheckRSD" />
+					</div>
+				</div>
+			</td>
+			<td>
+				<button @onclick="@(() => Ekle())">
+					<span class="material-symbols-outlined">add</span>
+				</button>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
+	[Parameter] public int PPId { get; set; }
+	[Parameter] public DateTime? pRSD { get; set; }
+	private List<PD> pd = new();
+	private DateTime? RSD;
+	private int Cnt;
+
+	private void CheckRSD(DateTime? val)
+	{
+		DateTime min = pRSD.Value.AddHours(2);
+		// Time part
+		if (val.HasValue && RSD.HasValue && val.Value.TimeOfDay != TimeSpan.Zero)
+			val = RSD!.Value.Date.Add(val.Value.TimeOfDay);
+
+		if (val == null || val < min)
+			RSD = min;
+		else
+			RSD = val;
+	}
+
+	private void Ekle()
+	{
+		if (RSD != null)
+		{
+			PD n = new PD
+				{
+					PDId = 0,
+					RSD = RSD
+				};
+			pd.Add(n);
+			pd.Sort((x, y) => DateTime.Compare(x.RSD.Value, y.RSD.Value));
+
+			Cnt = pd.Count((x) => x.PDId >= 0);
+
+			RSD = RSD.Value.AddDays(1);
+		}
+	}
+
+	private void Sil(PD r)
+	{
+		if (r.PDId == 0)
+		{
+			pd.Remove(r);
+		}
+		else
+		{
+			r.PDId = -r.PDId;
+		}
+		Cnt = pd.Count((x) => x.PDId >= 0);
+	}
+
+	private async Task Kaydet()
+	{
+		try
+		{
+			using var conn = db.GetConnection();
+			foreach(var r in pd)
+			{
+				_ = conn.Execute("PD_MDF",
+						new
+						{
+							p1 = PPId,
+							p2 = r.PDId,
+							p3 = r.RSD,
+						},
+						commandType: CommandType.StoredProcedure);
+
+			}
+
+			await ModalIns.CloseAsync(ModalResult.Ok());
+		}
+		catch (Exception ex)
+		{
+			ModalParameters mp = new();
+			mp.Add("Message", ex.Message);
+			Modal.Show<ModalWarning>("", mp);
+		}
+
+	}
+
+	protected override void OnInitialized()
+	{
+		using var conn = db.GetConnection();
+		pd = conn.Query<PD>("select * from PD where PPId = @PPId", new { PPId = PPId }).ToList();
+
+		pd.Sort((x, y) => DateTime.Compare(x.RSD.Value, y.RSD.Value));
+		Cnt = pd.Count((x) => x.PDId >= 0);
+	}
+
+	public sealed class PD
+	{
+		public int PDId;
+		public DateTime? RSD;
+	}
+
+}
