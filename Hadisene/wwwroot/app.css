@@ -676,7 +676,7 @@ Usage
 .ooCard {
 	display: grid;
 	/*gap: 2px;*/
-	grid-template-rows: 44px 1fr 32px;
+	grid-template-rows: auto 1fr 32px;
 	grid-template-columns: 1fr;
 	grid-template-areas:
 		"ooHdr"
@@ -918,6 +918,14 @@ Usage
 
 
 /**********/
+.ooPin[data-Pin="0"]::after {
+	content: "keep_off";
+	font-family: 'Material Symbols Outlined';
+}
+.ooPin[data-Pin="1"]::after {
+	content: "keep";
+	font-family: 'Material Symbols Outlined';
+}
 
 button[data-Pin="0"].ooPin::after {
 	content: "keep_off";

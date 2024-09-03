@@ -59,6 +59,7 @@
 					<div style="width:min-content;text-align:center;">
 						<span>@((MarkupString)rec.UpdFlg)</span>
 						<span class="material-symbols-outlined">@rec.UsrRel</span>
+						<span class="ooPin" data-Pin="@rec.Pin"></span>
 					</div>
 
 					<div class="ooHdrTxt" @onclick="@(() => ShowCard(rec))">
@@ -67,6 +68,9 @@
 						</div>
 						<div class="ooSrv">
 							@rec.SrvAd.Coalesce()
+						</div>
+						<div>
+							@rec.Trh.ToS()
 						</div>
 					</div>
 
