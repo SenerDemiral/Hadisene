@@ -1,6 +1,10 @@
-﻿@inject AppState my
+﻿@using System.Reflection.Metadata
+@inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
+@* @inject PubSubService PubSubSrv *@
+@implements IDisposable
+
 
 @if (tbl != null)
 {
@@ -51,7 +55,7 @@
 }
 
 @code {
-	private List<UU> tbl;
+    private List<UU> tbl;
 
 	ModalOptions mdlOpts = new ModalOptions()
 		{
@@ -95,8 +99,21 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		// PubSubSrv.Subscribe(RedisChannel.Literal("deneme"), OnMessage);
+
 		await Read();
 	}
+
+	private void OnMessage(RedisChannel channel, RedisValue value)
+	{
+		// https://github.com/StackExchange/StackExchange.Redis/issues/2458
+		Console.WriteLine($"Sender: {value}, Receiver: {my.Id} UsrQry");
+	}
+
+	public void Dispose()
+	{
+		// PubSubSrv.Unsubscribe(RedisChannel.Literal("deneme"), OnMessage);
+    }
 
 	public sealed class UU
 	{

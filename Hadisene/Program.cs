@@ -3,6 +3,7 @@ using Blazored.Toast;
 using Hadisene.Components;
 using Hadisene.Lib;
 using SixLabors.ImageSharp.Web.DependencyInjection;
+using StackExchange.Redis;
 using System.Globalization;
 
 CultureInfo culture;
@@ -21,6 +22,9 @@ builder.Services.AddRazorComponents()
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\Hadisene.json",
 					   optional: false,
 					   reloadOnChange: true);
+
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+//builder.Services.AddScoped<PubSubService>();
 
 builder.Services.AddImageSharp();
 builder.Services.AddBlazoredModal();
