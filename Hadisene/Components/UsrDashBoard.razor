@@ -152,8 +152,12 @@
 				</tr>
 
 				<tr>
-					<td class="ta-c"> >= </td>
+					<td class="ta-c">Tarih &gt;= </td>
 					<td colspan="2"><input type="date" @bind="Trh1" /></td>
+				</tr>
+				<tr>
+					<td class="ta-c">Tarih &lt; </td>
+					<td colspan="2"><input type="date" @bind="Trh2" /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -172,7 +176,7 @@
 	private bool cbCSR, cbCSB, cbCSG, cbCFR, cbCFB, cbCFG, cbPin, cbOnV, cbMnV;
 	private string? Rf1;
 	private string? Rf2;
-	private DateTime? Trh1;
+	private DateTime? Trh1, Trh2;
 
 	private void PosChanged()
 	{
@@ -213,6 +217,8 @@
 
 		if (Trh1 is not null)
 			sl.Add($@"Trh1={Trh1?.ToString("dd.MM.yyyy")}");
+		if (Trh2 is not null)
+			sl.Add($@"Trh2={Trh2?.ToString("dd.MM.yyyy")}");
 
 		string url;
 		if (sl.Count == 0)

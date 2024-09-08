@@ -1,0 +1,58 @@
+﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@inject AppState my
+@inject IDbCon db
+@inject IModalService Modal
+@page "/OrdStatUsr/{myId:int}"
+
+@if (tbl != null)
+{
+	<table style="width:auto;margin:8px auto;">
+		<caption style="background-color:gainsboro;">Tamamlanmamış Talepler</caption>
+		<tbody>
+			<tr>
+				<th>Tarih</th>
+				<th>Gelen</th>
+				<th>Giden</th>
+				<th>Takip</th>
+			</tr>
+			@foreach (var rec in tbl)
+			{
+				<tr>
+					<td>@rec.Trh?.ToString("dd.MM.yy ddd")</td>
+					<td class="ta-c">@rec.CA</td>
+					<td class="ta-c">@rec.CR</td>
+					<td class="ta-c">@rec.C_</td>
+
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public int myId { get; set; }
+	private List<UU> tbl;
+
+	private async Task Read()
+	{
+		using var conn = db.GetConnection();
+		tbl = (await conn.QueryAsync<UU>("OO_STAT_USR",
+			new { a = myId }, commandType: CommandType.StoredProcedure)
+		).ToList();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Read();
+	}
+
+	public sealed class UU
+	{
+		public DateTime? Trh;
+		public int CA;
+		public int CR;
+		public int C_;
+
+	}
+}

@@ -557,8 +557,8 @@ tbody.zebra tr:nth-child(odd) {
 /****************************/
 
 .osCnt {
-	max-width: min-content;
-	margin-inline: auto;
+	/*max-width: min-content;*/
+	/*margin-inline: auto;*/
 }
 
 	.osCnt table td {
@@ -1273,7 +1273,7 @@ input[type="radio"] {
 }
 
 	.oeReq::before {
-		content: "↗️ isteyen (talep eden)";
+		content: "↗️ talebi yapan";
 	}
 
 .oeTsk {
@@ -1297,7 +1297,7 @@ input[type="radio"] {
 }
 
 	.oeAct::before {
-		content: "➡️ grup üyesi";
+		content: "➡️ talebi alan";
 	}
 
 

@@ -34,8 +34,9 @@
 		@if (my.Id != 0)
 		{
 			<option value="ordActive/0/all">🚧 Talepler &nbsp;&nbsp;</option>
+			<option value="OrdStatUsr/@my.Id">📈 Günlük Özet</option>
 			@* <option value="TlpQry/0/all">🚧 Talepler2</option> *@
-			<option value="OrdStat">📈 Özet</option>
+			<option value="OrdStatSrv/@my.Tkn/@my.Id/@my.Ytk">📈 Grup Özet</option>
 			@if (my.FPS)
 			{
 				<option value="SrvQryPrv">🔐 Gruplarım</option>

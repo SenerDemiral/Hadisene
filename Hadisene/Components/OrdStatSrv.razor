@@ -2,7 +2,7 @@
 @inject AppState my
 @inject IDbCon db
 @* @inject IModalService Modal *@
-@page "/ordStat/{myTkn}/{myId:int}/{myYtk:int}"
+@page "/OrdStatSrv/{myTkn}/{myId:int}/{myYtk:int}"
 
 @* @if (my.Ytk > 3)
 {
@@ -17,8 +17,8 @@ else
 @if (os?.Count > 0 && myId > 0)
 {
 	<div class="osCnt">
-		@* <table style="table-layout:fixed;width:auto;"> *@
-		<table style="width:max-content;">
+		<table style="table-layout:fixed;width:auto;margin-inline:auto">
+		@* <table style="width:auto;margin-inline:auto"> *@
 			<thead class="ta-c">
 				<tr>
 					<th rowspan="2">Durum Özeti</th>
@@ -139,47 +139,6 @@ else
 	</div>
 }
 
-@* <style>
-	.osCnt {
-		display: grid;
-		max-height: var(--bdy-h);
-		justify-content: center;
-		overflow: auto;
-		min-width: fit-content;
-	}
-
-	th.osR {
-		background-color: brown;
-		color: white;
-	}
-
-	th.osB {
-		background-color: steelblue;
-		color: white;
-	}
-
-	th.osG {
-		background-color: green;
-		color: white;
-	}
-
-	.osT {
-		background-color: gainsboro;
-	}
-
-	td.osR {
-		color: brown;
-	}
-
-	td.osB {
-		color: steelblue
-	}
-
-	td.osG {
-		color: green;
-	}
-</style>
- *@
 @code {
 	[CascadingParameter] public HttpContext? context { get; set; }
 
@@ -200,7 +159,7 @@ else
 			try
 			{
 				using var conn = db.GetConnection();
-				os = (await conn.QueryAsync<OS>("OO_STAT",
+				os = (await conn.QueryAsync<OS>("OO_STAT_SRV",
 					new { a = myId, b = typ },
 					commandType: CommandType.StoredProcedure)
 				).ToList();

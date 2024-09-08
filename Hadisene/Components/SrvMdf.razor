@@ -50,8 +50,8 @@
 				<td>takip</td>
 				<td>
 					<select @bind="ss.TkpKrl" disabled="@Prv" style="width:100%;">
-						<option value="0">İsteyen+Sorumlu+Gözlemci+Aktör</option>
-						<option value="1">İsteyen+Üyeler</option>
+						<option value="0">Yapan+Sorumlu+Gözlemci+Alan</option>
+						<option value="1">Yapan+GrupÜyeleri</option>
 					</select>
 				</td>
 			</tr>
@@ -59,8 +59,8 @@
 				<td>başla/bitir</td>
 				<td>
 					<select @bind="ss.S_FKrl" disabled="@Prv" style="width:100%;">
-						<option value="0">İsteyen+Sorumlu+Aktör</option>
-						<option value="1">İsteyen+Sorumlu</option>
+						<option value="0">Yapan+Sorumlu+Alan</option>
+						<option value="1">Yapan+Sorumlu</option>
 						<option value="2">Sorumlu</option>
 					</select>
 				</td>
@@ -259,7 +259,7 @@
 				},
 				commandType: CommandType.StoredProcedure).ToList();
 
-			su = su.OrderByDescending(x => x.Mbr).ThenBy(y => y.UUAd).ToList();
+			su = su.OrderByDescending(x => x.Idx).ThenBy(y => y.UUAd).ToList();
 
 			st = conn.Query<ST>("ST_QRY",
 				new
@@ -321,6 +321,7 @@
 				Mbr = value ? 1 : 0;
 			}
 		}
+		public int Idx;
 	}
 	public sealed class ST
 	{
