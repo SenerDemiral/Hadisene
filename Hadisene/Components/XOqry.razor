@@ -33,9 +33,10 @@
 					<th>➕</th>
 					<th>edit</th>
 					<th>➖</th>
+					<th>kimden</th>
 					<th>konu</th>
 					<th>grup</th>
-					<th>üye</th>
+					<th>kime</th>
 					<th>±gün</th>
 					<th>zaman</th>
 					<th>süre(s)</th>
@@ -75,6 +76,7 @@
 
 					</td>
 					<td><button class="emoji" @onclick="@(() => SilToggle(idx))">➖</button></td>
+					<td class="inp-txt">@s.ReqAd</td>
 					<td class="inp-txt">@s.TskAd</td>
 					<td class="inp-txt">@s.SrvAd</td>
 					<td class="inp-txt">@s.ActAd</td>
@@ -153,7 +155,7 @@
 @code {
 	[Parameter] public int XXId { get; set; }
 	List<XO> sl = new();
-	private Dictionary<string, int>? ssd, ttd, sad;
+	private Dictionary<string, int>? ssd, uud, ttd, sad;
 	private bool hasChange;
 	private int NOC;
 	private int RunCnt;
@@ -314,10 +316,12 @@
 			s.dGun = cs.dGun;
 			s.RPH = cs.RPH;
 			s.RSD = cs.RSD;
-			s.TskId = cs.TskId;
-			s.TskAd = cs.TskAd;
+			s.ReqId = cs.ReqId;
+			s.ReqAd = cs.ReqAd;
 			s.SrvId = cs.SrvId;
 			s.SrvAd = cs.SrvAd;
+			s.TskId = cs.TskId;
+			s.TskAd = cs.TskAd;
 			s.ActId = cs.ActId;
 			s.ActAd = cs.ActAd;
 			s.Inf = cs.Inf;
@@ -534,8 +538,8 @@
 						p8 = r.RSD,
 						p9 = r.RPH,
 						pa = r.ReqId,
-						pb = r.TskId,
 						pc = r.SrvId,
+						pb = r.TskId,
 						pd = r.ActId,
 						pe = r.Inf,
 						pf = r.Rf1,
@@ -561,8 +565,7 @@
 			ssd = conn.Query<SS>("SS_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 			sl = (await conn.QueryAsync<XO>("XO_QRY",
-				new { a = my.Id, b = XXId }, // SP parametreleri DB deki sırasıyla gönderilmeli
-				commandType: CommandType.StoredProcedure)
+				new { a = my.Id, b = XXId }, commandType: CommandType.StoredProcedure)
 			).ToList();
 
 			//Notifier.Notify += OnNotify;

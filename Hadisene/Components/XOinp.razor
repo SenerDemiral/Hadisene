@@ -16,6 +16,18 @@
 				<td>@Idf()</td>
 			</tr>
 			<tr>
+				<td>kimden</td>
+				<td>
+					<input type="text"
+						   maxlength="30"
+						   size="30"
+						   list="UUL"
+						   @bind="xo.ReqAd"
+						   @bind:event="onchange"
+						   @bind:after="CheckReq" />
+				</td>
+			</tr>
+			<tr>
 				<td>grup</td>
 				<td>
 					<input type="text"
@@ -111,18 +123,24 @@
 	</table>
 
 
+	<datalist id="UUL">
+		@foreach (var r in uud!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
 	<datalist id="TTL">
 		@foreach (var r in ttd!)
 		{
 			<option value="@r.Key" />
 		}
 	</datalist>
-	@* <datalist id="SSL">
+	<datalist id="SSL">
 		@foreach (var r in ssd!)
 		{
 			<option value="@r.Key" />
 		}
-	</datalist> *@
+	</datalist>
 	<datalist id="SAL">
 		@foreach (var r in sad!)
 		{
@@ -136,8 +154,20 @@
 	[CascadingParameter] BlazoredModalInstance ModalIns { get; set; } = default!;
 	[Parameter] public XO xo { get; set; }
 	[Parameter] public Dictionary<string, int>? ssd { get; set; }
+
 	private XO? oxo;
-	private Dictionary<string, int>? sad, ttd;
+	private Dictionary<string, int>? uud, sad, ttd;
+
+	private void CheckReq()
+	{
+		if (uud!.TryGetValue(xo.ReqAd, out var nid))
+		{
+			xo.ReqId = nid;
+			SrvLU(nid);
+		}
+		else
+			xo.ReqAd = oxo.ReqAd;
+	}
 
 	private void CheckSrv()
 	{
@@ -195,8 +225,18 @@
 	protected override void OnInitialized()
 	{
 		oxo = xo.ShallowCopy();
+
+		using var conn = db.GetConnection();
+		uud = conn.Query<UU>("UU_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+
 		SrvActLU(xo.SrvId);
 		SrvTskLU(xo.SrvId);
+	}
+
+	private void SrvLU(int ReqId)
+	{
+		using var conn = db.GetConnection();
+		ssd = conn.Query<SS>("SS_LU", new { Usr = ReqId, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 	}
 	private void SrvTskLU(int SSId)

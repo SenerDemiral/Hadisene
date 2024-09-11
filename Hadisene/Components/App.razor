@@ -9,8 +9,8 @@
     <meta property="og:site_name" content="Şener DEMİRAL | TALEPLER">
     <meta property="og:title" content="Talepler">
     <meta property="og:description" content="Talep Takibi">
-    <meta property="og:url" content="http://yaphaydi.com/">
-    <meta property="og:image" content="http://yaphaydi.com/favicon.png">
+    <meta property="og:url" content="https://yaphaydi.com/">
+    <meta property="og:image" content="https://yaphaydi.com/favicon.png">
     <base href="/" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["Hadisene.styles.css"]" />
@@ -26,8 +26,16 @@
 
 <body>
     <Routes  />
-    <script src="_framework/blazor.web.js"></script>
-    <script src="js/deneme.js"></script>
+    <script src="_framework/blazor.web.js" ></script>
+
+    @* <script>
+        Blazor.start({
+            configureSignalR: function(builder) {
+                builder.withUrl("/_blazor");
+            }
+        });
+    </script> *@
+    <script src="deneme.js"></script> 
 </body>
 
 </html>
