@@ -3,7 +3,7 @@ using Blazored.Toast;
 using Hadisene.Components;
 using Hadisene.Lib;
 using SixLabors.ImageSharp.Web.DependencyInjection;
-using StackExchange.Redis;
+//using StackExchange.Redis;
 using System.Globalization;
 
 CultureInfo culture;

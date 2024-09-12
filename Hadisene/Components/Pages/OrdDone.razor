@@ -19,10 +19,10 @@
 	<thead>
 		<tr>
 			<th rowspan="2">id#</th>
-			<th rowspan="2">birim</th>
-			<th rowspan="2">konu</th>
-			<th rowspan="2">kime</th>
 			<th rowspan="2">kimden</th>
+			<th rowspan="2">konu</th>
+			<th rowspan="2">grup</th>
+			<th rowspan="2">kime</th>
 			<th rowspan="2">rf1</th>
 			<th rowspan="2">rf2</th>
 			<th colspan="3">başlangıç</th>
@@ -49,10 +49,10 @@
 		{
 			<tr>
 				<td class="ta-r">@r.OOId</td>
-				<td>@r.SrvAd</td>
-				<td>@r.TskAd</td>
-				<td>@r.ActAd</td>
 				<td>@r.ReqAd</td>
+				<td>@r.TskAd</td>
+				<td>@r.SrvAd</td>
+				<td>@r.ActAd</td>
 				<td>@r.Rf1</td>
 				<td>@r.Rf2</td>
 				<td class="ta-c">@r.RSDf</td>
@@ -118,7 +118,7 @@
 <div id="search-popover" popover="auto" style="min-width:360px;">
 	<table>
 		<tr>
-			<td>Durum</td>
+			<td>durum</td>
 			<td>
 				<div style="display:flex; gap:1rem;">
 					<InputRadioGroup @bind-Value="stu">
@@ -135,16 +135,16 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Tarih &ge;</td>
+			<td>tarih &ge;</td>
 			<td><input type="date" @bind-value="bTrh" /></td>
 		</tr>
 		<tr>
-			<td>Tarih &lt;</td>
+			<td>tarih &lt;</td>
 			<td><input type="date" @bind-value="eTrh" /></td>
 
 		</tr>
 		<tr>
-			<td>Ref1</td>
+			<td>ref1</td>
 			<td>
 				<input type="text" maxlength="20" class="refs"
 					   @bind="Rf1"
@@ -152,7 +152,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Ref2</td>
+			<td>ref2</td>
 			@* <td><input type="text" @bind="Rf2.toASCII()"  /></td> *@
 			@* <td><input type="text" @bind="Rf2" @bind:after="(() => Rf2.RefIncrement(ref Rf2))" /></td> *@
 			<td>
@@ -162,10 +162,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Servis</td>
+			<td>kimden</td>
 			<td>
 				<div class="lst">
-					@foreach (var itm in SrvList)
+					@foreach (var itm in reqList)
 					{
 						<div>
 							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
@@ -175,7 +175,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Görev</td>
+			<td>konu</td>
 			<td>
 				<div class="lst">
 					@foreach (var itm in tskList)
@@ -188,10 +188,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Görevli</td>
+			<td>grup</td>
 			<td>
 				<div class="lst">
-					@foreach (var itm in actList)
+					@foreach (var itm in SrvList)
 					{
 						<div>
 							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
@@ -201,10 +201,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td>İsteyen</td>
+			<td>kime</td>
 			<td>
 				<div class="lst">
-					@foreach (var itm in reqList)
+					@foreach (var itm in actList)
 					{
 						<div>
 							<input type="checkbox" @bind-value="itm.Selected" /> @itm.Ad
