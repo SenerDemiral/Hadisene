@@ -2,7 +2,7 @@
 @inject AppState my
 @inject IDbCon db
 @inject IModalService Modal
-@* @inject PubSubService PubSubSrv *@
+@inject PubSubService PubSubSrv
 @implements IDisposable
 
 
@@ -99,7 +99,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		// PubSubSrv.Subscribe(RedisChannel.Literal("deneme"), OnMessage);
+		PubSubSrv.Subscribe(RedisChannel.Literal("deneme"), OnMessage);
 
 		await Read();
 	}
@@ -112,7 +112,7 @@
 
 	public void Dispose()
 	{
-		// PubSubSrv.Unsubscribe(RedisChannel.Literal("deneme"), OnMessage);
+		PubSubSrv.Unsubscribe(RedisChannel.Literal("deneme"), OnMessage);
     }
 
 	public sealed class UU

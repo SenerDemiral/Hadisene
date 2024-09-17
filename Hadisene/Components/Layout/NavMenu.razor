@@ -7,7 +7,7 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime js
 @inject IToastService toastService
-@* @inject PubSubService PubSubSrv *@
+@inject PubSubService PubSubSrv
 
 @* <CascadingBlazoredModal @rendermode="InteractiveServer"></CascadingBlazoredModal> *@
 @* MainLayout da tanımlı *@
@@ -160,7 +160,7 @@
 
 	private ValueTask ShowPrdQry()
 	{
-		// PubSubSrv.Publish(RedisChannel.Literal("deneme"), $"heyooo {my.Id}");
+		PubSubSrv.Publish(RedisChannel.Literal("deneme"), $"heyooo {my.Id}");
 
 		ModalParameters mp = new();
 		mp.Add("Prv", false);

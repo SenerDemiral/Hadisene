@@ -556,7 +556,7 @@
 			using var conn = db.GetConnection();
 			ssd = conn.Query<SS>("SS_LU", new { Usr = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
-			uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+			uud = conn.Query<UU>("UU_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 
 			if (OOId == 0)
 			{

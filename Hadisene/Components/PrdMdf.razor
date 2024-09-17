@@ -2,7 +2,7 @@
 @inject IDbCon db
 @inject IModalService Modal
 
-@if (pp != null && sad != null)
+@if (pp != null && sad != null && uud != null)
 {
 	<table style="min-width:340px;">
 		<caption>
@@ -395,7 +395,7 @@
 			if (my.Ytk.IsAny(1, 2))     // Admn/Oprtr isteyeni değiştirebilir
 			{
 				isReqDisabled = false;
-				uud = conn.Query<UU>("UU_LU", new { FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
+				uud = conn.Query<UU>("UU_LU", new { UsrId = my.Id, FFId = my.FrmId }, commandType: CommandType.StoredProcedure).ToDictionary(k => k.Ad, e => e.Id);
 			}
 			else
 			{
